@@ -1,14 +1,12 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
-Version: 2.5
-Release: 3
+Version: 3.0
+Release: 1
 Group: Development/System
 License: GPL
 Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi-%{version}.tar.gz
-Patch: gnu-efi-2.5-makefile.patch
-Patch2: efibootmgr-0.3.1-remove-from-bootorder.patch
-Patch3: elilo-2.5-prompt.patch
-Source1: http://domsch.com/linux/ia64/efibootmgr-0.3.1.tar.gz
+Patch1: gnu-efi-3.0-makefile.patch
+Patch2: gnu-efi-3.0-rodata.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 ExclusiveArch: ia64
 
@@ -16,72 +14,40 @@ ExclusiveArch: ia64
 This package contains development headers and libraries for developing
 applications that run under EFI (Extensible Firmware Interface).
 
-%package -n elilo
-Summary: ELILO linux boot loader for EFI-based systems
-Group: System Environment/Base
-Obsoletes: eli
-
-%description -n elilo
-ELILO is a linux boot loader for EFI-based systems, such as IA-64.
-
 %prep
-%setup -a 1
-%patch -p1 
-%patch2 -p0
-%patch3 -p0
+%setup
+%patch1 -p1
+#%patch2 -p1
 
 %build
-make CFLAGS="$RPM_OPT_FLAGS"
-cd efibootmgr-0.3.1
-make
-cp COPYING INSTALL README doc
-mv doc efibootmgr-doc
-cd ..
+make 
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-mkdir -p $RPM_BUILD_ROOT/usr/{bin,include/efi,lib/gnuefi}
+mkdir -p $RPM_BUILD_ROOT/usr
 
-for header in inc/*.h ; do
-	install -m 644 $header $RPM_BUILD_ROOT/usr/include/efi
-done
+make INSTALLROOT=$RPM_BUILD_ROOT/usr install
+
+mkdir -p $RPM_BUILD_ROOT/usr/lib/gnuefi
+mv $RPM_BUILD_ROOT/usr/lib/*.lds $RPM_BUILD_ROOT/usr/lib/*.o \
+	$RPM_BUILD_ROOT/usr/lib/gnuefi
 
 make -C apps clean
-
-mkdir -p $RPM_BUILD_ROOT/usr/include/efi/%{_arch}
-install -m 644 inc/%{_arch}/*.h $RPM_BUILD_ROOT/usr/include/efi/%{_arch}
-
-install -m644 gnuefi/libgnuefi.a $RPM_BUILD_ROOT/usr/lib
-install -m644 lib/libefi.a $RPM_BUILD_ROOT/usr/lib
-
-install -m644 gnuefi/crt0-efi-%{_arch}.o $RPM_BUILD_ROOT/usr/lib/gnuefi
-install -m644 gnuefi/elf_%{_arch}_efi.lds $RPM_BUILD_ROOT/usr/lib/gnuefi
-
-mkdir -p $RPM_BUILD_ROOT/boot/efi/efi/boot
-install -m 755 elilo/elilo.efi $RPM_BUILD_ROOT/boot/efi/elilo.efi
-install -m 755 elilo/elilo.efi $RPM_BUILD_ROOT/boot/efi/efi/boot/bootia64.efi
-
-mkdir -p $RPM_BUILD_ROOT/usr/sbin
-install -m 755 efibootmgr-0.3.1/src/efibootmgr/efibootmgr $RPM_BUILD_ROOT/usr/sbin
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%doc README README.efilib ChangeLog apps 
+%doc README.* ChangeLog apps 
 /usr/include/efi
 /usr/lib/*
 
-%files -n elilo
-%defattr(-,root,root)
-%doc elilo/README elilo/TODO elilo/elilo.txt efibootmgr-0.3.1/efibootmgr-doc 
-/boot/efi/elilo.efi
-/boot/efi/efi/boot/bootia64.efi
-/usr/sbin/efibootmgr
-
 %changelog
+* Sun Jul  8 2001 Bill Nottingham <notting@redhat.com>
+- update to 3.0
+
 * Tue Jun  5 2001 Bill Nottingham <notting@redhat.com>
 - add fix for invocations from the boot manager menu (#42222)
 
