@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0a
-Release: 6
+Release: 7
 Group: Development/System
 License: GPL
 Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi-%{version}.tar.gz
@@ -49,6 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/lib/*
 
 %changelog
+* Thu Mar  3 2005 Jeremy Katz <katzj@redhat.com> - 3.0a-7
+- rebuild with gcc 4
+
 * Tue Sep 21 2004 Jeremy Katz <katzj@redhat.com> - 3.0a-6
 - add fix from Jesse Barnes for newer binutils (#129197)
 
