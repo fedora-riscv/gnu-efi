@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0
-Release: 1
+Release: 2
 Group: Development/System
 License: GPL
 Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi-%{version}.tar.gz
@@ -45,6 +45,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/lib/*
 
 %changelog
+* Fri Oct  4 2002 Jeremy Katz <katzj@redhat.com>
+- rebuild in new environment
+
 * Sun Jul  8 2001 Bill Nottingham <notting@redhat.com>
 - update to 3.0
 
