@@ -1,13 +1,14 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0a
-Release: 5
+Release: 6
 Group: Development/System
 License: GPL
 Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi-%{version}.tar.gz
 Patch1: gnu-efi-3.0-makefile.patch
 Patch2: gnu-efi-3.0-rodata.patch
 Patch3: gnu-efi-erikj-reloc.patch
+Patch4: gnu-efi-unwind-discard.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 ExclusiveArch: ia64
 
@@ -20,6 +21,7 @@ applications that run under EFI (Extensible Firmware Interface).
 %patch1 -p1
 #%patch2 -p1
 %patch3 -p0 
+%patch4 -p1
 
 %build
 make 
@@ -47,6 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/lib/*
 
 %changelog
+* Tue Sep 21 2004 Jeremy Katz <katzj@redhat.com> - 3.0a-6
+- add fix from Jesse Barnes for newer binutils (#129197)
+
 * Tue Jun 15 2004 Elliot Lee <sopwith@redhat.com>
 - rebuilt
 
