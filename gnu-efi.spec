@@ -1,16 +1,12 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
-Version: 3.0a
-Release: 7.2
+Version: 3.0c
+Release: 1
 Group: Development/System
 License: GPL
 Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi-%{version}.tar.gz
-Patch1: gnu-efi-3.0-makefile.patch
-Patch2: gnu-efi-3.0-rodata.patch
-Patch3: gnu-efi-erikj-reloc.patch
-Patch4: gnu-efi-unwind-discard.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
-ExclusiveArch: ia64
+ExclusiveArch: ia64 i386
 
 %description
 This package contains development headers and libraries for developing
@@ -18,10 +14,6 @@ applications that run under EFI (Extensible Firmware Interface).
 
 %prep
 %setup
-%patch1 -p1
-#%patch2 -p1
-%patch3 -p0 
-%patch4 -p1
 
 %build
 make 
@@ -49,6 +41,10 @@ rm -rf $RPM_BUILD_ROOT
 /usr/lib/*
 
 %changelog
+* Thu Apr 27 2006 Chris Lumens <clumens@redhat.com> 3.0c-1
+- Upgrade to gnu-efi-3.0c.
+- Enable build on i386.
+
 * Tue Feb 07 2006 Jesse Keating <jkeating@redhat.com> - 3.0a-7.2
 - rebuilt for new gcc4.1 snapshot and glibc changes
 
