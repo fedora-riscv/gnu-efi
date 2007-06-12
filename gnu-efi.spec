@@ -1,11 +1,12 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0c
-Release: 1.1
+Release: 2%{?dist}
 Group: Development/System
 License: GPL
+URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
 Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi-%{version}.tar.gz
-BuildRoot: %{_tmppath}/%{name}-%{version}-root
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: ia64 i386
 
 %description
@@ -13,34 +14,37 @@ This package contains development headers and libraries for developing
 applications that run under EFI (Extensible Firmware Interface).
 
 %prep
-%setup
+%setup -q
 
 %build
-make 
+# Package cannot build with %{?_smp_mflags}.
+make
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
-mkdir -p $RPM_BUILD_ROOT/usr
+mkdir -p %{buildroot}/%{_libdir}
 
-make INSTALLROOT=$RPM_BUILD_ROOT/usr install
+make INSTALLROOT=%{buildroot}/%{_prefix} install
 
-mkdir -p $RPM_BUILD_ROOT/usr/lib/gnuefi
-mv $RPM_BUILD_ROOT/usr/lib/*.lds $RPM_BUILD_ROOT/usr/lib/*.o \
-	$RPM_BUILD_ROOT/usr/lib/gnuefi
+mkdir -p %{buildroot}/%{_libdir}/gnuefi
+mv %{buildroot}/%{_libdir}/*.lds %{buildroot}/%{_libdir}/*.o %{buildroot}/%{_libdir}/gnuefi
 
 make -C apps clean
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %files
-%defattr(-,root,root)
+%defattr(-,root,root,-)
 %doc README.* ChangeLog apps 
-/usr/include/efi
-/usr/lib/*
+%{_includedir}/efi
+%{_libdir}/*
 
 %changelog
+* Tue Jun 12 2007 Chris Lumens <clumens@redhat.com> - 3.0c-2
+- Fixes for package review (#225846).
+
 * Wed Jul 12 2006 Jesse Keating <jkeating@redhat.com> - 3.0c-1.1
 - rebuild
 
