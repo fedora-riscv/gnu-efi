@@ -37,7 +37,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%doc README.* ChangeLog apps 
+%doc README.* ChangeLog apps
 %{_includedir}/efi
 %{_libdir}/*
 
