@@ -59,7 +59,7 @@ diff -up gnu-efi-3.0c/Make.defaults.x64 gnu-efi-3.0c/Make.defaults
    OBJCOPY	= $(prefix)objcopy
 - endif
 +  LIBDIR	= lib64
-+  CFLAGS       += -m64
++  CFLAGS       += -m64 -fpic -fshort-wchar -fno-strict-aliasing -fno-merge-constants -fno-builtin -nostdlib
  endif
 -
 diff -up gnu-efi-3.0c/apps/Makefile.x64 gnu-efi-3.0c/apps/Makefile
