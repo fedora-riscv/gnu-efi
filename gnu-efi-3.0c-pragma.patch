@@ -1,0 +1,204 @@
+diff -up gnu-efi-3.0c/lib/runtime/rtdata.c.pragma gnu-efi-3.0c/lib/runtime/rtdata.c
+--- gnu-efi-3.0c/lib/runtime/rtdata.c.pragma	2007-12-19 13:29:42.000000000 -0500
++++ gnu-efi-3.0c/lib/runtime/rtdata.c	2007-12-19 13:29:59.000000000 -0500
+@@ -26,7 +26,9 @@ Revision History
+ // right data section if it is explicitly initialized..
+ //
+ 
++#ifndef __GNUC__
+ #pragma BEGIN_RUNTIME_DATA()
++#endif
+ 
+ //
+ // RT - pointer to the runtime table
+diff -up gnu-efi-3.0c/lib/runtime/vm.c.pragma gnu-efi-3.0c/lib/runtime/vm.c
+--- gnu-efi-3.0c/lib/runtime/vm.c.pragma	2007-12-19 13:28:58.000000000 -0500
++++ gnu-efi-3.0c/lib/runtime/vm.c	2007-12-19 13:29:10.000000000 -0500
+@@ -24,7 +24,9 @@ Revision History
+ 
+ #include "lib.h"
+ 
++#ifndef __GNUC__
+ #pragma RUNTIME_CODE(RtLibEnableVirtualMappings)
++#endif
+ VOID
+ RUNTIMEFUNCTION
+ RtLibEnableVirtualMappings (
+@@ -64,7 +66,9 @@ RtLibEnableVirtualMappings (
+ }
+ 
+ 
++#ifndef __GNUC__
+ #pragma RUNTIME_CODE(RtConvertList)
++#endif
+ VOID
+ RUNTIMEFUNCTION
+ RtConvertList (
+diff -up gnu-efi-3.0c/lib/runtime/efirtlib.c.pragma gnu-efi-3.0c/lib/runtime/efirtlib.c
+--- gnu-efi-3.0c/lib/runtime/efirtlib.c.pragma	2007-12-19 13:27:39.000000000 -0500
++++ gnu-efi-3.0c/lib/runtime/efirtlib.c	2007-12-19 13:28:02.000000000 -0500
+@@ -20,7 +20,9 @@ Revision History
+ #include "efilib.h"
+ #include "efirtlib.h"
+ 
++#ifndef __GNUC__
+ #pragma RUNTIME_CODE(RtZeroMem)
++#endif
+ VOID
+ RUNTIMEFUNCTION
+ RtZeroMem (
+@@ -36,7 +38,9 @@ RtZeroMem (
+     }
+ }
+ 
++#ifndef __GNUC__
+ #pragma RUNTIME_CODE(RtSetMem)
++#endif
+ VOID
+ RUNTIMEFUNCTION
+ RtSetMem (
+@@ -53,7 +57,9 @@ RtSetMem (
+     }
+ }
+ 
++#ifndef __GNUC__
+ #pragma RUNTIME_CODE(RtCopyMem)
++#endif
+ VOID
+ RUNTIMEFUNCTION
+ RtCopyMem (
+@@ -71,7 +77,9 @@ RtCopyMem (
+     }
+ }
+ 
++#ifndef __GNUC__
+ #pragma RUNTIME_CODE(RtCompareMem)
++#endif
+ INTN
+ RUNTIMEFUNCTION
+ RtCompareMem (
+@@ -96,7 +104,9 @@ RtCompareMem (
+     return 0;
+ }
+ 
++#ifndef __GNUC__
+ #pragma RUNTIME_CODE(RtCompareGuid)
++#endif
+ INTN
+ RUNTIMEFUNCTION
+ RtCompareGuid (
+diff -up gnu-efi-3.0c/lib/runtime/rtlock.c.pragma gnu-efi-3.0c/lib/runtime/rtlock.c
+--- gnu-efi-3.0c/lib/runtime/rtlock.c.pragma	2007-12-19 13:26:56.000000000 -0500
++++ gnu-efi-3.0c/lib/runtime/rtlock.c	2007-12-19 13:27:18.000000000 -0500
+@@ -21,7 +21,9 @@ Revision History
+ 
+ 
+ 
++#ifndef __GNUC__
+ #pragma RUNTIME_CODE(RtAcquireLock)
++#endif
+ VOID
+ RtAcquireLock (
+     IN FLOCK    *Lock
+@@ -58,7 +60,9 @@ Returns:
+ }
+ 
+ 
++#ifndef __GNUC__
+ #pragma RUNTIME_CODE(RtAcquireLock)
++#endif
+ VOID
+ RtReleaseLock (
+     IN FLOCK    *Lock
+diff -up gnu-efi-3.0c/lib/runtime/rtstr.c.pragma gnu-efi-3.0c/lib/runtime/rtstr.c
+--- gnu-efi-3.0c/lib/runtime/rtstr.c.pragma	2007-12-19 13:28:15.000000000 -0500
++++ gnu-efi-3.0c/lib/runtime/rtstr.c	2007-12-19 13:28:48.000000000 -0500
+@@ -17,7 +17,9 @@ Revision History
+ 
+ #include "lib.h"
+ 
++#ifndef __GNUC__
+ #pragma RUNTIME_CODE(RtAcquireLock)
++#endif
+ INTN
+ RUNTIMEFUNCTION
+ RtStrCmp (
+@@ -38,7 +40,9 @@ RtStrCmp (
+     return *s1 - *s2;
+ }
+ 
++#ifndef __GNUC__
+ #pragma RUNTIME_CODE(RtStrCpy)
++#endif
+ VOID
+ RUNTIMEFUNCTION
+ RtStrCpy (
+@@ -53,7 +57,9 @@ RtStrCpy (
+     *Dest = 0;
+ }
+ 
++#ifndef __GNUC__
+ #pragma RUNTIME_CODE(RtStrCat)
++#endif
+ VOID
+ RUNTIMEFUNCTION
+ RtStrCat (
+@@ -64,7 +70,9 @@ RtStrCat (
+     RtStrCpy(Dest+StrLen(Dest), Src);
+ }
+ 
++#ifndef __GNUC__
+ #pragma RUNTIME_CODE(RtStrLen)
++#endif
+ UINTN
+ RUNTIMEFUNCTION
+ RtStrLen (
+@@ -78,7 +86,9 @@ RtStrLen (
+     return len;
+ }
+ 
++#ifndef __GNUC__
+ #pragma RUNTIME_CODE(RtStrSize)
++#endif
+ UINTN
+ RUNTIMEFUNCTION
+ RtStrSize (
+@@ -92,7 +102,9 @@ RtStrSize (
+     return (len + 1) * sizeof(CHAR16);
+ }
+ 
++#ifndef __GNUC__
+ #pragma RUNTIME_CODE(RtBCDtoDecimal)
++#endif
+ UINT8
+ RUNTIMEFUNCTION
+ RtBCDtoDecimal(
+@@ -108,7 +120,9 @@ RtBCDtoDecimal(
+ }
+ 
+ 
++#ifndef __GNUC__
+ #pragma RUNTIME_CODE(RtDecimaltoBCD)
++#endif
+ UINT8
+ RUNTIMEFUNCTION
+ RtDecimaltoBCD (
+diff -up gnu-efi-3.0c/lib/print.c.pragma gnu-efi-3.0c/lib/print.c
+--- gnu-efi-3.0c/lib/print.c.pragma	2007-12-19 13:25:51.000000000 -0500
++++ gnu-efi-3.0c/lib/print.c	2007-12-19 13:26:18.000000000 -0500
+@@ -23,6 +23,7 @@ Revision History
+ //
+ 
+ #ifdef RUNTIME_CODE
++#ifndef __GNUC__
+ #pragma RUNTIME_CODE(DbgPrint)
+ 
+ // For debugging..
+@@ -39,6 +40,7 @@ Revision History
+ #pragma RUNTIME_CODE(TimeToString)
+ */
+ 
++#endif /* !defined(__GNUC__) */
+ #endif
+ 
+ //
