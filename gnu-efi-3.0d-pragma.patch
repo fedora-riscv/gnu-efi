@@ -1,6 +1,6 @@
-diff -up gnu-efi-3.0c/lib/runtime/rtdata.c.pragma gnu-efi-3.0c/lib/runtime/rtdata.c
---- gnu-efi-3.0c/lib/runtime/rtdata.c.pragma	2007-12-19 13:29:42.000000000 -0500
-+++ gnu-efi-3.0c/lib/runtime/rtdata.c	2007-12-19 13:29:59.000000000 -0500
+diff -up gnu-efi-3.0d/lib/runtime/rtdata.c.pragma gnu-efi-3.0d/lib/runtime/rtdata.c
+--- gnu-efi-3.0d/lib/runtime/rtdata.c.pragma	2007-05-09 14:37:27.000000000 -0400
++++ gnu-efi-3.0d/lib/runtime/rtdata.c	2007-12-19 15:00:21.000000000 -0500
 @@ -26,7 +26,9 @@ Revision History
  // right data section if it is explicitly initialized..
  //
@@ -11,9 +11,9 @@ diff -up gnu-efi-3.0c/lib/runtime/rtdata.c.pragma gnu-efi-3.0c/lib/runtime/rtdat
  
  //
  // RT - pointer to the runtime table
-diff -up gnu-efi-3.0c/lib/runtime/vm.c.pragma gnu-efi-3.0c/lib/runtime/vm.c
---- gnu-efi-3.0c/lib/runtime/vm.c.pragma	2007-12-19 13:28:58.000000000 -0500
-+++ gnu-efi-3.0c/lib/runtime/vm.c	2007-12-19 13:29:10.000000000 -0500
+diff -up gnu-efi-3.0d/lib/runtime/vm.c.pragma gnu-efi-3.0d/lib/runtime/vm.c
+--- gnu-efi-3.0d/lib/runtime/vm.c.pragma	2007-05-09 14:37:27.000000000 -0400
++++ gnu-efi-3.0d/lib/runtime/vm.c	2007-12-19 15:00:21.000000000 -0500
 @@ -24,7 +24,9 @@ Revision History
  
  #include "lib.h"
@@ -34,9 +34,9 @@ diff -up gnu-efi-3.0c/lib/runtime/vm.c.pragma gnu-efi-3.0c/lib/runtime/vm.c
  VOID
  RUNTIMEFUNCTION
  RtConvertList (
-diff -up gnu-efi-3.0c/lib/runtime/efirtlib.c.pragma gnu-efi-3.0c/lib/runtime/efirtlib.c
---- gnu-efi-3.0c/lib/runtime/efirtlib.c.pragma	2007-12-19 13:27:39.000000000 -0500
-+++ gnu-efi-3.0c/lib/runtime/efirtlib.c	2007-12-19 13:28:02.000000000 -0500
+diff -up gnu-efi-3.0d/lib/runtime/efirtlib.c.pragma gnu-efi-3.0d/lib/runtime/efirtlib.c
+--- gnu-efi-3.0d/lib/runtime/efirtlib.c.pragma	2007-05-09 14:37:27.000000000 -0400
++++ gnu-efi-3.0d/lib/runtime/efirtlib.c	2007-12-19 15:00:21.000000000 -0500
 @@ -20,7 +20,9 @@ Revision History
  #include "efilib.h"
  #include "efirtlib.h"
@@ -87,9 +87,9 @@ diff -up gnu-efi-3.0c/lib/runtime/efirtlib.c.pragma gnu-efi-3.0c/lib/runtime/efi
  INTN
  RUNTIMEFUNCTION
  RtCompareGuid (
-diff -up gnu-efi-3.0c/lib/runtime/rtlock.c.pragma gnu-efi-3.0c/lib/runtime/rtlock.c
---- gnu-efi-3.0c/lib/runtime/rtlock.c.pragma	2007-12-19 13:26:56.000000000 -0500
-+++ gnu-efi-3.0c/lib/runtime/rtlock.c	2007-12-19 13:27:18.000000000 -0500
+diff -up gnu-efi-3.0d/lib/runtime/rtlock.c.pragma gnu-efi-3.0d/lib/runtime/rtlock.c
+--- gnu-efi-3.0d/lib/runtime/rtlock.c.pragma	2007-05-11 13:03:05.000000000 -0400
++++ gnu-efi-3.0d/lib/runtime/rtlock.c	2007-12-19 15:00:21.000000000 -0500
 @@ -21,7 +21,9 @@ Revision History
  
  
@@ -110,9 +110,9 @@ diff -up gnu-efi-3.0c/lib/runtime/rtlock.c.pragma gnu-efi-3.0c/lib/runtime/rtloc
  VOID
  RtReleaseLock (
      IN FLOCK    *Lock
-diff -up gnu-efi-3.0c/lib/runtime/rtstr.c.pragma gnu-efi-3.0c/lib/runtime/rtstr.c
---- gnu-efi-3.0c/lib/runtime/rtstr.c.pragma	2007-12-19 13:28:15.000000000 -0500
-+++ gnu-efi-3.0c/lib/runtime/rtstr.c	2007-12-19 13:28:48.000000000 -0500
+diff -up gnu-efi-3.0d/lib/runtime/rtstr.c.pragma gnu-efi-3.0d/lib/runtime/rtstr.c
+--- gnu-efi-3.0d/lib/runtime/rtstr.c.pragma	2007-05-09 14:37:27.000000000 -0400
++++ gnu-efi-3.0d/lib/runtime/rtstr.c	2007-12-19 15:00:21.000000000 -0500
 @@ -17,7 +17,9 @@ Revision History
  
  #include "lib.h"
@@ -183,9 +183,27 @@ diff -up gnu-efi-3.0c/lib/runtime/rtstr.c.pragma gnu-efi-3.0c/lib/runtime/rtstr.
  UINT8
  RUNTIMEFUNCTION
  RtDecimaltoBCD (
-diff -up gnu-efi-3.0c/lib/print.c.pragma gnu-efi-3.0c/lib/print.c
---- gnu-efi-3.0c/lib/print.c.pragma	2007-12-19 13:25:51.000000000 -0500
-+++ gnu-efi-3.0c/lib/print.c	2007-12-19 13:26:18.000000000 -0500
+diff -up gnu-efi-3.0d/lib/x86_64/math.c.pragma gnu-efi-3.0d/lib/x86_64/math.c
+--- gnu-efi-3.0d/lib/x86_64/math.c.pragma	2007-12-19 15:00:46.000000000 -0500
++++ gnu-efi-3.0d/lib/x86_64/math.c	2007-12-19 15:01:07.000000000 -0500
+@@ -23,11 +23,13 @@ Revision History
+ //
+ 
+ #ifdef RUNTIME_CODE
++#ifndef __GNUC__
+ #pragma RUNTIME_CODE(LShiftU64)
+ #pragma RUNTIME_CODE(RShiftU64)
+ #pragma RUNTIME_CODE(MultU64x32)
+ #pragma RUNTIME_CODE(DivU64x32)
+ #endif
++#endif
+ 
+ //
+ //
+diff -up gnu-efi-3.0d/lib/x86_64/callwrap.c.pragma gnu-efi-3.0d/lib/x86_64/callwrap.c
+diff -up gnu-efi-3.0d/lib/print.c.pragma gnu-efi-3.0d/lib/print.c
+--- gnu-efi-3.0d/lib/print.c.pragma	2007-05-11 13:03:05.000000000 -0400
++++ gnu-efi-3.0d/lib/print.c	2007-12-19 15:00:21.000000000 -0500
 @@ -23,6 +23,7 @@ Revision History
  //
  

@@ -1,13 +1,15 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
-Version: 3.0c
-Release: 3%{?dist}
+Version: 3.0d
+Release: 1%{?dist}
 Group: Development/System
 License: GPL
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
 Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi-%{version}.tar.gz
-Patch0: gnu-efi-3.0c-pragma.patch
-Patch1: gnu-efi-3.0c-x64.patch
+Patch0: gnu-efi-3.0d-pragma.patch
+Patch1: gnu-efi-3.0d-uefi_wrap.patch
+Patch2: gnu-efi-3.0d-x86_64.patch
+Patch3: gnu-efi-3.0d-rpm.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: ia64 i386 x86_64
 
@@ -18,7 +20,9 @@ applications that run under EFI (Extensible Firmware Interface).
 %prep
 %setup -q
 %patch0 -p1 -b .pragma
-%patch1 -p1 -b .x64
+%patch1 -p1 -b .uefi_wrap
+%patch2 -p1 -b .x86_64
+%patch3 -p1 -b .rpm
 
 %build
 # Package cannot build with %{?_smp_mflags}.
@@ -46,8 +50,8 @@ rm -rf %{buildroot}
 %{_libdir}/*
 
 %changelog
-* Wed Dec 19 2007 Peter Jones <pjones@redhat.com> - 3.0c-3
-- Add support for x86_64 .
+* Wed Dec 19 2007 Peter Jones <pjones@redhat.com> - 3.0d-1
+- Update to 3.0d
 
 * Tue Jun 12 2007 Chris Lumens <clumens@redhat.com> - 3.0c-2
 - Fixes for package review (#225846).

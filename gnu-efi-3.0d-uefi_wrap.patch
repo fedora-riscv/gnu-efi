@@ -1,0 +1,488 @@
+diff -urNp ../gnu-efi-3.0d/lib/x86_64/callwrap.c gnu-efi-3.0d_mod/lib/x86_64/callwrap.c
+--- ../gnu-efi-3.0d/lib/x86_64/callwrap.c	2007-05-11 10:03:05.000000000 -0700
++++ gnu-efi-3.0d_mod/lib/x86_64/callwrap.c	2007-06-06 17:39:12.000000000 -0700
+@@ -1,28 +1,328 @@
+-/*++
+-
+-Copyright (c) 2006  Intel Corporation
+-
+-Module Name:
+-
+-    hw.c
+-
+-Abstract:
++/*
++ *  Copyright (C) 2006 Giridhar Pemmasani
++ *  Copyright (C) 2007-2010 Intel Corp
++ *  	Contributed by Chandramouli Narayanan<mouli@linux.intel.com>
++ *	Adapted wrapper macros for Linux to windows calls from
++ *	NDIS wrapper project (http:/ndiswrapper.sourceforge.net)
++ *	
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
++ *  GNU General Public License for more details.
++ *
++ */
++#include "efi.h"
++#include "efistdarg.h"
+ 
+-    Debug library functions for Hardware IO access
++#define EFI_ARG_NUM_MAX 10
+ 
++#define alloc_win_stack_frame(argc)		\
++	"subq $" #argc "*8, %%rsp\n\t"
++#define free_win_stack_frame(argc)		\
++	"addq $" #argc "*8, %%rsp\n\t"
++
++/* m is index of Windows arg required, n is total number of args to
++ * function Windows arg 1 should be at 0(%rsp), arg 2 at 8(%rsp) and
++ * so on, after stack frame is allocated, which starts at -n*8(%rsp)
++ * when stack frame is allocated. 4 > m >= n.
++*/
++
++#define lin2win_win_arg(m,n) "(" #m "-1-" #n ")*8(%%rsp)"
++
++/* volatile args for Windows function must be in clobber / output list */
++
++static UINT64 LIN2WIN0(void *func)
++{									
++	UINT64 ret, dummy;
++	register UINT64 r8 __asm__("r8");
++	register UINT64 r9 __asm__("r9");
++	register UINT64 r10 __asm__("r10");
++	register UINT64 r11 __asm__("r11");
++	__asm__ __volatile__(					
++		alloc_win_stack_frame(4)				
++		"call *%[fptr]\n\t"					
++		free_win_stack_frame(4)					
++		: "=a" (ret), "=c" (dummy), "=d" (dummy),		
++		  "=r" (r8), "=r" (r9), "=r" (r10), "=r" (r11)		
++		: [fptr] "r" (func));					
++	return ret;								
++}
+ 
++static UINT64 LIN2WIN1(void *func, UINT64 arg1)
++{
++	UINT64 ret, dummy;
++	register UINT64 r8 __asm__("r8");
++	register UINT64 r9 __asm__("r9");
++	register UINT64 r10 __asm__("r10");
++	register UINT64 r11 __asm__("r11");
++	__asm__ __volatile__(
++		alloc_win_stack_frame(4)
++		"call *%[fptr]\n\t"
++		free_win_stack_frame(4)	
++		: "=a" (ret), "=c" (dummy), "=d" (dummy),
++		  "=r" (r8), "=r" (r9), "=r" (r10), "=r" (r11)
++		: "c" (arg1),
++		  [fptr] "r" (func));
++	return ret;
++}
+ 
+-Revision History
++static UINT64 LIN2WIN2(void *func, UINT64 arg1, UINT64 arg2)
++{
++	UINT64 ret, dummy;
++	register UINT64 r8 __asm__("r8");
++	register UINT64 r9 __asm__("r9");
++	register UINT64 r10 __asm__("r10");
++	register UINT64 r11 __asm__("r11");
++	__asm__ __volatile__(
++		alloc_win_stack_frame(4)
++		"call *%[fptr]\n\t"
++		free_win_stack_frame(4)
++		: "=a" (ret), "=c" (dummy), "=d" (dummy),
++		  "=r" (r8), "=r" (r9), "=r" (r10), "=r" (r11)
++		: "c" (arg1), "d" (arg2),
++		  [fptr] "r" (func));
++	return ret;
++}
+ 
+---*/
+-#include "efi.h"
+-#include "efistdarg.h"
++static UINT64 LIN2WIN3(
++	void *func,
++	UINT64 arg1,
++	UINT64 arg2,
++	UINT64 arg3)
++{
++	UINT64 ret, dummy;
++	register UINT64 r8 __asm__("r8") = (UINT64)arg3;
++	register UINT64 r9 __asm__("r9");
++	register UINT64 r10 __asm__("r10");
++	register UINT64 r11 __asm__("r11");
++	__asm__ __volatile__(
++		alloc_win_stack_frame(4)
++		"call *%[fptr]\n\t"
++		free_win_stack_frame(4)
++		: "=a" (ret), "=c" (dummy), "=d" (dummy),
++		  "=r" (r8), "=r" (r9), "=r" (r10), "=r" (r11)
++		: "c" (arg1), "d" (arg2), "r" (r8),
++		  [fptr] "r" (func));
++	return ret;
++}
+ 
+-#define EFI_ARG_NUM_MAX 10
+-#define EFI_REG_ARG_NUM 4
++static UINT64 LIN2WIN4(
++	void *func,
++	UINT64 arg1,
++	UINT64 arg2,
++	UINT64 arg3,
++	UINT64 arg4)
++{
++	UINT64 ret, dummy;
++	register UINT64 r8 __asm__("r8") = (UINT64)arg3;
++	register UINT64 r9 __asm__("r9") = (UINT64)arg4;
++	register UINT64 r10 __asm__("r10");
++	register UINT64 r11 __asm__("r11");
++	__asm__ __volatile__(
++		alloc_win_stack_frame(4)
++		"call *%[fptr]\n\t"
++		free_win_stack_frame(4)
++		: "=a" (ret), "=c" (dummy), "=d" (dummy),
++		  "=r" (r8), "=r" (r9), "=r" (r10), "=r" (r11)
++		: "c" (arg1), "d" (arg2), "r" (r8), "r" (r9),
++		  [fptr] "r" (func));
++	return ret;
++}
+ 
+-/* Convert SysV calling convention to EFI x86_64 calling convention */
++static UINT64 LIN2WIN5(
++	void *func,
++	UINT64 arg1,
++	UINT64 arg2,
++	UINT64 arg3,
++	UINT64 arg4,
++	UINT64 arg5)
++{
++	UINT64 ret, dummy;
++	register UINT64 r8 __asm__("r8") = (UINT64)arg3;
++	register UINT64 r9 __asm__("r9") = (UINT64)arg4;
++	register UINT64 r10 __asm__("r10");
++	register UINT64 r11 __asm__("r11");
++	__asm__ __volatile__(
++		"mov %[rarg5], " lin2win_win_arg(5,6) "\n\t"
++		alloc_win_stack_frame(6)
++		"call *%[fptr]\n\t"
++		free_win_stack_frame(6)
++		: "=a" (ret), "=c" (dummy), "=d" (dummy),
++		  "=r" (r8), "=r" (r9), "=r" (r10), "=r" (r11)
++		: "c" (arg1), "d" (arg2), "r" (r8), "r" (r9),
++		  [rarg5] "r" ((unsigned long long)arg5),
++		  [fptr] "r" (func));
++	return ret;
++}
+ 
++static UINT64 LIN2WIN6(
++	void *func,
++	UINT64 arg1,
++	UINT64 arg2,
++	UINT64 arg3,
++	UINT64 arg4,
++	UINT64 arg5,
++	UINT64 arg6)
++{
++	UINT64 ret, dummy;
++	register UINT64 r8 __asm__("r8") = (UINT64)arg3;
++	register UINT64 r9 __asm__("r9") = (UINT64)arg4;
++	register UINT64 r10 __asm__("r10");
++	register UINT64 r11 __asm__("r11");
++	__asm__ __volatile__(
++		"movq %[rarg5], " lin2win_win_arg(5,6) "\n\t"
++		"movq %[rarg6], " lin2win_win_arg(6,6) "\n\t"
++		alloc_win_stack_frame(6)
++		"call *%[fptr]\n\t"
++		free_win_stack_frame(6)
++		: "=a" (ret), "=c" (dummy), "=d" (dummy),
++		  "=r" (r8), "=r" (r9), "=r" (r10), "=r" (r11)
++		: "c" (arg1), "d" (arg2), "r" (r8), "r" (r9),
++		  [rarg5] "r" ((UINT64)arg5), [rarg6] "r" ((UINT64)arg6),
++		  [fptr] "r" (func));
++	return ret;
++}
++static UINT64 LIN2WIN7(
++	void *func,
++	UINT64 arg1,
++	UINT64 arg2,
++	UINT64 arg3,
++	UINT64 arg4,
++	UINT64 arg5,
++	UINT64 arg6,
++	UINT64 arg7)
++{
++	UINT64 ret, dummy;
++	register UINT64 r8 __asm__("r8") = (UINT64)arg3;
++	register UINT64 r9 __asm__("r9") = (UINT64)arg4;
++	register UINT64 r10 __asm__("r10");
++	register UINT64 r11 __asm__("r11");
++	__asm__ __volatile__(
++		"movq %[rarg5], " lin2win_win_arg(5,7) "\n\t"
++		"movq %[rarg6], " lin2win_win_arg(6,7) "\n\t"
++		"movq %[rarg7], " lin2win_win_arg(7,7) "\n\t"
++		alloc_win_stack_frame(7)
++		"call *%[fptr]\n\t"
++		free_win_stack_frame(7)
++		: "=a" (ret), "=c" (dummy), "=d" (dummy),
++		  "=r" (r8), "=r" (r9), "=r" (r10), "=r" (r11)
++		: "c" (arg1), "d" (arg2), "r" (r8), "r" (r9),
++		  [rarg5] "r" ((UINT64)arg5), [rarg6] "r" ((UINT64)arg6),
++		  [rarg7] "r" ((UINT64)arg7), [fptr] "r" (func));
++	return ret;
++}
++static UINT64 LIN2WIN8(
++	void *func,
++	UINT64 arg1,
++	UINT64 arg2,
++	UINT64 arg3,
++	UINT64 arg4,
++	UINT64 arg5,
++	UINT64 arg6,
++	UINT64 arg7,
++	UINT64 arg8)
++{
++	UINT64 ret, dummy;
++	register UINT64 r8 __asm__("r8") = (UINT64)arg3;
++	register UINT64 r9 __asm__("r9") = (UINT64)arg4;
++	register UINT64 r10 __asm__("r10");
++	register UINT64 r11 __asm__("r11");
++	__asm__ __volatile__(
++		"movq %[rarg5], " lin2win_win_arg(5,8) "\n\t"
++		"movq %[rarg6], " lin2win_win_arg(6,8) "\n\t"
++		"movq %[rarg7], " lin2win_win_arg(7,8) "\n\t"
++		"movq %[rarg8], " lin2win_win_arg(8,8) "\n\t"
++		alloc_win_stack_frame(8)
++		"call *%[fptr]\n\t"
++		free_win_stack_frame(8)
++		: "=a" (ret), "=c" (dummy), "=d" (dummy),
++		  "=r" (r8), "=r" (r9), "=r" (r10), "=r" (r11)
++		: "c" (arg1), "d" (arg2), "r" (r8), "r" (r9),
++		  [rarg5] "r" ((UINT64)arg5), [rarg6] "r" ((UINT64)arg6),
++		  [rarg7] "r" ((UINT64)arg7), [rarg8] "r" ((UINT64)arg8),
++		  [fptr] "r" (func));
++	return ret;
++}
++static UINT64 LIN2WIN9(
++	void *func,
++	UINT64 arg1,
++	UINT64 arg2,
++	UINT64 arg3,
++	UINT64 arg4,
++	UINT64 arg5,
++	UINT64 arg6,
++	UINT64 arg7,
++	UINT64 arg8,
++	UINT64 arg9)
++{
++	UINT64 ret, dummy;
++	register UINT64 r8 __asm__("r8") = (UINT64)arg3;
++	register UINT64 r9 __asm__("r9") = (UINT64)arg4;
++	register UINT64 r10 __asm__("r10");
++	register UINT64 r11 __asm__("r11");
++	__asm__ __volatile__(
++		"movq %[rarg5], " lin2win_win_arg(5,9) "\n\t"
++		"movq %[rarg6], " lin2win_win_arg(6,9) "\n\t"
++		"movq %[rarg7], " lin2win_win_arg(7,9) "\n\t"
++		"movq %[rarg8], " lin2win_win_arg(8,9) "\n\t"
++		"movq %[rarg9], " lin2win_win_arg(9,9) "\n\t"
++		alloc_win_stack_frame(9)
++		"call *%[fptr]\n\t"
++		free_win_stack_frame(9)
++		: "=a" (ret), "=c" (dummy), "=d" (dummy),
++		  "=r" (r8), "=r" (r9), "=r" (r10), "=r" (r11)
++		: "c" (arg1), "d" (arg2), "r" (r8), "r" (r9),
++		  [rarg5] "r" ((UINT64)arg5), [rarg6] "r" ((UINT64)arg6),
++		  [rarg7] "r" ((UINT64)arg7), [rarg8] "r" ((UINT64)arg8),
++		  [rarg9] "r" ((UINT64)arg9), [fptr] "r" (func));
++	return ret;
++}
++static UINT64 LIN2WIN10(
++	void *func,
++	UINT64 arg1,
++	UINT64 arg2,
++	UINT64 arg3,
++	UINT64 arg4,
++	UINT64 arg5,
++	UINT64 arg6,
++	UINT64 arg7,
++	UINT64 arg8,
++	UINT64 arg9,
++	UINT64 arg10)
++{
++	UINT64 ret, dummy;
++	register UINT64 r8 __asm__("r8") = (UINT64)arg3;
++	register UINT64 r9 __asm__("r9") = (UINT64)arg4;
++	register UINT64 r10 __asm__("r10");
++	register UINT64 r11 __asm__("r11");
++	__asm__ __volatile__(
++		"movq %[rarg5], " lin2win_win_arg(5,10) "\n\t"
++		"movq %[rarg6], " lin2win_win_arg(6,10) "\n\t"
++		"movq %[rarg7], " lin2win_win_arg(7,10) "\n\t"
++		"movq %[rarg8], " lin2win_win_arg(8,10) "\n\t"
++		"movq %[rarg9], " lin2win_win_arg(9,10) "\n\t"
++		alloc_win_stack_frame(10)
++		"call *%[fptr]\n\t"
++		free_win_stack_frame(10)
++		: "=a" (ret), "=c" (dummy), "=d" (dummy),
++		  "=r" (r8), "=r" (r9), "=r" (r10), "=r" (r11)
++		: "c" (arg1), "d" (arg2), "r" (r8), "r" (r9),
++		  [rarg5] "r" ((UINT64)arg5), [rarg6] "r" ((UINT64)arg6),
++		  [rarg7] "r" ((UINT64)arg7), [rarg8] "r" ((UINT64)arg8),
++		  [rarg9] "r" ((UINT64)arg9), [rarg10] "r" ((UINT64)arg10),
++		  [fptr] "r" (func));
++	return ret;
++}
++/* New wrapper using NDIS */
++/* This wrapper merely calls LIN2WINxx functions to swizzle the
++ * args as per UEFI convention
++ */
+ EFI_STATUS uefi_call_wrapper(void *fp, unsigned long va_num, ...)
+ {
+ 	va_list ap;
+@@ -31,92 +331,56 @@ EFI_STATUS uefi_call_wrapper(void *fp, u
+ 	unsigned int arg_size,stack_adjust_size;
+ 	EFI_STATUS status;
+ 
+-	if (va_num > EFI_ARG_NUM_MAX || va_num<0)	{
++	if (va_num > EFI_ARG_NUM_MAX || va_num < 0) {
+ 		return EFI_LOAD_ERROR;
+ 	}
+-	if (va_num==0)
+-		/* There is no need to convert arguments for void argument. */
+-		__asm__ __volatile__("call *%0;ret;"::"r"(fp));
+-
+-	/* The EFI arguments is stored in an array. Then later on it will be 
+-	 * pushed into stack or passed to registers according to MS ABI.
+-	 */
+ 	va_start(ap, va_num);
+ 	for (i = 0; i < va_num; i++) {
+-		args[i] = va_arg(ap, unsigned long);
++		args[i] = va_arg(ap, UINT64);
+ 	}
+ 	va_end(ap);
+-	arg_size = va_num*8;
+-	stack_adjust_size = (va_num > EFI_REG_ARG_NUM? EFI_REG_ARG_NUM : va_num)*8;
+-
+-	/* Starting from here, assembly code makes sure all registers used are
+-	 * under controlled by our code itself instead of by gcc.
+-	 */
+-	/* Start converting SysV calling convention to MS calling convention. */
+-	__asm__ __volatile__(
+-		/* 0. Save preserved registers. EFI call may clobbered them. */
+-		"		pushq %%rbp;pushq %%rbx;pushq %%r12;"
+-		"		pushq %%r13;pushq %%r14;pushq %%r15;"
+-		/* 1. Push arguments passed by stack into stack. */
+-		"		mov %1, %%r12;"
+-		"		mov %3, %%r13;"
+-		"		mov %1, %%rax;"
+-		"		dec %%rax;"
+-		"		mov $8, %%bl;"
+-		"		mul %%bl;"
+-		"		add %%rax, %%r13;"
+-		"lstack:"
+-		"		cmp $4, %%r12;"
+-		"		jle lregister;" 
+-		"		pushq (%%r13);"
+-		"		sub $8, %%r13;"
+-		"		dec %%r12;" 
+-		"		jmp lstack;"
+-		/* 2. Move arguments passed by registers into registers.
+-		 *    rdi->rcx, rsi->rdx, rdx->r8, rcx->r9.
+-		 */
+-		"lregister:"	
+-		"		mov %3, %%r14;"
+-		"		mov $0, %%r12;"
+-		"lloadregister:"
+-		"		cmp %1, %%r12;"
+-		"		jge lcall;"
+-		"		mov (%%r14), %%rcx;"
+-		"		inc %%r12;"
+-		"		cmp %1, %%r12;"
+-		"		jge lcall;"
+-		"		mov 8(%%r14), %%rdx;"
+-		"		inc %%r12;"
+-		"		cmp %1, %%r12;"
+-		"		jge lcall;"
+-		"		mov 0x10(%%r14), %%r8;"
+-		"		inc %%r12;"
+-		"		cmp %1, %%r12;"
+-		"		jge lcall;"
+-		"		mov 0x18(%%r14), %%r9;"
+-		/* 3. Save stack space for those register arguments. */
+-		"lcall:				"
+-		"		sub %2, %%rsp;"
+-		/* 4. Save arg_size to r12 which is preserved in EFI call. */
+-		"		mov %4, %%r12;"
+-		/* 5. Call EFI function. */
+-		"		call *%5;"
+-		/* This code was not there before */
+-		"		mov %%rax, %0;"
+-		/* 6. Restore stack space reserved for those register
+-		 * arguments.
+-		 */
+-		"		add %%r12, %%rsp;"
+-		/* 7. Restore preserved registers. */
+-		"		popq %%r15;popq %%r14;popq %%r13;"
+-		"		popq %%r12;popq %%rbx;popq %%rbp;"
+-		:"=r"(status)
+-		:"r"((unsigned long)va_num),
+-		 "r"((unsigned long)stack_adjust_size),
+-		 "r"(args),
+-		 "r"((unsigned long)arg_size),
+-		 "r"(fp)
+-		:"rsp","rbx","rax","r11","r12","r13","r14","rcx","rdx","r8","r9" 
+-		);
+-	return status;
++	/* As the number of args grows extend it appropriately */
++	switch (va_num) {
++	case 0:
++		return LIN2WIN0(fp);
++	case 1:
++		return LIN2WIN1(fp, args[0]);
++	case 2:
++		return LIN2WIN2(fp, 
++				args[0], args[1]);
++	case 3:
++		return LIN2WIN3(fp, 
++				args[0], args[1], args[2]);
++	case 4:
++		return LIN2WIN4(fp, 
++				args[0], args[1], args[2], args[3]);
++	case 5:
++		return LIN2WIN5(fp, 
++				args[0], args[1], args[2], args[3],
++				args[4]);
++	case 6:
++		return LIN2WIN6(fp, 
++				args[0], args[1], args[2], args[3], 
++				args[4], args[5]);
++	case 7:
++		return LIN2WIN7(fp, 
++				args[0], args[1], args[2], args[3],
++				args[4], args[5], args[6]);
++	case 8:
++		return LIN2WIN8(fp, 
++				args[0], args[1], args[2], args[3],
++				args[4], args[5], args[6], args[7]);
++	case 9:
++		return LIN2WIN9(fp, 
++				args[0], args[1], args[2], args[3],
++				args[4], args[5], args[6], args[7], 
++				args[8]);
++	case 10:
++		return LIN2WIN10(fp, 
++				args[0], args[1], args[2], args[3],
++				args[4], args[5], args[6], args[7], 
++				args[8], args[9]);
++	default:
++		return EFI_LOAD_ERROR;
++	}
+ }
