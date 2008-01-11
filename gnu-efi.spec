@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0d
-Release: 1%{?dist}
+Release: 2%{?dist}
 Group: Development/System
 License: GPL
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
@@ -50,6 +50,9 @@ rm -rf %{buildroot}
 %{_libdir}/*
 
 %changelog
+* Fri Jan 11 2008 Peter Jones <pjones@redhat.com> - 3.0d-2
+- Get rid of a bogus #ifdef .
+
 * Wed Dec 19 2007 Peter Jones <pjones@redhat.com> - 3.0d-1
 - Update to 3.0d
 
