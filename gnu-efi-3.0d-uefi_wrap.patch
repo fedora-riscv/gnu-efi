@@ -1,6 +1,6 @@
-diff -urNp ../gnu-efi-3.0d/lib/x86_64/callwrap.c gnu-efi-3.0d_mod/lib/x86_64/callwrap.c
---- ../gnu-efi-3.0d/lib/x86_64/callwrap.c	2007-05-11 10:03:05.000000000 -0700
-+++ gnu-efi-3.0d_mod/lib/x86_64/callwrap.c	2007-06-06 17:39:12.000000000 -0700
+diff -urpN gnu-efi-3.0d/lib/x86_64/callwrap.c.uefi_wrap gnu-efi-3.0d/lib/x86_64/callwrap.c
+--- gnu-efi-3.0d/lib/x86_64/callwrap.c.uefi_wrap	2007-05-11 13:03:05.000000000 -0400
++++ gnu-efi-3.0d/lib/x86_64/callwrap.c	2008-01-11 16:02:40.000000000 -0500
 @@ -1,28 +1,328 @@
 -/*++
 -
@@ -486,3 +486,19 @@ diff -urNp ../gnu-efi-3.0d/lib/x86_64/callwrap.c gnu-efi-3.0d_mod/lib/x86_64/cal
 +		return EFI_LOAD_ERROR;
 +	}
  }
+diff -urpN gnu-efi-3.0d/inc/x86_64/efibind.h.uefi_wrap gnu-efi-3.0d/inc/x86_64/efibind.h
+--- gnu-efi-3.0d/inc/x86_64/efibind.h.uefi_wrap	2008-01-11 16:02:58.000000000 -0500
++++ gnu-efi-3.0d/inc/x86_64/efibind.h	2008-01-11 16:03:21.000000000 -0500
+@@ -257,12 +257,7 @@ typedef uint64_t   UINTN;
+ #endif
+ #endif
+ 
+-/* for x86_64, EFI_FUNCTION_WRAPPER must be defined */
+-#ifdef  EFI_FUNCTION_WRAPPER
+ UINTN uefi_call_wrapper(void *func, unsigned long va_num, ...);
+-#else
+-#error "EFI_FUNCTION_WRAPPER must be defined for x86_64 architecture"
+-#endif
+ 
+ #if _MSC_EXTENSIONS
+ #pragma warning ( disable : 4731 )  // Suppress warnings about modification of EBP
