@@ -1,42 +1,65 @@
-diff -up gnu-efi-3.0d/lib/runtime/rtdata.c.pragma gnu-efi-3.0d/lib/runtime/rtdata.c
---- gnu-efi-3.0d/lib/runtime/rtdata.c.pragma	2007-05-09 14:37:27.000000000 -0400
-+++ gnu-efi-3.0d/lib/runtime/rtdata.c	2007-12-19 15:00:21.000000000 -0500
-@@ -26,7 +26,9 @@ Revision History
- // right data section if it is explicitly initialized..
+diff -up gnu-efi-3.0d/lib/ia32/math.c.pragma gnu-efi-3.0d/lib/ia32/math.c
+--- gnu-efi-3.0d/lib/ia32/math.c.pragma	2008-03-10 14:43:48.000000000 -0400
++++ gnu-efi-3.0d/lib/ia32/math.c	2008-03-10 14:43:32.000000000 -0400
+@@ -23,11 +23,13 @@ Revision History
  //
  
+ #ifdef RUNTIME_CODE
 +#ifndef __GNUC__
- #pragma BEGIN_RUNTIME_DATA()
+ #pragma RUNTIME_CODE(LShiftU64)
+ #pragma RUNTIME_CODE(RShiftU64)
+ #pragma RUNTIME_CODE(MultU64x32)
+ #pragma RUNTIME_CODE(DivU64x32)
+ #endif
 +#endif
  
  //
- // RT - pointer to the runtime table
-diff -up gnu-efi-3.0d/lib/runtime/vm.c.pragma gnu-efi-3.0d/lib/runtime/vm.c
---- gnu-efi-3.0d/lib/runtime/vm.c.pragma	2007-05-09 14:37:27.000000000 -0400
-+++ gnu-efi-3.0d/lib/runtime/vm.c	2007-12-19 15:00:21.000000000 -0500
-@@ -24,7 +24,9 @@ Revision History
+ //
+diff -up gnu-efi-3.0d/lib/print.c.pragma gnu-efi-3.0d/lib/print.c
+--- gnu-efi-3.0d/lib/print.c.pragma	2007-05-11 13:03:05.000000000 -0400
++++ gnu-efi-3.0d/lib/print.c	2008-03-10 14:42:54.000000000 -0400
+@@ -23,6 +23,7 @@ Revision History
+ //
  
- #include "lib.h"
+ #ifdef RUNTIME_CODE
++#ifndef __GNUC__
+ #pragma RUNTIME_CODE(DbgPrint)
+ 
+ // For debugging..
+@@ -39,6 +40,7 @@ Revision History
+ #pragma RUNTIME_CODE(TimeToString)
+ */
+ 
++#endif /* !defined(__GNUC__) */
+ #endif
+ 
+ //
+diff -up gnu-efi-3.0d/lib/runtime/rtlock.c.pragma gnu-efi-3.0d/lib/runtime/rtlock.c
+--- gnu-efi-3.0d/lib/runtime/rtlock.c.pragma	2007-05-11 13:03:05.000000000 -0400
++++ gnu-efi-3.0d/lib/runtime/rtlock.c	2008-03-10 14:42:54.000000000 -0400
+@@ -21,7 +21,9 @@ Revision History
+ 
+ 
  
 +#ifndef __GNUC__
- #pragma RUNTIME_CODE(RtLibEnableVirtualMappings)
+ #pragma RUNTIME_CODE(RtAcquireLock)
 +#endif
  VOID
- RUNTIMEFUNCTION
- RtLibEnableVirtualMappings (
-@@ -64,7 +66,9 @@ RtLibEnableVirtualMappings (
+ RtAcquireLock (
+     IN FLOCK    *Lock
+@@ -58,7 +60,9 @@ Returns:
  }
  
  
 +#ifndef __GNUC__
- #pragma RUNTIME_CODE(RtConvertList)
+ #pragma RUNTIME_CODE(RtAcquireLock)
 +#endif
  VOID
- RUNTIMEFUNCTION
- RtConvertList (
+ RtReleaseLock (
+     IN FLOCK    *Lock
 diff -up gnu-efi-3.0d/lib/runtime/efirtlib.c.pragma gnu-efi-3.0d/lib/runtime/efirtlib.c
 --- gnu-efi-3.0d/lib/runtime/efirtlib.c.pragma	2007-05-09 14:37:27.000000000 -0400
-+++ gnu-efi-3.0d/lib/runtime/efirtlib.c	2007-12-19 15:00:21.000000000 -0500
++++ gnu-efi-3.0d/lib/runtime/efirtlib.c	2008-03-10 14:42:54.000000000 -0400
 @@ -20,7 +20,9 @@ Revision History
  #include "efilib.h"
  #include "efirtlib.h"
@@ -87,32 +110,9 @@ diff -up gnu-efi-3.0d/lib/runtime/efirtlib.c.pragma gnu-efi-3.0d/lib/runtime/efi
  INTN
  RUNTIMEFUNCTION
  RtCompareGuid (
-diff -up gnu-efi-3.0d/lib/runtime/rtlock.c.pragma gnu-efi-3.0d/lib/runtime/rtlock.c
---- gnu-efi-3.0d/lib/runtime/rtlock.c.pragma	2007-05-11 13:03:05.000000000 -0400
-+++ gnu-efi-3.0d/lib/runtime/rtlock.c	2007-12-19 15:00:21.000000000 -0500
-@@ -21,7 +21,9 @@ Revision History
- 
- 
- 
-+#ifndef __GNUC__
- #pragma RUNTIME_CODE(RtAcquireLock)
-+#endif
- VOID
- RtAcquireLock (
-     IN FLOCK    *Lock
-@@ -58,7 +60,9 @@ Returns:
- }
- 
- 
-+#ifndef __GNUC__
- #pragma RUNTIME_CODE(RtAcquireLock)
-+#endif
- VOID
- RtReleaseLock (
-     IN FLOCK    *Lock
 diff -up gnu-efi-3.0d/lib/runtime/rtstr.c.pragma gnu-efi-3.0d/lib/runtime/rtstr.c
 --- gnu-efi-3.0d/lib/runtime/rtstr.c.pragma	2007-05-09 14:37:27.000000000 -0400
-+++ gnu-efi-3.0d/lib/runtime/rtstr.c	2007-12-19 15:00:21.000000000 -0500
++++ gnu-efi-3.0d/lib/runtime/rtstr.c	2008-03-10 14:42:54.000000000 -0400
 @@ -17,7 +17,9 @@ Revision History
  
  #include "lib.h"
@@ -183,9 +183,45 @@ diff -up gnu-efi-3.0d/lib/runtime/rtstr.c.pragma gnu-efi-3.0d/lib/runtime/rtstr.
  UINT8
  RUNTIMEFUNCTION
  RtDecimaltoBCD (
+diff -up gnu-efi-3.0d/lib/runtime/vm.c.pragma gnu-efi-3.0d/lib/runtime/vm.c
+--- gnu-efi-3.0d/lib/runtime/vm.c.pragma	2007-05-09 14:37:27.000000000 -0400
++++ gnu-efi-3.0d/lib/runtime/vm.c	2008-03-10 14:42:54.000000000 -0400
+@@ -24,7 +24,9 @@ Revision History
+ 
+ #include "lib.h"
+ 
++#ifndef __GNUC__
+ #pragma RUNTIME_CODE(RtLibEnableVirtualMappings)
++#endif
+ VOID
+ RUNTIMEFUNCTION
+ RtLibEnableVirtualMappings (
+@@ -64,7 +66,9 @@ RtLibEnableVirtualMappings (
+ }
+ 
+ 
++#ifndef __GNUC__
+ #pragma RUNTIME_CODE(RtConvertList)
++#endif
+ VOID
+ RUNTIMEFUNCTION
+ RtConvertList (
+diff -up gnu-efi-3.0d/lib/runtime/rtdata.c.pragma gnu-efi-3.0d/lib/runtime/rtdata.c
+--- gnu-efi-3.0d/lib/runtime/rtdata.c.pragma	2007-05-09 14:37:27.000000000 -0400
++++ gnu-efi-3.0d/lib/runtime/rtdata.c	2008-03-10 14:42:54.000000000 -0400
+@@ -26,7 +26,9 @@ Revision History
+ // right data section if it is explicitly initialized..
+ //
+ 
++#ifndef __GNUC__
+ #pragma BEGIN_RUNTIME_DATA()
++#endif
+ 
+ //
+ // RT - pointer to the runtime table
 diff -up gnu-efi-3.0d/lib/x86_64/math.c.pragma gnu-efi-3.0d/lib/x86_64/math.c
---- gnu-efi-3.0d/lib/x86_64/math.c.pragma	2007-12-19 15:00:46.000000000 -0500
-+++ gnu-efi-3.0d/lib/x86_64/math.c	2007-12-19 15:01:07.000000000 -0500
+--- gnu-efi-3.0d/lib/x86_64/math.c.pragma	2007-05-11 13:03:05.000000000 -0400
++++ gnu-efi-3.0d/lib/x86_64/math.c	2008-03-10 14:43:31.000000000 -0400
 @@ -23,11 +23,13 @@ Revision History
  //
  
@@ -199,24 +235,4 @@ diff -up gnu-efi-3.0d/lib/x86_64/math.c.pragma gnu-efi-3.0d/lib/x86_64/math.c
 +#endif
  
  //
- //
-diff -up gnu-efi-3.0d/lib/x86_64/callwrap.c.pragma gnu-efi-3.0d/lib/x86_64/callwrap.c
-diff -up gnu-efi-3.0d/lib/print.c.pragma gnu-efi-3.0d/lib/print.c
---- gnu-efi-3.0d/lib/print.c.pragma	2007-05-11 13:03:05.000000000 -0400
-+++ gnu-efi-3.0d/lib/print.c	2007-12-19 15:00:21.000000000 -0500
-@@ -23,6 +23,7 @@ Revision History
- //
- 
- #ifdef RUNTIME_CODE
-+#ifndef __GNUC__
- #pragma RUNTIME_CODE(DbgPrint)
- 
- // For debugging..
-@@ -39,6 +40,7 @@ Revision History
- #pragma RUNTIME_CODE(TimeToString)
- */
- 
-+#endif /* !defined(__GNUC__) */
- #endif
- 
  //

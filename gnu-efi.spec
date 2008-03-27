@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0d
-Release: 3%{?dist}
+Release: 4%{?dist}
 Group: Development/System
 License: GPL
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
@@ -10,6 +10,8 @@ Patch0: gnu-efi-3.0d-pragma.patch
 Patch1: gnu-efi-3.0d-uefi_wrap.patch
 Patch2: gnu-efi-3.0d-x86_64.patch
 Patch3: gnu-efi-3.0d-rpm.patch
+Patch4: gnu-efi-3.0d-unwrap.patch
+Patch5: gnu-efi-3.0d-uefi_wrap_call10.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: ia64 i386 x86_64
 
@@ -19,10 +21,12 @@ applications that run under EFI (Extensible Firmware Interface).
 
 %prep
 %setup -q
-%patch0 -p1 -b .pragma
-%patch1 -p1 -b .uefi_wrap
-%patch2 -p1 -b .x86_64
-%patch3 -p1 -b .rpm
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
 
 %build
 # Package cannot build with %{?_smp_mflags}.
@@ -50,6 +54,10 @@ rm -rf %{buildroot}
 %{_libdir}/*
 
 %changelog
+* Thu Mar 27 2008 Peter Jones <pjones@redhat.com> - 3.0d-4
+- Fix uefi_call_wrapper(x, 10, ...) .
+- Add efi_main wrappers and EFI_CALL() macro so drivers are possible.
+
 * Mon Feb 18 2008 Fedora Release Engineering <rel-eng@fedoraproject.org> - 3.0d-3
 - Autorebuild for GCC 4.3
 
