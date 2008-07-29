@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0d
-Release: 4%{?dist}
+Release: 5%{?dist}
 Group: Development/System
 License: GPL
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
@@ -12,8 +12,9 @@ Patch2: gnu-efi-3.0d-x86_64.patch
 Patch3: gnu-efi-3.0d-rpm.patch
 Patch4: gnu-efi-3.0d-unwrap.patch
 Patch5: gnu-efi-3.0d-uefi_wrap_call10.patch
+Patch6: gnu-efi-3.0d-palproc-license.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-ExclusiveArch: ia64 i386 x86_64
+ExclusiveArch: i386 x86_64
 
 %description
 This package contains development headers and libraries for developing
@@ -27,6 +28,7 @@ applications that run under EFI (Extensible Firmware Interface).
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %build
 # Package cannot build with %{?_smp_mflags}.
@@ -54,6 +56,10 @@ rm -rf %{buildroot}
 %{_libdir}/*
 
 %changelog
+* Mon Jul 28 2008 Peter Jones <pjones@redhat.com> - 3.0d-5
+- Remove ia64 palproc code since its license isn't usable.
+- Remove ia64 from ExclusiveArch since it can't build...
+
 * Thu Mar 27 2008 Peter Jones <pjones@redhat.com> - 3.0d-4
 - Fix uefi_call_wrapper(x, 10, ...) .
 - Add efi_main wrappers and EFI_CALL() macro so drivers are possible.
