@@ -1,9 +1,9 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0d
-Release: 5%{?dist}
+Release: 6%{?dist}
 Group: Development/System
-License: GPL
+License: GPLv2+
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
 Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi-%{version}.tar.gz
 Patch0: gnu-efi-3.0d-pragma.patch
@@ -56,6 +56,9 @@ rm -rf %{buildroot}
 %{_libdir}/*
 
 %changelog
+* Tue Jul 29 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 3.0d-6
+- fix license tag
+
 * Mon Jul 28 2008 Peter Jones <pjones@redhat.com> - 3.0d-5
 - Remove ia64 palproc code since its license isn't usable.
 - Remove ia64 from ExclusiveArch since it can't build...
