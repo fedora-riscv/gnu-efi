@@ -1,0 +1,42 @@
+diff --git a/apps/.t2.c.swp b/apps/.t2.c.swp
+deleted file mode 100644
+index 4c0e28e..0000000
+Binary files a/apps/.t2.c.swp and /dev/null differ
+diff --git a/apps/.t3.c.swp b/apps/.t3.c.swp
+deleted file mode 100644
+index 68e3246..0000000
+Binary files a/apps/.t3.c.swp and /dev/null differ
+diff --git a/apps/t2.efi b/apps/t2.efi
+index f7ec910..f2742ed 100755
+Binary files a/apps/t2.efi and b/apps/t2.efi differ
+diff --git a/gnuefi/libgnuefi.a b/gnuefi/libgnuefi.a
+index 297b765..1fdc201 100644
+Binary files a/gnuefi/libgnuefi.a and b/gnuefi/libgnuefi.a differ
+diff --git a/gnuefi/reloc_ia32.c b/gnuefi/reloc_ia32.c
+index 9bf4a8d..0b461cf 100644
+--- a/gnuefi/reloc_ia32.c
++++ b/gnuefi/reloc_ia32.c
+@@ -76,6 +76,9 @@ EFI_STATUS _relocate (long ldbase, ElfW(Dyn) *dyn, EFI_HANDLE image, EFI_SYSTEM_
+ 		}
+ 	}
+ 
++	if (!rel && relent == 0)
++		return EFI_SUCCESS;
++
+ 	if (!rel || relent == 0)
+ 		return EFI_LOAD_ERROR;
+ 
+diff --git a/gnuefi/reloc_x86_64.c b/gnuefi/reloc_x86_64.c
+index 9906084..3f94f47 100644
+--- a/gnuefi/reloc_x86_64.c
++++ b/gnuefi/reloc_x86_64.c
+@@ -76,6 +76,9 @@ EFI_STATUS _relocate (long ldbase, ElfW(Dyn) *dyn, EFI_HANDLE image, EFI_SYSTEM_
+ 		}
+ 	}
+ 
++	if (!rel && relent == 0)
++		return EFI_SUCCESS;
++
+  	if (!rel || relent == 0)
+  		return EFI_LOAD_ERROR;
+ 

@@ -1,18 +1,15 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
-Version: 3.0d
-Release: 6%{?dist}
+Version: 3.0e
+Release: 1%{?dist}
 Group: Development/System
 License: GPLv2+
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
-Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi-%{version}.tar.gz
-Patch0: gnu-efi-3.0d-pragma.patch
-Patch1: gnu-efi-3.0d-uefi_wrap.patch
-Patch2: gnu-efi-3.0d-x86_64.patch
-Patch3: gnu-efi-3.0d-rpm.patch
-Patch4: gnu-efi-3.0d-unwrap.patch
-Patch5: gnu-efi-3.0d-uefi_wrap_call10.patch
-Patch6: gnu-efi-3.0d-palproc-license.patch
+Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi-%{version}.tar.bz2
+Patch0: gnu-efi-3.0e-no-relocations.patch
+Patch1: gnu-efi-3.0d-unwrap.patch
+Patch2: gnu-efi-3.0d-uefi_wrap.patch
+Patch3: gnu-efi-3.0d-uefi_wrap_call10.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: i386 x86_64
 
@@ -23,12 +20,12 @@ applications that run under EFI (Extensible Firmware Interface).
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
+# these are currently disabled as we don't need them per se, and they
+# haven't gone upstream yet either.  Also #2 and #3 haven't been updated
+# to work with gnu-efi-3.0e yet.
+#%%patch1 -p1
+#%%patch2 -p1
+#%%patch3 -p1
 
 %build
 # Package cannot build with %{?_smp_mflags}.
@@ -56,6 +53,10 @@ rm -rf %{buildroot}
 %{_libdir}/*
 
 %changelog
+* Thu Oct 02 2008 Peter Jones <pjones@redhat.com> - 3.0e-1
+- Update to 3.0e
+- Fix relocation bug in 3.0e
+
 * Tue Jul 29 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 3.0d-6
 - fix license tag
 
