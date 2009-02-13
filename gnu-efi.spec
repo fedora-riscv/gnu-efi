@@ -1,16 +1,17 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0e
-Release: 2%{?dist}
+Release: 3%{?dist}
 Group: Development/System
 License: GPLv2+
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
 Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi-%{version}.tar.bz2
 Patch0: gnu-efi-3.0e-no-relocations.patch
 Patch1: gnu-efi-3.0e-Fix-usage-of-INSTALLROOT-PREFIX-and-LIBDIR.patch
-Patch2: gnu-efi-3.0d-unwrap.patch
-Patch3: gnu-efi-3.0d-uefi_wrap.patch
-Patch4: gnu-efi-3.0d-uefi_wrap_call10.patch
+Patch2: gnu-efi-3.0e-pad-all-sections.patch
+Patch3: gnu-efi-3.0d-unwrap.patch
+Patch4: gnu-efi-3.0d-uefi_wrap.patch
+Patch5: gnu-efi-3.0d-uefi_wrap_call10.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: i386 x86_64
 
@@ -22,12 +23,13 @@ applications that run under EFI (Extensible Firmware Interface).
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 # these are currently disabled as we don't need them per se, and they
 # haven't gone upstream yet either.  Also #2 and #3 haven't been updated
 # to work with gnu-efi-3.0e yet.
-#%%patch2 -p1
 #%%patch3 -p1
 #%%patch4 -p1
+#%%patch5 -p1
 
 %build
 # Package cannot build with %{?_smp_mflags}.
@@ -55,6 +57,10 @@ rm -rf %{buildroot}
 %{_libdir}/*
 
 %changelog
+* Fri Feb 13 2009 Peter Jones <pjones@redhat.com> - 3.0e-3
+- Pad sections out in the provided linker scripts to make sure they all of
+  some content.
+
 * Fri Oct 03 2008 Peter Jones <pjones@redhat.com> - 3.0e-2
 - Fix install paths on x86_64.
 

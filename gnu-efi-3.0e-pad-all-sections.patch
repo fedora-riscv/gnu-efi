@@ -1,0 +1,243 @@
+diff -urpN gnu-efi-3.0e/gnuefi/elf_ia32_efi.lds.pad gnu-efi-3.0e/gnuefi/elf_ia32_efi.lds
+--- gnu-efi-3.0e/gnuefi/elf_ia32_efi.lds.pad	2009-02-13 16:07:40.000000000 -0500
++++ gnu-efi-3.0e/gnuefi/elf_ia32_efi.lds	2009-02-13 16:07:45.000000000 -0500
+@@ -5,17 +5,23 @@ SECTIONS
+ {
+   . = 0;
+   ImageBase = .;
+-  .hash : { *(.hash) }	/* this MUST come first! */
++  .hash : /* this MUST come first! */
++  {
++   *(.hash)
++   LONG(0)
++  }
+   . = ALIGN(4096);
+   .text :
+   {
+    *(.text)
+    *(.text.*)
+    *(.gnu.linkonce.t.*)
++   LONG(0)
+   }
+   .reloc :
+   {
+    *(.reloc)
++   LONG(0)
+   }
+   . = ALIGN(4096);
+   .data :
+@@ -34,25 +40,39 @@ SECTIONS
+    *(.dynbss)
+    *(.bss)
+    *(COMMON)
++   LONG(0)
+   }
+   . = ALIGN(4096);
+-  .dynamic  : { *(.dynamic) }
++  .dynamic :
++  {
++   *(.dynamic)
++   LONG(0)
++  }
+   . = ALIGN(4096);
+   .rel :
+   {
+-    *(.rel.data)
+-    *(.rel.data.*)
+-    *(.rel.got)
+-    *(.rel.stab)
+-    *(.data.rel.ro.local)
+-    *(.data.rel.local)
+-    *(.data.rel.ro)
+-    *(.data.rel*)
++   *(.rel.data)
++   *(.rel.data.*)
++   *(.rel.got)
++   *(.rel.stab)
++   *(.data.rel.ro.local)
++   *(.data.rel.local)
++   *(.data.rel.ro)
++   *(.data.rel*)
++   LONG(0)
+   }
+   . = ALIGN(4096);
+-  .dynsym   : { *(.dynsym) }
++  .dynsym :
++  {
++   *(.dynsym)
++   LONG(0)
++  }
+   . = ALIGN(4096);
+-  .dynstr   : { *(.dynstr) }
++  .dynstr :
++  {
++   *(.dynstr)
++   LONG(0)
++  }
+   . = ALIGN(4096);
+   /DISCARD/ :
+   {
+diff -urpN gnu-efi-3.0e/gnuefi/elf_ia64_efi.lds.pad gnu-efi-3.0e/gnuefi/elf_ia64_efi.lds
+--- gnu-efi-3.0e/gnuefi/elf_ia64_efi.lds.pad	2009-02-13 16:07:40.000000000 -0500
++++ gnu-efi-3.0e/gnuefi/elf_ia64_efi.lds	2009-02-13 16:07:45.000000000 -0500
+@@ -5,13 +5,18 @@ SECTIONS
+ {
+   . = 0;
+   ImageBase = .;
+-  .hash : { *(.hash) }	/* this MUST come first! */
++  .hash : /* this MUST come first! */
++  {
++   *(.hash)
++   LONG(0)
++  }
+   . = ALIGN(4096);
+   .text :
+   {
+    *(.text)
+    *(.text.*)
+    *(.gnu.linkonce.t.*)
++   LONG(0)
+   }
+   . = ALIGN(4096);
+   __gp = ALIGN (8) + 0x200000;
+@@ -23,6 +28,7 @@ SECTIONS
+    *(.sdata)
+    *(.sbss)
+    *(.scommon)
++   LONG(0)
+   }
+   . = ALIGN(4096);
+   .data :
+@@ -37,29 +43,44 @@ SECTIONS
+    *(.dynbss)
+    *(.bss)
+    *(COMMON)
++   LONG(0)
+   }
+   . = ALIGN(4096);
+-  .dynamic  : { *(.dynamic) }
++  .dynamic :
++  {
++   *(.dynamic)
++   LONG(0)
++  }
+   . = ALIGN(4096);
+   .rela :
+   {
+-    *(.rela.text)
+-    *(.rela.data*)
+-    *(.rela.sdata)
+-    *(.rela.got)
+-    *(.rela.gnu.linkonce.d*)
+-    *(.rela.stab)
+-    *(.rela.ctors)
++   *(.rela.text)
++   *(.rela.data*)
++   *(.rela.sdata)
++   *(.rela.got)
++   *(.rela.gnu.linkonce.d*)
++   *(.rela.stab)
++   *(.rela.ctors)
++   LONG(0)
+   }
+   . = ALIGN(4096);
+   .reloc :		/* This is the PECOFF .reloc section! */
+   {
+     *(.reloc)
++   LONG(0)
+   }
+   . = ALIGN(4096);
+-  .dynsym   : { *(.dynsym) }
++  .dynsym :
++  {
++   *(.dynsym)
++   LONG(0)
++  }
+   . = ALIGN(4096);
+-  .dynstr   : { *(.dynstr) }
++  .dynstr :
++  {
++   *(.dynstr)
++   LONG(0)
++  }
+   /DISCARD/ :
+   {
+     *(.rela.plabel)
+diff -urpN gnu-efi-3.0e/gnuefi/elf_x86_64_efi.lds.pad gnu-efi-3.0e/gnuefi/elf_x86_64_efi.lds
+--- gnu-efi-3.0e/gnuefi/elf_x86_64_efi.lds.pad	2009-02-13 16:07:40.000000000 -0500
++++ gnu-efi-3.0e/gnuefi/elf_x86_64_efi.lds	2009-02-13 16:07:45.000000000 -0500
+@@ -5,20 +5,27 @@ SECTIONS
+ {
+   . = 0;
+   ImageBase = .;
+-  .hash : { *(.hash) }	/* this MUST come first! */
++  .hash : /* this MUST come first! */
++  {
++   *(.hash)
++   LONG(0)
++  }
+   . = ALIGN(4096);
+   .eh_frame : 
+   { 
+     *(.eh_frame)
++   LONG(0)
+   }
+   . = ALIGN(4096);
+   .text :
+   {
+    *(.text)
++   LONG(0)
+   }
+   .reloc :
+   {
+    *(.reloc)
++   LONG(0)
+   }
+   . = ALIGN(4096);
+   .data :
+@@ -36,23 +43,38 @@ SECTIONS
+    *(.bss)
+    *(COMMON)
+    *(.rel.local)
++   LONG(0)
+   }
+   . = ALIGN(4096);
+-  .dynamic  : { *(.dynamic) }
++  .dynamic :
++  {
++   *(.dynamic)
++   LONG(0)
++  }
+   . = ALIGN(4096);
+   .rela :
+   {
+-    *(.rela.data*)
+-    *(.rela.got)
+-    *(.rela.stab)
++   *(.rela.data*)
++   *(.rela.got)
++   *(.rela.stab)
++   LONG(0)
+   }
+   . = ALIGN(4096);
+-  .dynsym   : { *(.dynsym) }
++  .dynsym :
++  {
++   *(.dynsym)
++   LONG(0)
++  }
+   . = ALIGN(4096);
+-  .dynstr   : { *(.dynstr) }
++  .dynstr :
++  {
++   *(.dynstr)
++   LONG(0)
++  }
+   . = ALIGN(4096);
+   .ignored.reloc :
+   {
+-    *(.rela.reloc)
++   *(.rela.reloc)
++   LONG(0)
+   }
+ }
