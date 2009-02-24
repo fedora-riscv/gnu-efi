@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0e
-Release: 3%{?dist}
+Release: 4%{?dist}
 Group: Development/System
 License: GPLv2+
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
@@ -57,6 +57,9 @@ rm -rf %{buildroot}
 %{_libdir}/*
 
 %changelog
+* Tue Feb 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0e-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
+
 * Fri Feb 13 2009 Peter Jones <pjones@redhat.com> - 3.0e-3
 - Pad sections out in the provided linker scripts to make sure they all of
   some content.
