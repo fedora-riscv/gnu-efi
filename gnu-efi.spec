@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0e
-Release: 4%{?dist}
+Release: 5%{?dist}
 Group: Development/System
 License: GPLv2+
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
@@ -13,7 +13,7 @@ Patch3: gnu-efi-3.0d-unwrap.patch
 Patch4: gnu-efi-3.0d-uefi_wrap.patch
 Patch5: gnu-efi-3.0d-uefi_wrap_call10.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-ExclusiveArch: i386 x86_64
+ExclusiveArch: i586 x86_64
 
 %description
 This package contains development headers and libraries for developing
@@ -57,6 +57,9 @@ rm -rf %{buildroot}
 %{_libdir}/*
 
 %changelog
+* Mon Mar 02 2009 Peter Jones <pjones@redhat.com> - 3.0e-5
+- Switch to i586 from i386.
+
 * Tue Feb 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0e-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
 
