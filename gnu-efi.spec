@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0e
-Release: 5%{?dist}
+Release: 6%{?dist}
 Group: Development/System
 License: GPLv2+
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
@@ -13,7 +13,7 @@ Patch3: gnu-efi-3.0d-unwrap.patch
 Patch4: gnu-efi-3.0d-uefi_wrap.patch
 Patch5: gnu-efi-3.0d-uefi_wrap_call10.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-ExclusiveArch: i586 x86_64
+ExclusiveArch: i586 x86_64 ia64
 
 %description
 This package contains development headers and libraries for developing
@@ -57,6 +57,9 @@ rm -rf %{buildroot}
 %{_libdir}/*
 
 %changelog
+* Thu Mar 12 2009 Chris Lumens <clumens@redhat.com> 3.0e-6
+- Add IA64 back into the list of build arches (#489544).
+
 * Mon Mar 02 2009 Peter Jones <pjones@redhat.com> - 3.0e-5
 - Switch to i586 from i386.
 
