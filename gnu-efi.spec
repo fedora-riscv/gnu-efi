@@ -23,7 +23,7 @@ applications that run under EFI (Extensible Firmware Interface).
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
+#%patch2 -p1
 # these are currently disabled as we don't need them per se, and they
 # haven't gone upstream yet either.  Also #2 and #3 haven't been updated
 # to work with gnu-efi-3.0e yet.
