@@ -1,14 +1,14 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0e
-Release: 6%{?dist}
+Release: 7%{?dist}
 Group: Development/System
 License: GPLv2+
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
 Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi-%{version}.tar.bz2
 Patch0: gnu-efi-3.0e-no-relocations.patch
 Patch1: gnu-efi-3.0e-Fix-usage-of-INSTALLROOT-PREFIX-and-LIBDIR.patch
-Patch2: gnu-efi-3.0e-pad-all-sections.patch
+Patch2: gnu-efi-3.0e-ignore-gnu-stack
 Patch3: gnu-efi-3.0d-unwrap.patch
 Patch4: gnu-efi-3.0d-uefi_wrap.patch
 Patch5: gnu-efi-3.0d-uefi_wrap_call10.patch
@@ -23,7 +23,7 @@ applications that run under EFI (Extensible Firmware Interface).
 %setup -q
 %patch0 -p1
 %patch1 -p1
-#%patch2 -p1
+%patch2 -p1
 # these are currently disabled as we don't need them per se, and they
 # haven't gone upstream yet either.  Also #2 and #3 haven't been updated
 # to work with gnu-efi-3.0e yet.
@@ -57,6 +57,12 @@ rm -rf %{buildroot}
 %{_libdir}/*
 
 %changelog
+* Fri Apr 03 2009 Peter Jones <pjones@redhat.com> - 3.0e-7
+- Use nickc's workaround for #492183
+
+* Tue Mar 31 2009 Peter Jones <pjones@redhat.com> - 3.0e-6.1
+- Make a test package for nickc.
+
 * Thu Mar 12 2009 Chris Lumens <clumens@redhat.com> 3.0e-6
 - Add IA64 back into the list of build arches (#489544).
 
