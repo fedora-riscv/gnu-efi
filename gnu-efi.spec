@@ -15,6 +15,8 @@ Patch5: gnu-efi-3.0d-uefi_wrap_call10.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: i586 x86_64 ia64
 
+%define debug_package %{nil}
+
 %description
 This package contains development headers and libraries for developing
 applications that run under EFI (Extensible Firmware Interface).
