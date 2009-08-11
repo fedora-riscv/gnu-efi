@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0e
-Release: 8%{?dist}
+Release: 9%{?dist}
 Group: Development/System
 License: GPLv2+
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
@@ -13,7 +13,7 @@ Patch3: gnu-efi-3.0d-unwrap.patch
 Patch4: gnu-efi-3.0d-uefi_wrap.patch
 Patch5: gnu-efi-3.0d-uefi_wrap_call10.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-ExclusiveArch: i586 x86_64 ia64
+ExclusiveArch: i686 x86_64 ia64
 
 %define debug_package %{nil}
 
@@ -59,6 +59,9 @@ rm -rf %{buildroot}
 %{_libdir}/*
 
 %changelog
+* Tue Aug 11 2009 Peter Jones <pjones@redhat.com> - 3.0e-9
+- Change ExclusiveArch to reflect arch changes in repos.
+
 * Fri Jul 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0e-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 
