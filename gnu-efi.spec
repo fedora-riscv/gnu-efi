@@ -8,7 +8,7 @@ URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
 Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi-%{version}.tar.bz2
 Patch0: gnu-efi-3.0e-no-relocations.patch
 Patch1: gnu-efi-3.0e-Fix-usage-of-INSTALLROOT-PREFIX-and-LIBDIR.patch
-Patch2: gnu-efi-3.0e-ignore-gnu-stack
+Patch2: gnu-efi-3.0e-ignore-gnu-stack.patch
 Patch3: gnu-efi-3.0e-add-uefi-2.x-boot-services.patch
 # these are currently disabled as we don't need them per se, and they
 # haven't gone upstream yet either.  Also they haven't been updated

@@ -1,3 +1,8 @@
+From 364351b4448ff20730250e89ad09088d6aeafc72 Mon Sep 17 00:00:00 2001
+From: Peter Jones <pjones@cutlet.install.bos.redhat.com>
+Date: Fri, 3 Oct 2008 14:40:56 -0400
+Subject: [PATCH] Add an ignore for .note.GNU-stack section in the linker map.
+
 diff --git a/gnuefi/elf_ia32_efi.lds b/gnuefi/elf_ia32_efi.lds
 index bc29799..b15b36d 100644
 --- a/gnuefi/elf_ia32_efi.lds
