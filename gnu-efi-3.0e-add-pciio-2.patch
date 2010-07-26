@@ -1,0 +1,50 @@
+From 6065c76e3b0185cfa4b51bd6c746b2d3537a1f8e Mon Sep 17 00:00:00 2001
+From: Peter Jones <pjones@redhat.com>
+Date: Mon, 26 Jul 2010 14:37:53 -0400
+Subject: [PATCH 2/2] Add the efipciio.h stuff here as well...
+
+---
+ inc/inc.mak      |    1 +
+ inc/make.inf     |    1 +
+ inc/makefile.hdr |    1 +
+ 3 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/inc/inc.mak b/inc/inc.mak
+index e9aad84..0db6159 100644
+--- a/inc/inc.mak
++++ b/inc/inc.mak
+@@ -12,6 +12,7 @@ INC_DEPS = $(INC_DEPS)          \
+                 efifs.h         \
+                 efilib.h        \
+                 efipart.h       \
++                efipciio.h      \
+                 efiprot.h       \
+                 efipxe.h        \
+                 efivar.h        \
+diff --git a/inc/make.inf b/inc/make.inf
+index c85406d..d539ccd 100644
+--- a/inc/make.inf
++++ b/inc/make.inf
+@@ -13,6 +13,7 @@
+     efifs.h
+     efilib.h
+     efipart.h
++    efipciio.h
+     efiprot.h
+     efipxebc.h
+     efistdarg.h
+diff --git a/inc/makefile.hdr b/inc/makefile.hdr
+index d3df1b9..f782cea 100644
+--- a/inc/makefile.hdr
++++ b/inc/makefile.hdr
+@@ -17,6 +17,7 @@ INC_DEPS = $(INC_DEPS) \
+     $(SDK_INSTALL_DIR)\include\efi\efifs.h \
+     $(SDK_INSTALL_DIR)\include\efi\efilib.h \
+     $(SDK_INSTALL_DIR)\include\efi\efipart.h \
++    $(SDK_INSTALL_DIR)\include\efi\efipciio.h \
+     $(SDK_INSTALL_DIR)\include\efi\efiprot.h \
+     $(SDK_INSTALL_DIR)\include\efi\efipxebc.h \
+     $(SDK_INSTALL_DIR)\include\efi\efistdarg.h \
+-- 
+1.7.1.1
+

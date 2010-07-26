@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0e
-Release: 10%{?dist}
+Release: 11%{?dist}
 Group: Development/System
 License: GPLv2+
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
@@ -10,12 +10,9 @@ Patch0: gnu-efi-3.0e-no-relocations.patch
 Patch1: gnu-efi-3.0e-Fix-usage-of-INSTALLROOT-PREFIX-and-LIBDIR.patch
 Patch2: gnu-efi-3.0e-ignore-gnu-stack.patch
 Patch3: gnu-efi-3.0e-add-uefi-2.x-boot-services.patch
-# these are currently disabled as we don't need them per se, and they
-# haven't gone upstream yet either.  Also they haven't been updated
-# to work with gnu-efi-3.0e yet.
-#Patch4: gnu-efi-3.0d-unwrap.patch
-#Patch5: gnu-efi-3.0d-uefi_wrap.patch
-#Patch6: gnu-efi-3.0d-uefi_wrap_call10.patch
+Patch4: gnu-efi-3.0e-add-pciio.patch
+# "git am" doesn't like ms-dos formatted text-files.
+#Patch5: gnu-efi-3.0e-add-pciio-2.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: i686 x86_64 ia64
 BuildRequires: git
@@ -34,6 +31,7 @@ git config user.name "Fedora Ninjas"
 git add .
 git commit -a -q -m "%{version} baseline."
 git am %{patches}
+exit 1
 
 %build
 # Package cannot build with %{?_smp_mflags}.
@@ -61,6 +59,9 @@ rm -rf %{buildroot}
 %{_libdir}/*
 
 %changelog
+* Mon Jul 26 2010 Peter Jones <pjones@redhat.com> - 3.0e-11
+- Add PciIo headers.
+
 * Fri Jul 23 2010 Peter Jones <pjones@redhat.com> - 3.0e-10
 - Add UEFI 2.x boot services.
 
