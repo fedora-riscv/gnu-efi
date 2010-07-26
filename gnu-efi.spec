@@ -11,8 +11,9 @@ Patch1: gnu-efi-3.0e-Fix-usage-of-INSTALLROOT-PREFIX-and-LIBDIR.patch
 Patch2: gnu-efi-3.0e-ignore-gnu-stack.patch
 Patch3: gnu-efi-3.0e-add-uefi-2.x-boot-services.patch
 Patch4: gnu-efi-3.0e-add-pciio.patch
+Patch5: gnu-efi-3.0e-route80h.patch
 # "git am" doesn't like ms-dos formatted text-files.
-#Patch5: gnu-efi-3.0e-add-pciio-2.patch
+#Patch6: gnu-efi-3.0e-add-pciio-2.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: i686 x86_64 ia64
 BuildRequires: git
@@ -31,7 +32,6 @@ git config user.name "Fedora Ninjas"
 git add .
 git commit -a -q -m "%{version} baseline."
 git am %{patches}
-exit 1
 
 %build
 # Package cannot build with %{?_smp_mflags}.

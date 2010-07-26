@@ -1,17 +1,17 @@
-From 896d31cb20f831c28edba7d96413900a3ac8fde3 Mon Sep 17 00:00:00 2001
+From 05b13861f78a9f20e5902fc37cac4564d430fd35 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Fri, 23 Jul 2010 16:07:13 -0400
 Subject: [PATCH] Add the UEFI 2.x bits for EFI_BOOT_SERVICES
 
 ---
- inc/efiapi.h |  174 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
- 1 files changed, 168 insertions(+), 6 deletions(-)
+ inc/efiapi.h |  181 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 files changed, 175 insertions(+), 6 deletions(-)
 
 diff --git a/inc/efiapi.h b/inc/efiapi.h
-index 888e052..812d8b4 100644
+index 888e052..5e47324 100644
 --- a/inc/efiapi.h
 +++ b/inc/efiapi.h
-@@ -412,6 +412,140 @@ EFI_STATUS
+@@ -412,6 +412,147 @@ EFI_STATUS
      IN CHAR16                   *WatchdogData OPTIONAL
      );
  
@@ -31,6 +31,13 @@ index 888e052..812d8b4 100644
 +    IN EFI_HANDLE               DriverImageHandle OPTIONAL,
 +    IN EFI_HANDLE               ChildHandle OPTIONAL
 +    );
++
++#define EFI_OPEN_PROTOCOL_BY_HANDLE_PROTOCOL  0x00000001
++#define EFI_OPEN_PROTOCOL_GET_PROTOCOL        0x00000002
++#define EFI_OPEN_PROTOCOL_TEST_PROTOCOL       0x00000004
++#define EFI_OPEN_PROTOCOL_BY_CHILD_CONTROLLER 0x00000008
++#define EFI_OPEN_PROTOCOL_BY_DRIVER           0x00000010
++#define EFI_OPEN_PROTOCOL_EXCLUSIVE           0x00000020
 +
 +typedef
 +EFI_STATUS
@@ -145,14 +152,14 @@ index 888e052..812d8b4 100644
 +    IN UINT32                   Type,
 +    IN EFI_TPL                  NotifyTpl,
 +    IN EFI_EVENT_NOTIFY         NotifyFunction OPTIONAL,
-+    IN CONST VOID               *NotifyContext OPTIONAL,
-+    IN CONST EFI_GUID           EventGroup OPTIONAL,
++    IN const VOID               *NotifyContext OPTIONAL,
++    IN const EFI_GUID           EventGroup OPTIONAL,
 +    OUT EFI_EVENT               *Event
 +    );
  
  typedef enum {
      EfiResetCold,
-@@ -491,12 +625,6 @@ EFI_STATUS
+@@ -491,12 +632,6 @@ EFI_STATUS
      OUT VOID                    **Registration
      );
  
@@ -165,7 +172,7 @@ index 888e052..812d8b4 100644
  typedef
  EFI_STATUS
  (EFIAPI *EFI_LOCATE_HANDLE) (
-@@ -655,6 +783,40 @@ typedef struct _EFI_BOOT_SERVICES {
+@@ -655,6 +790,40 @@ typedef struct _EFI_BOOT_SERVICES {
      EFI_STALL                       Stall;
      EFI_SET_WATCHDOG_TIMER          SetWatchdogTimer;
  

@@ -1,12 +1,14 @@
-From 5c79e84d2f7740b2da84364f80a577b904f12b34 Mon Sep 17 00:00:00 2001
+From 4547a096f10ea8b2164f895a10f2dbe9e1269c22 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Mon, 26 Jul 2010 14:25:47 -0400
-Subject: [PATCH 1/2] Add headers for PciIo .
+Subject: [PATCH] Add headers for PciIo .
 
 ---
  inc/efi.h      |    1 +
+ inc/efilib.h   |    1 +
  inc/efipciio.h |  219 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 220 insertions(+), 0 deletions(-)
+ lib/data.c     |    1 +
+ 4 files changed, 222 insertions(+), 0 deletions(-)
  create mode 100644 inc/efipciio.h
 
 diff --git a/inc/efi.h b/inc/efi.h
@@ -21,16 +23,28 @@ index 4cdb12b..e9de37b 100644
  #include "efiprot.h"
  #include "eficon.h"
  #include "efiser.h"
+diff --git a/inc/efilib.h b/inc/efilib.h
+index 82c332a..740c2ff 100644
+--- a/inc/efilib.h
++++ b/inc/efilib.h
+@@ -58,6 +58,7 @@ extern EFI_GUID PxeCallbackProtocol;
+ extern EFI_GUID NetworkInterfaceIdentifierProtocol;
+ extern EFI_GUID UiProtocol;
+ extern EFI_GUID InternalShellProtocol;
++extern EFI_GUID PciIoProtocol;
+ 
+ extern EFI_GUID EfiGlobalVariable;
+ extern EFI_GUID GenericFileInfo;
 diff --git a/inc/efipciio.h b/inc/efipciio.h
 new file mode 100644
-index 0000000..d5e818a
+index 0000000..0724f95
 --- /dev/null
 +++ b/inc/efipciio.h
 @@ -0,0 +1,219 @@
 +#ifndef _EFI_PCI_IO_H
 +#define _EFI_PCI_IO_H
 +
-+#define PCI_IO_PROTOCOL \
++#define EFI_PCI_IO_PROTOCOL \
 +    { 0x4cf5b200, 0x68b8, 0x4ca5, {0x9e, 0xec, 0xb2, 0x3e, 0x3f, 0x50, 0x02, 0x9a} }
 +
 +INTERFACE_DECL(_EFI_PCI_IO);
@@ -56,7 +70,7 @@ index 0000000..d5e818a
 +typedef
 +EFI_STATUS
 +(EFIAPI *EFI_PCI_IO_PROTOCOL_POLL_IO_MEM) (
-+  IN EFI_PCI_IO_PROTOCOL        *This,
++  IN struct _EFI_PCI_IO *This,
 +  IN EFI_PCI_IO_PROTOCOL_WIDTH  Width,
 +  IN UINT8                      BarIndex,
 +  IN UINT64                     Offset,
@@ -69,7 +83,7 @@ index 0000000..d5e818a
 +typedef
 +EFI_STATUS
 +(EFIAPI *EFI_PCI_IO_PROTOCOL_IO_MEM) (
-+  IN EFI_PCI_IO_PROTOCOL        *This,
++  IN struct _EFI_PCI_IO *This,
 +  IN EFI_PCI_IO_PROTOCOL_WIDTH  Width,
 +  IN UINT8                      BarIndex,
 +  IN UINT64                     Offset,
@@ -85,7 +99,7 @@ index 0000000..d5e818a
 +typedef
 +EFI_STATUS
 +(EFIAPI *EFI_PCI_IO_PROTOCOL_CONFIG) (
-+  IN EFI_PCI_IO_PROTOCOL        *This,
++  IN struct _EFI_PCI_IO *This,
 +  IN EFI_PCI_IO_PROTOCOL_WIDTH  Width,
 +  IN UINT32                     Offset,
 +  IN UINTN                      Count,
@@ -100,7 +114,7 @@ index 0000000..d5e818a
 +typedef
 +EFI_STATUS
 +(EFIAPI *EFI_PCI_IO_PROTOCOL_COPY_MEM) (
-+  IN EFI_PCI_IO_PROTOCOL        *This,
++  IN struct _EFI_PCI_IO *This,
 +  IN EFI_PCI_IO_PROTOCOL_WIDTH  Width,
 +  IN UINT8                      DestBarIndex,
 +  IN UINT64                     DestOffset,
@@ -119,7 +133,7 @@ index 0000000..d5e818a
 +typedef
 +EFI_STATUS
 +(EFIAPI *EFI_PCI_IO_PROTOCOL_MAP) (
-+  IN EFI_PCI_IO_PROTOCOL           *This,
++  IN struct _EFI_PCI_IO    *This,
 +  IN EFI_PCI_IO_PROTOCOL_OPERATION Operation,
 +  IN VOID                          *HostAddress,
 +  IN OUT UINTN                     *NumberOfBytes,
@@ -130,14 +144,14 @@ index 0000000..d5e818a
 +typedef
 +EFI_STATUS
 +(EFIAPI *EFI_PCI_IO_PROTOCOL_UNMAP) (
-+  IN EFI_PCI_IO_PROTOCOL        *This,
++  IN struct _EFI_PCI_IO *This,
 +  IN VOID                       *Mapping
 +);
 +
 +typedef
 +EFI_STATUS
 +(EFIAPI *EFI_PCI_IO_PROTOCOL_ALLOCATE_BUFFER) (
-+  IN EFI_PCI_IO_PROTOCOL        *This,
++  IN struct _EFI_PCI_IO *This,
 +  IN EFI_ALLOCATE_TYPE          Type,
 +  IN EFI_MEMORY_TYPE            MemoryType,
 +  IN UINTN                      Pages,
@@ -148,7 +162,7 @@ index 0000000..d5e818a
 +typedef
 +EFI_STATUS
 +(EFIAPI *EFI_PCI_IO_PROTOCOL_FREE_BUFFER) (
-+  IN EFI_PCI_IO_PROTOCOL        *This,
++  IN struct _EFI_PCI_IO *This,
 +  IN UINTN                      Pages,
 +  IN VOID                       *HostAddress
 +  );
@@ -156,13 +170,13 @@ index 0000000..d5e818a
 +typedef
 +EFI_STATUS
 +(EFIAPI *EFI_PCI_IO_PROTOCOL_FLUSH) (
-+  IN EFI_PCI_IO_PROTOCOL        *This
++  IN struct _EFI_PCI_IO *This
 +  );
 +
 +typedef
 +EFI_STATUS
 +(EFIAPI *EFI_PCI_IO_PROTOCOL_GET_LOCATION) (
-+  IN EFI_PCI_IO_PROTOCOL        *This,
++  IN struct _EFI_PCI_IO *This,
 +  OUT UINTN                     *SegmentNumber,
 +  OUT UINTN                     *BusNumber,
 +  OUT UINTN                     *DeviceNumber,
@@ -200,7 +214,7 @@ index 0000000..d5e818a
 +typedef
 +EFI_STATUS
 +(EFIAPI *EFI_PCI_IO_PROTOCOL_ATTRIBUTES) (
-+  IN EFI_PCI_IO_PROTOCOL                     *This,
++  IN struct _EFI_PCI_IO             *This,
 +  IN EFI_PCI_IO_PROTOCOL_ATTRIBUTE_OPERATION Operation,
 +  IN UINT64                                  Attributes,
 +  OUT UINT64                                 *Result OPTIONAL
@@ -209,7 +223,7 @@ index 0000000..d5e818a
 +typedef
 +EFI_STATUS
 +(EFIAPI *EFI_PCI_IO_PROTOCOL_GET_BAR_ATTRIBUTES) (
-+  IN EFI_PCI_IO_PROTOCOL        *This,
++  IN struct _EFI_PCI_IO *This,
 +  IN UINT8                      BarIndex,
 +  OUT UINT64                    *Supports OPTIONAL,
 +  OUT VOID                      **Resources OPTIONAL
@@ -218,14 +232,14 @@ index 0000000..d5e818a
 +typedef
 +EFI_STATUS
 +(EFIAPI *EFI_PCI_IO_PROTOCOL_SET_BAR_ATTRIBUTES) (
-+  IN EFI_PCI_IO_PROTOCOL        *This,
++  IN struct _EFI_PCI_IO *This,
 +  IN UINT64                     Attributes,
 +  IN UINT8                      BarIndex,
 +  IN OUT UINT64                 *Offset,
 +  IN OUT UINT64                 *Length
 +  );
 +
-+typedef struct _EFI_PCI_IO_PROTOCOL {
++typedef struct _EFI_PCI_IO {
 +  EFI_PCI_IO_PROTOCOL_POLL_IO_MEM        PollMem;
 +  EFI_PCI_IO_PROTOCOL_POLL_IO_MEM        PollIo;
 +  EFI_PCI_IO_PROTOCOL_ACCESS             Mem;
@@ -243,9 +257,21 @@ index 0000000..d5e818a
 +  EFI_PCI_IO_PROTOCOL_SET_BAR_ATTRIBUTES SetBarAttributes;
 +  UINT64                                 RomSize;
 +  VOID                                   *RomImage;
-+} EFI_PCI_IO_PROTOCOL;
++} EFI_PCI_IO;
 +
 +#endif /* _EFI_PCI_IO_H */
+diff --git a/lib/data.c b/lib/data.c
+index 402c54d..bcb2d67 100644
+--- a/lib/data.c
++++ b/lib/data.c
+@@ -103,6 +103,7 @@ EFI_GUID PxeBaseCodeProtocol      = EFI_PXE_BASE_CODE_PROTOCOL;
+ EFI_GUID PxeCallbackProtocol      = EFI_PXE_BASE_CODE_CALLBACK_PROTOCOL;
+ EFI_GUID NetworkInterfaceIdentifierProtocol = EFI_NETWORK_INTERFACE_IDENTIFIER_PROTOCOL;
+ EFI_GUID UiProtocol               = EFI_UI_PROTOCOL;
++EFI_GUID PciIoProtocol            = EFI_PCI_IO_PROTOCOL;
+ //
+ // File system information IDs
+ //
 -- 
 1.7.1.1
 
