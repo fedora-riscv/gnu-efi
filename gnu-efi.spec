@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0e
-Release: 11%{?dist}
+Release: 12%{?dist}
 Group: Development/System
 License: GPLv2+
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
@@ -12,8 +12,9 @@ Patch2: gnu-efi-3.0e-ignore-gnu-stack.patch
 Patch3: gnu-efi-3.0e-add-uefi-2.x-boot-services.patch
 Patch4: gnu-efi-3.0e-add-pciio.patch
 Patch5: gnu-efi-3.0e-route80h.patch
+Patch6: gnu-efi-3.0e-modelist.patch
 # "git am" doesn't like ms-dos formatted text-files.
-#Patch6: gnu-efi-3.0e-add-pciio-2.patch
+#Patch7: gnu-efi-3.0e-add-pciio-2.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: i686 x86_64 ia64
 BuildRequires: git
@@ -47,18 +48,25 @@ make PREFIX=%{_prefix} LIBDIR=%{_libdir} INSTALLROOT=%{buildroot} install
 mkdir -p %{buildroot}/%{_libdir}/gnuefi
 mv %{buildroot}/%{_libdir}/*.lds %{buildroot}/%{_libdir}/*.o %{buildroot}/%{_libdir}/gnuefi
 
-make -C apps clean
+make -C apps clean route80h.efi modelist.efi
+mkdir -p %{buildroot}/boot/efi/EFI/redhat/
+mv apps/{route80h.efi,modelist.efi} %{buildroot}/boot/efi/EFI/redhat/
 
 %clean
 rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%doc README.* ChangeLog apps
+%doc README.* ChangeLog
 %{_includedir}/efi
 %{_libdir}/*
+%dir /boot/efi/EFI/redhat/
+%attr(0644,root,root) /boot/efi/EFI/redhat/*.efi
 
 %changelog
+* Fri Sep 10 2010 Peter Jones <pjones@redhat.com> - 3.0e-12
+- Add "modelist.efi" test utility in apps/
+
 * Mon Jul 26 2010 Peter Jones <pjones@redhat.com> - 3.0e-11
 - Add PciIo headers.
 
