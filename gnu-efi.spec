@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0e
-Release: 12%{?dist}
+Release: 13%{?dist}
 Group: Development/System
 License: GPLv2+
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
@@ -64,6 +64,9 @@ rm -rf %{buildroot}
 %attr(0644,root,root) /boot/efi/EFI/redhat/*.efi
 
 %changelog
+* Wed Feb 09 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0e-13
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
 * Fri Sep 10 2010 Peter Jones <pjones@redhat.com> - 3.0e-12
 - Add "modelist.efi" test utility in apps/
 
