@@ -1,4 +1,4 @@
-From cd8986077a785053abee62a3faf0708759625f7a Mon Sep 17 00:00:00 2001
+From b9bc87d00d55891a443c8a276842abdcd6df9482 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Fri, 10 Sep 2010 16:04:38 -0400
 Subject: [PATCH] Add "modelist" test app.
@@ -6,15 +6,15 @@ Subject: [PATCH] Add "modelist" test app.
 This lists video modes the GOP driver is showing us.
 ---
  apps/Makefile   |    2 +-
- apps/modelist.c |   86 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 87 insertions(+), 1 deletions(-)
+ apps/modelist.c |   87 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 88 insertions(+), 1 deletions(-)
  create mode 100644 apps/modelist.c
 
 diff --git a/apps/Makefile b/apps/Makefile
-index 2baf64d..6b50e4f 100644
+index c063d9a..0919bf3 100644
 --- a/apps/Makefile
 +++ b/apps/Makefile
-@@ -38,7 +38,7 @@ LDFLAGS		+= -T $(LDSCRIPT) -shared -Bsymbolic -L../lib -L../gnuefi $(CRTOBJS)
+@@ -45,7 +45,7 @@ LDFLAGS		+= -T $(LDSCRIPT) -shared -Bsymbolic -L../lib -L../gnuefi $(CRTOBJS)
  LOADLIBES	= -lefi -lgnuefi $(shell $(CC) $(ARCH3264) -print-libgcc-file-name)
  FORMAT		= efi-app-$(ARCH)
  
@@ -25,10 +25,10 @@ index 2baf64d..6b50e4f 100644
  
 diff --git a/apps/modelist.c b/apps/modelist.c
 new file mode 100644
-index 0000000..0f6e75d
+index 0000000..c4a4b1a
 --- /dev/null
 +++ b/apps/modelist.c
-@@ -0,0 +1,86 @@
+@@ -0,0 +1,87 @@
 +#include <efi.h>
 +#include <efilib.h>
 +
@@ -55,7 +55,8 @@ index 0000000..0f6e75d
 +				i, Buffer, rc);
 +			continue;
 +		}
-+		Print(L"%d: %dx%d ", i, info->HorizontalResolution,
++		Print(L"%c%d: %dx%d ", memcmp(info,gop->Mode->Info,sizeof(*info)) == 0 ? '*' : ' ', i,
++			info->HorizontalResolution,
 +			info->VerticalResolution);
 +		switch(info->PixelFormat) {
 +			case PixelRedGreenBlueReserved8BitPerColor:
@@ -116,5 +117,5 @@ index 0000000..0f6e75d
 +	return EFI_SUCCESS;
 +}
 -- 
-1.7.2.3
+1.7.2.2
 
