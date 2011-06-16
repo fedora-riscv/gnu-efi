@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0e
-Release: 13%{?dist}
+Release: 14%{?dist}
 Group: Development/System
 License: GPLv2+
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
@@ -13,6 +13,10 @@ Patch3: gnu-efi-3.0e-add-uefi-2.x-boot-services.patch
 Patch4: gnu-efi-3.0e-add-pciio.patch
 Patch5: gnu-efi-3.0e-route80h.patch
 Patch6: gnu-efi-3.0e-modelist.patch
+Patch7: gnu-efi-3.0e-route80h-add-cougarpoint.patch
+Patch8: gnu-efi-3.0e-machine-types.patch
+Patch9: gnu-efi-3.0e-unwrap.patch
+Patch10: gnu-efi-3.0e-handle-uninitialized-gop.patch
 # "git am" doesn't like ms-dos formatted text-files.
 #Patch7: gnu-efi-3.0e-add-pciio-2.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -64,6 +68,9 @@ rm -rf %{buildroot}
 %attr(0644,root,root) /boot/efi/EFI/redhat/*.efi
 
 %changelog
+* Thu Jun 16 2011 Peter Jones <pjones@redhat.com> - 3.0e-14
+- Handle uninitialized GOP driver gracefully.
+
 * Wed Feb 09 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0e-13
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
