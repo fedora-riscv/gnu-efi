@@ -14,11 +14,6 @@ Patch4: gnu-efi-3.0e-add-pciio.patch
 Patch5: gnu-efi-3.0e-route80h.patch
 Patch6: gnu-efi-3.0e-modelist.patch
 Patch7: gnu-efi-3.0e-route80h-add-cougarpoint.patch
-Patch8: gnu-efi-3.0e-machine-types.patch
-Patch9: gnu-efi-3.0e-unwrap.patch
-Patch10: gnu-efi-3.0e-handle-uninitialized-gop.patch
-# "git am" doesn't like ms-dos formatted text-files.
-#Patch7: gnu-efi-3.0e-add-pciio-2.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: i686 x86_64 ia64
 BuildRequires: git
