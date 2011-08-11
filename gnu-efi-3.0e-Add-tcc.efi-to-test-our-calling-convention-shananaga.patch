@@ -51,7 +51,6 @@ index 0000000..546df92
 +
 +#if 0
 +	asm volatile("out %0,%1" : : "a" ((uint8_t)a), "dN" (0x80));
-+#endif
 +
 +extern void dump_stack(void);
 +asm(	".globl	dump_stack\n"
@@ -76,6 +75,7 @@ index 0000000..546df92
 +		Print(L"%016x\r\n", *rsp++);
 +	}
 +}
++#endif
 +
 +EFI_STATUS EFI_FUNCTION test_failure_callback(void)
 +{
