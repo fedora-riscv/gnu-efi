@@ -22,7 +22,7 @@ index 529d58c..2a981a1 100644
  
  ifeq ($(ARCH), x86_64)
 -  CFLAGS += -DEFI_FUNCTION_WRAPPER -mno-red-zone 
-+  CFLAGS += -mno-red-zone 
++  CFLAGS += -mno-red-zone
    ifeq ($(HOSTARCH), ia32)
      ARCH3264 = -m64
    endif
@@ -90,12 +90,11 @@ index 83ca529..aac83b3 100644
  
  #define LOAD_INTERNAL_DRIVER(_if, type, name, entry)    \
          (_if)->LoadInternal(type, name, entry)
-@@ -205,3 +220,5 @@ void __mf (void);
+@@ -205,3 +220,4 @@ void __mf (void);
  
  /* No efi call wrapper for IA32 architecture */
  #define uefi_call_wrapper(func, va_num, ...)	func(__VA_ARGS__)
 +#define EFI_FUNCTION
-+
 diff --git a/inc/x86_64/efibind.h b/inc/x86_64/efibind.h
 index 1f8e735..9250973 100644
 --- a/inc/x86_64/efibind.h

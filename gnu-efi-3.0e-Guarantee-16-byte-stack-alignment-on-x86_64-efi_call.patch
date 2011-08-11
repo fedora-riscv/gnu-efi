@@ -18,7 +18,7 @@ diff --git a/lib/x86_64/efi_stub.S b/lib/x86_64/efi_stub.S
 index f9e70d4..5607779 100644
 --- a/lib/x86_64/efi_stub.S
 +++ b/lib/x86_64/efi_stub.S
-@@ -6,133 +6,272 @@
+@@ -6,133 +6,270 @@
   *	Huang Ying <ying.huang@intel.com>
   */
  
@@ -326,8 +326,6 @@ index f9e70d4..5607779 100644
 +	addq $80, %rsp
 +	unpad_stack
  	ret
-+
-+
 -- 
 1.7.6
 

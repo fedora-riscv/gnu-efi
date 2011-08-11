@@ -84,7 +84,7 @@ index 0000000..546df92
 +
 +EFI_STATUS test_failure(void)
 +{
-+	return uefi_call_wrapper(test_failure_callback, 0);	
++	return uefi_call_wrapper(test_failure_callback, 0);
 +}
 +
 +EFI_STATUS EFI_FUNCTION test_call0_callback(void)
@@ -94,7 +94,7 @@ index 0000000..546df92
 +
 +EFI_STATUS test_call0(void)
 +{
-+	return uefi_call_wrapper(test_call0_callback, 0);	
++	return uefi_call_wrapper(test_call0_callback, 0);
 +}
 +
 +EFI_STATUS EFI_FUNCTION test_call1_callback(UINT32 a)
@@ -107,7 +107,7 @@ index 0000000..546df92
 +
 +EFI_STATUS test_call1(void)
 +{
-+	return uefi_call_wrapper(test_call1_callback, 1,0x12345678);	
++	return uefi_call_wrapper(test_call1_callback, 1,0x12345678);
 +}
 +
 +EFI_STATUS EFI_FUNCTION test_call2_callback(UINT32 a, UINT32 b)
@@ -124,7 +124,7 @@ index 0000000..546df92
 +EFI_STATUS test_call2(void)
 +{
 +	return uefi_call_wrapper(test_call2_callback, 2,
-+		0x12345678, 0x23456789);	
++		0x12345678, 0x23456789);
 +}
 +
 +EFI_STATUS EFI_FUNCTION test_call3_callback(UINT32 a, UINT32 b,
@@ -163,7 +163,7 @@ index 0000000..546df92
 +EFI_STATUS test_call4(void)
 +{
 +	return uefi_call_wrapper(test_call4_callback, 4,
-+		0x12345678, 0x23456789, 0x3456789a, 0x456789ab);	
++		0x12345678, 0x23456789, 0x3456789a, 0x456789ab);
 +}
 +
 +EFI_STATUS EFI_FUNCTION test_call5_callback(UINT32 a, UINT32 b,
@@ -186,7 +186,7 @@ index 0000000..546df92
 +EFI_STATUS test_call5(void)
 +{
 +	return uefi_call_wrapper(test_call5_callback, 5,
-+		0x12345678, 0x23456789, 0x3456789a, 0x456789ab, 0x56789abc);	
++		0x12345678, 0x23456789, 0x3456789a, 0x456789ab, 0x56789abc);
 +}
 +
 +EFI_STATUS EFI_FUNCTION test_call6_callback(UINT32 a, UINT32 b,
@@ -204,7 +204,7 @@ index 0000000..546df92
 +		return EFI_BUFFER_TOO_SMALL;
 +	if (f != 0x6789abcd)
 +		return EFI_NOT_READY;
-+	
++
 +	return EFI_SUCCESS;
 +}
 +
@@ -212,7 +212,7 @@ index 0000000..546df92
 +{
 +	return uefi_call_wrapper(test_call6_callback, 6,
 +		0x12345678, 0x23456789, 0x3456789a, 0x456789ab, 0x56789abc,
-+		0x6789abcd);	
++		0x6789abcd);
 +}
 +
 +EFI_STATUS EFI_FUNCTION test_call7_callback(UINT32 a, UINT32 b,
@@ -232,7 +232,7 @@ index 0000000..546df92
 +		return EFI_NOT_READY;
 +	if (g != 0x789abcde)
 +		return EFI_DEVICE_ERROR;
-+	
++
 +	return EFI_SUCCESS;
 +}
 +
@@ -240,7 +240,7 @@ index 0000000..546df92
 +{
 +	return uefi_call_wrapper(test_call7_callback, 7,
 +		0x12345678, 0x23456789, 0x3456789a, 0x456789ab,
-+		0x56789abc, 0x6789abcd, 0x789abcde);	
++		0x56789abc, 0x6789abcd, 0x789abcde);
 +}
 +
 +EFI_STATUS EFI_FUNCTION test_call8_callback(UINT32 a, UINT32 b,
@@ -276,7 +276,7 @@ index 0000000..546df92
 +		0x56789abc,
 +		0x6789abcd,
 +		0x789abcde,
-+		0x89abcdef);	
++		0x89abcdef);
 +}
 +
 +EFI_STATUS EFI_FUNCTION test_call9_callback(UINT32 a, UINT32 b,
@@ -315,7 +315,7 @@ index 0000000..546df92
 +		0x6789abcd,
 +		0x789abcde,
 +		0x89abcdef,
-+		0x9abcdef0);	
++		0x9abcdef0);
 +}
 +
 +extern EFI_STATUS test_call10(void);
@@ -359,7 +359,7 @@ index 0000000..546df92
 +		0x789abcde,
 +		0x89abcdef,
 +		0x9abcdef0,
-+		0xabcdef01);	
++		0xabcdef01);
 +}
 +
 +EFI_STATUS
@@ -387,7 +387,7 @@ index 0000000..546df92
 +		Print(L"%%rax was 0x%016x, should have been 0x%016x\n",
 +			rc, EFI_UNSUPPORTED);
 +		return EFI_INVALID_PARAMETER;
-+	} 
++	}
 +
 +	rc = test_call0();
 +	if (!EFI_ERROR(rc)) {
