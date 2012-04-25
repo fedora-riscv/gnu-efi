@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0e
-Release: 16%{?dist}
+Release: 17%{?dist}
 Group: Development/System
 License: GPLv2+
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
@@ -20,6 +20,7 @@ Patch10: gnu-efi-3.0e-Add-.S-and-.E-rules.patch
 Patch11: gnu-efi-3.0e-Guarantee-16-byte-stack-alignment-on-x86_64-efi_call.patch
 Patch12: gnu-efi-3.0e-Add-the-routines-to-make-callbacks-work.patch
 Patch13: gnu-efi-3.0e-Add-tcc.efi-to-test-our-calling-convention-shananaga.patch
+Patch14: gnu-efi-3.0e-align-reloc-section.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: i686 x86_64 ia64
 BuildRequires: git
@@ -69,6 +70,9 @@ rm -rf %{buildroot}
 %attr(0644,root,root) /boot/efi/EFI/redhat/*.efi
 
 %changelog
+* Wed Apr 25 2012 Peter Jones <pjones@redhat.com> - 3.0e-17
+- Align .reloc section as well to make secureboot work (mfleming)
+
 * Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0e-16
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 
