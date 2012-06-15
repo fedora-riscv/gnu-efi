@@ -30,7 +30,7 @@ git config user.email "pjones@fedoraproject.org"
 git config user.name "Fedora Ninjas"
 git add .
 git commit -a -q -m "%{version} baseline."
-git am %{patches}
+git am %{patches} </dev/null
 
 %build
 # Package cannot build with %{?_smp_mflags}.
