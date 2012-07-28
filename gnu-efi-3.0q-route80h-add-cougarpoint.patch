@@ -1,12 +1,12 @@
-From 628dbd2ecce3793850f7c7d789b0adcab6746809 Mon Sep 17 00:00:00 2001
+From b7a088b6f3ffacc5b98e1568bed7dcf225089c20 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Thu, 11 Nov 2010 16:42:16 -0500
-Subject: [PATCH] Add CougarPoint support to route80h.c
+Subject: [PATCH 4/7] Add CougarPoint support to route80h.c
 
 CougarPoint is some other northbridge.  Yay!
 ---
  apps/route80h.c |   16 +++++++++++++++-
- 1 files changed, 15 insertions(+), 1 deletions(-)
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
 diff --git a/apps/route80h.c b/apps/route80h.c
 index 1a04b5a..30330ab 100644
@@ -45,5 +45,5 @@ index 1a04b5a..30330ab 100644
  	if (rc == EFI_NOT_FOUND) {
  		Print(L"Device not found.\n");
 -- 
-1.7.2.2
+1.7.10.4
 

@@ -1,25 +1,25 @@
-From b9bc87d00d55891a443c8a276842abdcd6df9482 Mon Sep 17 00:00:00 2001
+From d29825db356c7ea240e62404c5d3422c01c18bd4 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Fri, 10 Sep 2010 16:04:38 -0400
-Subject: [PATCH] Add "modelist" test app.
+Subject: [PATCH 3/7] Add "modelist" test app.
 
 This lists video modes the GOP driver is showing us.
 ---
  apps/Makefile   |    2 +-
  apps/modelist.c |   87 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 88 insertions(+), 1 deletions(-)
+ 2 files changed, 88 insertions(+), 1 deletion(-)
  create mode 100644 apps/modelist.c
 
 diff --git a/apps/Makefile b/apps/Makefile
-index c063d9a..0919bf3 100644
+index 6bda7ea..45bc4ac 100644
 --- a/apps/Makefile
 +++ b/apps/Makefile
-@@ -45,7 +45,7 @@ LDFLAGS		+= -T $(LDSCRIPT) -shared -Bsymbolic -L../lib -L../gnuefi $(CRTOBJS)
+@@ -58,7 +58,7 @@ LDFLAGS		+= -T $(LDSCRIPT) -shared -Bsymbolic -L../lib -L../gnuefi $(CRTOBJS)
  LOADLIBES	= -lefi -lgnuefi $(shell $(CC) $(ARCH3264) -print-libgcc-file-name)
  FORMAT		= efi-app-$(ARCH)
  
--TARGETS = t.efi t2.efi t3.efi t4.efi t5.efi t6.efi printenv.efi t7.efi route80h.efi
-+TARGETS = t.efi t2.efi t3.efi t4.efi t5.efi t6.efi printenv.efi t7.efi route80h.efi modelist.efi
+-TARGETS = t.efi t2.efi t3.efi t4.efi t5.efi t6.efi printenv.efi t7.efi tcc.efi route80h.efi
++TARGETS = t.efi t2.efi t3.efi t4.efi t5.efi t6.efi printenv.efi t7.efi tcc.efi route80h.efi modelist.efi
  
  all:	$(TARGETS)
  
@@ -117,5 +117,5 @@ index 0000000..c4a4b1a
 +	return EFI_SUCCESS;
 +}
 -- 
-1.7.2.2
+1.7.10.4
 

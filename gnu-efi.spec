@@ -1,26 +1,18 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
-Version: 3.0e
-Release: 18%{?dist}
+Version: 3.0q
+Release: 1%{?dist}
 Group: Development/System
-License: GPLv2+
+License: BSD 
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
-Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi-%{version}.tar.bz2
-Patch0: gnu-efi-3.0e-no-relocations.patch
-Patch1: gnu-efi-3.0e-Fix-usage-of-INSTALLROOT-PREFIX-and-LIBDIR.patch
-Patch2: gnu-efi-3.0e-ignore-gnu-stack.patch
-Patch3: gnu-efi-3.0e-add-uefi-2.x-boot-services.patch
-Patch4: gnu-efi-3.0e-add-pciio.patch
-Patch5: gnu-efi-3.0e-route80h.patch
-Patch6: gnu-efi-3.0e-modelist.patch
-Patch7: gnu-efi-3.0e-route80h-add-cougarpoint.patch
-Patch8: gnu-efi-3.0e-machine-types.patch
-Patch9: gnu-efi-3.0e-handle-uninitialized-gop.patch
-Patch10: gnu-efi-3.0e-Add-.S-and-.E-rules.patch
-Patch11: gnu-efi-3.0e-Guarantee-16-byte-stack-alignment-on-x86_64-efi_call.patch
-Patch12: gnu-efi-3.0e-Add-the-routines-to-make-callbacks-work.patch
-Patch13: gnu-efi-3.0e-Add-tcc.efi-to-test-our-calling-convention-shananaga.patch
-Patch14: gnu-efi-3.0e-align-reloc-section.patch
+Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi-%{version}.tar.gz
+Patch0: gnu-efi-3.0q-Fix-usage-of-INSTALLROOT-PREFIX-and-LIBDIR.patch
+Patch1: gnu-efi-3.0q-route80h.patch
+Patch2: gnu-efi-3.0q-modelist.patch
+Patch3: gnu-efi-3.0q-route80h-add-cougarpoint.patch
+Patch4: gnu-efi-3.0q-machine-types.patch
+Patch5: gnu-efi-3.0q-handle-uninitialized-gop.patch
+Patch6: gnu-efi-3.0q-Add-.S-and-.E-rules.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: i686 x86_64 ia64
 BuildRequires: git
@@ -70,6 +62,10 @@ rm -rf %{buildroot}
 %attr(0644,root,root) /boot/efi/EFI/redhat/*.efi
 
 %changelog
+* Fri Jul 27 2012 Matthew Garrett <mjg@redhat.com> - 3.0q-1
+- Update to current upstream
+- License change - GPLv2+ to BSD
+
 * Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0e-18
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 

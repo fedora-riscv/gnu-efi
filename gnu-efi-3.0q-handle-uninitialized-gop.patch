@@ -1,11 +1,11 @@
-From c261b8de0504fd37af99c61cdda248f312124034 Mon Sep 17 00:00:00 2001
+From 0f8b3ac2ec984de7f3437fe6a3b37ab8eb07ae71 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Thu, 16 Jun 2011 16:10:27 -0400
-Subject: [PATCH] Handle un-initialized GOP.
+Subject: [PATCH 6/7] Handle un-initialized GOP.
 
 ---
  apps/modelist.c |   27 +++++++++++++++++++++++++++
- 1 files changed, 27 insertions(+), 0 deletions(-)
+ 1 file changed, 27 insertions(+)
 
 diff --git a/apps/modelist.c b/apps/modelist.c
 index c4a4b1a..8d816d1 100644
@@ -53,5 +53,5 @@ index c4a4b1a..8d816d1 100644
  			CHAR16 Buffer[64];
  			StatusToString(Buffer, rc);
 -- 
-1.7.4.4
+1.7.10.4
 

@@ -1,7 +1,7 @@
-From 364351b4448ff20730250e89ad09088d6aeafc72 Mon Sep 17 00:00:00 2001
+From 3f40a425e763edfde77a9a6e05ed09b0676d8fa9 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@cutlet.install.bos.redhat.com>
 Date: Fri, 3 Oct 2008 14:40:56 -0400
-Subject: [PATCH] Fix usage of INSTALLROOT, PREFIX, and LIBDIR.
+Subject: [PATCH 1/7] Fix usage of INSTALLROOT, PREFIX, and LIBDIR.
 
 I screwed it up last time.
 ---
@@ -10,10 +10,10 @@ I screwed it up last time.
  2 files changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/Make.defaults b/Make.defaults
-index 4ad6480..de72d9b 100644
+index bf162c5..6278fa7 100644
 --- a/Make.defaults
 +++ b/Make.defaults
-@@ -25,8 +25,9 @@
+@@ -38,8 +38,9 @@
  # Where to install the package. GNU-EFI will create and access
  # lib and include under the root
  #
@@ -25,10 +25,10 @@ index 4ad6480..de72d9b 100644
  
  TOPDIR    := $(shell if [ "$$PWD" != "" ]; then echo $$PWD; else pwd; fi)
  
-@@ -59,7 +60,6 @@ endif
+@@ -73,7 +74,6 @@ endif
  
  ifeq ($(ARCH), x86_64)
-   CFLAGS += -DEFI_FUNCTION_WRAPPER -mno-red-zone 
+   CFLAGS += -mno-red-zone
 -  LIBDIR = lib
    ifeq ($(HOSTARCH), ia32)
      ARCH3264 = -m64
@@ -62,5 +62,5 @@ index 9683be5..71fded5 100644
  
  include $(SRCDIR)/../Make.rules
 -- 
-1.5.4.5
+1.7.10.4
 
