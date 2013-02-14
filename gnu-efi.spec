@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0q
-Release: 1%{?dist}
+Release: 2%{?dist}
 Group: Development/System
 License: BSD 
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
@@ -62,6 +62,9 @@ rm -rf %{buildroot}
 %attr(0644,root,root) /boot/efi/EFI/redhat/*.efi
 
 %changelog
+* Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0q-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
 * Fri Jul 27 2012 Matthew Garrett <mjg@redhat.com> - 3.0q-1
 - Update to current upstream
 - License change - GPLv2+ to BSD
