@@ -1,11 +1,11 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
-Version: 3.0q
-Release: 2%{?dist}
+Version: 3.0s
+Release: 1%{?dist}
 Group: Development/System
 License: BSD 
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
-Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi-%{version}.tar.gz
+Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi_%{version}.orig.tar.gz
 Patch0: gnu-efi-3.0q-Fix-usage-of-INSTALLROOT-PREFIX-and-LIBDIR.patch
 Patch1: gnu-efi-3.0q-route80h.patch
 Patch2: gnu-efi-3.0q-modelist.patch
@@ -24,7 +24,7 @@ This package contains development headers and libraries for developing
 applications that run under EFI (Extensible Firmware Interface).
 
 %prep
-%setup -q
+%setup -q -n gnu-efi-3.0
 git init
 git config user.email "pjones@fedoraproject.org"
 git config user.name "Fedora Ninjas"
