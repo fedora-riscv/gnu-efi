@@ -1,0 +1,448 @@
+From 52dad0ecd12f938e2dcb9f32c910e580cdf57291 Mon Sep 17 00:00:00 2001
+From: noxorc <nigel.croxon@hp.com>
+Date: Wed, 15 May 2013 15:26:16 -0400
+Subject: [PATCH] - Removes the ElfW() macro usage from reloc_ia32.c and
+ reloc_x86_64.c. These macros only exist in link.h on Linux. On FreeBSD, the
+ equivalent macro is __ElfN(). But the macro usage is redundant. You're only
+ going to compile the ia32 file for IA32 binaries and the x86_64 file for X64
+ binaries. If you had just one file built for both cases, then using the macro
+ might make more sense.
+
+- Removes the "#define foo_t efi_foo_t" macros from reloc_ia32.c and
+reloc_x86_64.c.
+
+- Modifies inc/x86_64/efibind.h and inc/ia32/efibind.h to use the new
+definitions for uint64_t, int64_t and int8_t. The 64-bit types are now defined
+as:
+
+        typedef int __attribute__((__mode__(__DI__)))           int64_t;
+        typedef unsigned int __attribute__((__mode__(__DI__)))  uint64_t;
+
+This removes the conflict between the host types dragged in by elf.h and the
+type definitions in efibind.h that made the #define foo_t efi_foo_t" hack
+necessary. Also, int8_t is now defined as signed char instead of just char
+(assuming char == signed char is apparently not good enough).
+
+- Also modifies these files to use stdint.h instead of stdint-gcc.h. It's
+unclear if this is completely correct, but stdint-gcc.h is not present with
+all GCC installs, and if you use -std=c99 or later you will force this case to
+be hit. This also can break clang, which doesn't have a stdint-gcc.h at all.
+
+- Removes the #include of <link.h> from reloc_ia32.c and reloc_x86_64.c (since
+with the previous changes it's not needed anymore).
+
+- Places the #include of <elf.h> after #include <efi>/#include <efilib.h> so
+that we know the types will always be defined properly, in case you build on a
+system where <elf.h> doesn't automatically pull in the right header files to
+define all the needed types. (This actually happens on VxWorks. It's harmless
+elsewhere. If you don't care about VxWorks, you can leave this out.)
+
+- Modifies setjmp_ia32.S and setjmp_x86_64.S so to change "function" to
+@function. The clang compiler doesn't like the former. Clang and GCC both like
+the latter.
+
+- Modifles Make.defaults so that if ARCH is detected as "amd64," it's changed
+to "x86_64." It happens that uname -m on 64-bit FreeBSD reports the former
+rather than the latter, which breaks the build. This may also be the case on
+some other OSes. There's a way to force uname(1) to return x86_64 as the
+machine type, but this way is a little friendlier.
+
+- Creates gnuefi/elf_ia32_fbsd_efi.lds which specifies the object file type as
+elf-ia32-freebsd. This is required for building on FreeBSD/i386, not just
+FreeBSD/amd64.
+
+- Modifies apps/Makefile to always use
+$(TOPDIR)/gnuefi/elf_$(ARCH)_fbsd_efi.lds when building on either 32-bit or
+64-bit FreeBSD instead of just for the x86_64 case.
+
+- Changed LDFLAGS in Make.defaults to include --no-undefined. This will cause
+linking to fail if there are any unsatisfied symbols when creating foo.so
+during any of the app builds, as opposed to just silently succeeding and
+producing an unusable binary.
+
+- Changed CFLAGS to include -ffreestanding -fno-stack-protector -fno-stack-
+check. This prevents clang from inserting a call to memset() when compiling
+the RtZeroMem() and RtSetMem() routines in lib/runtime/efirtlib.c and guards
+against the native compiler in some Linux distros from adding in stack
+checking code which relies on libc help that isn't present in the EFI runtime
+environment.
+
+This does the following:
+
+- Cleans up the ia32 and x86-64 relocation code a bit (tries to break the
+dependency between the host ELF headers and the EFI runtime environment)
+- Avoids the dependency on stdint-gcc.h which may not always be available
+- Allows GNU EFI to build out of the box on both FreeBSD/i386 and
+FreeBSD/amd64
+- Allows GNU EFI to build out of the box with either GCC or clang on
+FreeBSD/i386 and FreeBSD/amd64 9.0 and later.
+- Makes things a little easier to port to VxWorks
+- Avoids creating un-runable binaries with unresolved symbol definitions
+(which can be very confusing to debug)
+---
+ Make.defaults                |  8 +++--
+ apps/Makefile                |  4 +--
+ gnuefi/elf_ia32_fbsd_efi.lds | 75 ++++++++++++++++++++++++++++++++++++++++++++
+ gnuefi/reloc_ia32.c          | 33 ++++---------------
+ gnuefi/reloc_x86_64.c        | 34 ++++----------------
+ gnuefi/setjmp_ia32.S         |  2 +-
+ gnuefi/setjmp_x86_64.S       |  2 +-
+ inc/ia32/efibind.h           |  8 ++---
+ inc/ia64/efibind.h           |  2 +-
+ inc/x86_64/efibind.h         |  8 ++---
+ 10 files changed, 105 insertions(+), 71 deletions(-)
+ create mode 100644 gnuefi/elf_ia32_fbsd_efi.lds
+
+diff --git a/Make.defaults b/Make.defaults
+index 38da180..0585915 100644
+--- a/Make.defaults
++++ b/Make.defaults
+@@ -46,6 +46,10 @@ TOPDIR    := $(shell if [ "$$PWD" != "" ]; then echo $$PWD; else pwd; fi)
+ 
+ HOSTARCH   = $(shell uname -m | sed s,i[3456789]86,ia32,)
+ ARCH	   := $(shell uname -m | sed s,i[3456789]86,ia32,)
++# FreeBSD (and possibly others) reports amd64 instead of x86_64
++ifeq ($(ARCH), amd64)
++ARCH	   = x86_64
++endif
+ OS	   = $(shell uname -s)
+ INCDIR	   = -I$(SRCDIR) -I$(TOPDIR)/inc -I$(TOPDIR)/inc/$(ARCH) -I$(TOPDIR)/inc/protocol 
+ GCCVERSION := $(shell gcc -dumpversion | cut -f1 -d.)
+@@ -56,9 +60,9 @@ CPPFLAGS   = -DCONFIG_$(ARCH)
+ ifeq ($(GCCNEWENOUGH),1)
+ CPPFLAGS   += -DGNU_EFI_USE_MS_ABI -maccumulate-outgoing-args --std=c11
+ endif
+-CFLAGS	   = $(ARCH3264) -O2 -fpic -Wall -fshort-wchar -fno-strict-aliasing -fno-merge-constants
++CFLAGS	   = $(ARCH3264) -O2 -fpic -Wall -fshort-wchar -fno-strict-aliasing -fno-merge-constants -ffreestanding -fno-stack-protector -fno-stack-check
+ ASFLAGS    = $(ARCH3264)
+-LDFLAGS	   = -nostdlib
++LDFLAGS	   = -nostdlib --no-undefined
+ INSTALL	   = install
+ prefix     = /usr/bin/
+ 
+diff --git a/apps/Makefile b/apps/Makefile
+index 43db2f1..773bc08 100644
+--- a/apps/Makefile
++++ b/apps/Makefile
+@@ -48,10 +48,8 @@ CPPFLAGS	+= -D__KERNEL__ -I$(LINUX_HEADERS)/include
+ CRTOBJS		= ../gnuefi/crt0-efi-$(ARCH).o
+ 
+ LDSCRIPT	= $(TOPDIR)/gnuefi/elf_$(ARCH)_efi.lds
+-ifeq ($(ARCH),x86_64)
+- ifneq (,$(findstring FreeBSD,$(OS)))
++ifneq (,$(findstring FreeBSD,$(OS)))
+ LDSCRIPT	= $(TOPDIR)/gnuefi/elf_$(ARCH)_fbsd_efi.lds
+- endif
+ endif
+ 
+ LDFLAGS		+= -T $(LDSCRIPT) -shared -Bsymbolic -L../lib -L../gnuefi $(CRTOBJS)
+diff --git a/gnuefi/elf_ia32_fbsd_efi.lds b/gnuefi/elf_ia32_fbsd_efi.lds
+new file mode 100644
+index 0000000..bc25b1f
+--- /dev/null
++++ b/gnuefi/elf_ia32_fbsd_efi.lds
+@@ -0,0 +1,75 @@
++OUTPUT_FORMAT("elf32-i386-freebsd", "elf32-i386-freebsd", "elf32-i386-freebsd")
++OUTPUT_ARCH(i386)
++ENTRY(_start)
++SECTIONS
++{
++  . = 0;
++  ImageBase = .;
++  .hash : { *(.hash) }	/* this MUST come first! */
++  . = ALIGN(4096);
++  .text :
++  {
++   *(.text)
++   *(.text.*)
++   *(.gnu.linkonce.t.*)
++  }
++  . = ALIGN(4096);
++  .sdata :
++  {
++   *(.got.plt)
++   *(.got)
++   *(.srodata)
++   *(.sdata)
++   *(.sbss)
++   *(.scommon)
++  }
++  . = ALIGN(4096);
++  .data :
++  {
++   *(.rodata*)
++   *(.data)
++   *(.data1)
++   *(.data.*)
++   *(.sdata)
++   *(.got.plt)
++   *(.got)
++   /* the EFI loader doesn't seem to like a .bss section, so we stick
++      it all into .data: */
++   *(.sbss)
++   *(.scommon)
++   *(.dynbss)
++   *(.bss)
++   *(COMMON)
++  }
++  . = ALIGN(4096);
++  .dynamic  : { *(.dynamic) }
++  . = ALIGN(4096);
++  .rel :
++  {
++    *(.rel.data)
++    *(.rel.data.*)
++    *(.rel.got)
++    *(.rel.stab)
++    *(.data.rel.ro.local)
++    *(.data.rel.local)
++    *(.data.rel.ro)
++    *(.data.rel*)
++  }
++  . = ALIGN(4096);
++  .reloc :		/* This is the PECOFF .reloc section! */
++  {
++    *(.reloc)
++  }
++  . = ALIGN(4096);
++  .dynsym   : { *(.dynsym) }
++  . = ALIGN(4096);
++  .dynstr   : { *(.dynstr) }
++  . = ALIGN(4096);
++  /DISCARD/ :
++  {
++    *(.rel.reloc)
++    *(.eh_frame)
++    *(.note.GNU-stack)
++  }
++  .comment 0 : { *(.comment) }
++}
+diff --git a/gnuefi/reloc_ia32.c b/gnuefi/reloc_ia32.c
+index be57f4f..8d50a75 100644
+--- a/gnuefi/reloc_ia32.c
++++ b/gnuefi/reloc_ia32.c
+@@ -33,43 +33,22 @@
+     SUCH DAMAGE.
+ */
+ 
+-#include <elf.h>
+-#include <link.h>	/* get _DYNAMIC decl and ElfW and ELFW macros */
+-
+-#undef NULL
+-#define uint64_t	efi_uint64_t
+-#define int64_t		efi_int64_t
+-#define uint32_t	efi_uint32_t
+-#define int32_t		efi_int32_t
+-#define uint16_t	efi_uint16_t
+-#define int16_t		efi_int16_t
+-#define uint8_t		efi_uint8_t
+-#define int8_t		efi_int8_t
+-
+-#undef NULL
+-#define uint64_t	efi_uint64_t
+-#define int64_t		efi_int64_t
+-#define uint32_t	efi_uint32_t
+-#define int32_t		efi_int32_t
+-#define uint16_t	efi_uint16_t
+-#define int16_t		efi_int16_t
+-#define uint8_t		efi_uint8_t
+-#define int8_t		efi_int8_t
+-
+ #include <efi.h>
+ #include <efilib.h>
+ 
+-EFI_STATUS _relocate (long ldbase, ElfW(Dyn) *dyn, EFI_HANDLE image, EFI_SYSTEM_TABLE *systab)
++#include <elf.h>
++
++EFI_STATUS _relocate (long ldbase, Elf32_Dyn *dyn, EFI_HANDLE image, EFI_SYSTEM_TABLE *systab)
+ {
+ 	long relsz = 0, relent = 0;
+-	ElfW(Rel) *rel = 0;
++	Elf32_Rel *rel = 0;
+ 	unsigned long *addr;
+ 	int i;
+ 
+ 	for (i = 0; dyn[i].d_tag != DT_NULL; ++i) {
+ 		switch (dyn[i].d_tag) {
+ 			case DT_REL:
+-				rel = (ElfW(Rel)*)
++				rel = (Elf32_Rel*)
+ 					((unsigned long)dyn[i].d_un.d_ptr
+ 					 + ldbase);
+ 				break;
+@@ -111,7 +90,7 @@ EFI_STATUS _relocate (long ldbase, ElfW(Dyn) *dyn, EFI_HANDLE image, EFI_SYSTEM_
+ 			default:
+ 				break;
+ 		}
+-		rel = (ElfW(Rel)*) ((char *) rel + relent);
++		rel = (Elf32_Rel*) ((char *) rel + relent);
+ 		relsz -= relent;
+ 	}
+ 	return EFI_SUCCESS;
+diff --git a/gnuefi/reloc_x86_64.c b/gnuefi/reloc_x86_64.c
+index 4593125..04b4ddb 100644
+--- a/gnuefi/reloc_x86_64.c
++++ b/gnuefi/reloc_x86_64.c
+@@ -35,44 +35,22 @@
+     SUCH DAMAGE.
+ */
+ 
+-#include <elf.h>
+-#include <link.h>	/* get _DYNAMIC decl and ElfW and ELFW macros */
+-
+-
+-#undef NULL
+-#define uint64_t	efi_uint64_t
+-#define int64_t		efi_int64_t
+-#define uint32_t	efi_uint32_t
+-#define int32_t		efi_int32_t
+-#define uint16_t	efi_uint16_t
+-#define int16_t		efi_int16_t
+-#define uint8_t		efi_uint8_t
+-#define int8_t		efi_int8_t
+-
+-#undef NULL
+-#define uint64_t	efi_uint64_t
+-#define int64_t		efi_int64_t
+-#define uint32_t	efi_uint32_t
+-#define int32_t		efi_int32_t
+-#define uint16_t	efi_uint16_t
+-#define int16_t		efi_int16_t
+-#define uint8_t		efi_uint8_t
+-#define int8_t		efi_int8_t
+-
+ #include <efi.h>
+ #include <efilib.h>
+ 
+-EFI_STATUS _relocate (long ldbase, ElfW(Dyn) *dyn, EFI_HANDLE image, EFI_SYSTEM_TABLE *systab)
++#include <elf.h>
++
++EFI_STATUS _relocate (long ldbase, Elf64_Dyn *dyn, EFI_HANDLE image, EFI_SYSTEM_TABLE *systab)
+ {
+ 	long relsz = 0, relent = 0;
+-	ElfW(Rel) *rel = 0;
++	Elf64_Rel *rel = 0;
+ 	unsigned long *addr;
+ 	int i;
+ 
+ 	for (i = 0; dyn[i].d_tag != DT_NULL; ++i) {
+ 		switch (dyn[i].d_tag) {
+ 			case DT_RELA:
+-				rel = (ElfW(Rel)*)
++				rel = (Elf64_Rel*)
+ 					((unsigned long)dyn[i].d_un.d_ptr
+ 					 + ldbase);
+ 				break;
+@@ -111,7 +89,7 @@ EFI_STATUS _relocate (long ldbase, ElfW(Dyn) *dyn, EFI_HANDLE image, EFI_SYSTEM_
+ 			default:
+ 				break;
+ 		}
+-		rel = (ElfW(Rel)*) ((char *) rel + relent);
++		rel = (Elf64_Rel*) ((char *) rel + relent);
+ 		relsz -= relent;
+ 	}
+ 	return EFI_SUCCESS;
+diff --git a/gnuefi/setjmp_ia32.S b/gnuefi/setjmp_ia32.S
+index b22ef02..5f71caf 100644
+--- a/gnuefi/setjmp_ia32.S
++++ b/gnuefi/setjmp_ia32.S
+@@ -55,7 +55,7 @@
+  */
+ 
+ #define EXT_C(sym) sym
+-#define FUNCTION(x)     .globl EXT_C(x) ; .type EXT_C(x), "function" ; EXT_C(x):
++#define FUNCTION(x)     .globl EXT_C(x) ; .type EXT_C(x), @function ; EXT_C(x):
+ 
+ 	.file	"setjmp.S"
+ 
+diff --git a/gnuefi/setjmp_x86_64.S b/gnuefi/setjmp_x86_64.S
+index b3561e4..6ef9378 100644
+--- a/gnuefi/setjmp_x86_64.S
++++ b/gnuefi/setjmp_x86_64.S
+@@ -17,7 +17,7 @@
+  */
+ 
+ #define EXT_C(sym) sym
+-#define FUNCTION(x)     .globl EXT_C(x) ; .type EXT_C(x), "function" ; EXT_C(x):
++#define FUNCTION(x)     .globl EXT_C(x) ; .type EXT_C(x), @function ; EXT_C(x):
+ 
+ 	.file	"setjmp.S"
+ 
+diff --git a/inc/ia32/efibind.h b/inc/ia32/efibind.h
+index 722542c..deb9d16 100644
+--- a/inc/ia32/efibind.h
++++ b/inc/ia32/efibind.h
+@@ -42,14 +42,14 @@ Revision History
+         typedef unsigned char       uint8_t;
+         typedef char                int8_t;
+     #elif defined(__GNUC__)
+-        typedef unsigned long long  uint64_t __attribute__((aligned (8)));
+-        typedef long long           int64_t __attribute__((aligned (8)));
++        typedef int __attribute__((__mode__(__DI__)))           int64_t;
++        typedef unsigned int __attribute__((__mode__(__DI__)))  uint64_t;
+         typedef unsigned int        uint32_t;
+         typedef int                 int32_t;
+         typedef unsigned short      uint16_t;
+         typedef short               int16_t;
+         typedef unsigned char       uint8_t;
+-        typedef char                int8_t;
++        typedef signed char         int8_t;
+     #elif defined(UNIX_LP64)
+ 
+         /*  Use LP64 programming model from C_FLAGS for integer width declarations */
+@@ -76,7 +76,7 @@ Revision History
+        typedef char                int8_t;
+     #endif
+ #elif defined(__GNUC__)
+-    #include <stdint-gcc.h>
++    #include <stdint.h>
+ #endif
+ 
+ //
+diff --git a/inc/ia64/efibind.h b/inc/ia64/efibind.h
+index a1bf3fb..6926876 100644
+--- a/inc/ia64/efibind.h
++++ b/inc/ia64/efibind.h
+@@ -63,7 +63,7 @@ Revision History
+         typedef char                int8_t;
+     #endif
+ #elif defined(__GNUC__)
+-    #include <stdint-gcc.h>
++    #include <stdint.h>
+ #endif
+ 
+ //
+diff --git a/inc/x86_64/efibind.h b/inc/x86_64/efibind.h
+index 27c9638..ee620f2 100644
+--- a/inc/x86_64/efibind.h
++++ b/inc/x86_64/efibind.h
+@@ -51,14 +51,14 @@ Revision History
+         typedef unsigned char       uint8_t;
+         typedef char                int8_t;
+     #elif defined(__GNUC__)
+-        typedef unsigned long long  uint64_t __attribute__((aligned (8)));
+-        typedef long long           int64_t __attribute__((aligned (8)));
++        typedef int __attribute__((__mode__(__DI__)))           int64_t;
++        typedef unsigned int __attribute__((__mode__(__DI__)))  uint64_t;
+         typedef unsigned int        uint32_t;
+         typedef int                 int32_t;
+         typedef unsigned short      uint16_t;
+         typedef short               int16_t;
+         typedef unsigned char       uint8_t;
+-        typedef char                int8_t;
++        typedef signed char         int8_t;
+     #elif defined(UNIX_LP64)
+ 
+         /*  Use LP64 programming model from C_FLAGS for integer width declarations */
+@@ -85,7 +85,7 @@ Revision History
+        typedef char                int8_t;
+     #endif
+ #elif defined(__GNUC__)
+-    #include <stdint-gcc.h>
++    #include <stdint.h>
+ #endif
+ 
+ //
+-- 
+1.8.2.1
+

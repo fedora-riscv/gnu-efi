@@ -1,19 +1,14 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
-Version: 3.0s
-Release: 2%{?dist}
+Version: 3.0t
+Release: 0.1%{?dist}
 Group: Development/System
 License: BSD 
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
 Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi_%{version}.orig.tar.gz
-Patch0: gnu-efi-3.0q-Fix-usage-of-INSTALLROOT-PREFIX-and-LIBDIR.patch
-Patch1: gnu-efi-3.0q-route80h.patch
-Patch2: gnu-efi-3.0q-modelist.patch
-Patch3: gnu-efi-3.0q-route80h-add-cougarpoint.patch
-Patch4: gnu-efi-3.0q-machine-types.patch
-Patch5: gnu-efi-3.0q-handle-uninitialized-gop.patch
-Patch6: gnu-efi-3.0q-Add-.S-and-.E-rules.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Patch01: 0001-Removes-the-ElfW-macro-usage-from-reloc_ia32.c-and-r.patch
+Patch02: 0001-Disable-MMX-and-SSE.patch
 ExclusiveArch: i686 x86_64 ia64
 BuildRequires: git
 
@@ -62,6 +57,10 @@ rm -rf %{buildroot}
 %attr(0644,root,root) /boot/efi/EFI/redhat/*.efi
 
 %changelog
+* Fri Jun 07 2013 Peter Jones <pjones@redhat.com> - 3.0t-0.1
+- Update to 3.0t
+- Don't allow use of mmx or sse registers.
+
 * Thu May 16 2013 Peter Jones <pjones@redhat.com> - 3.0s-2
 - Update to 3.0s
   Related: rhbz#963359
