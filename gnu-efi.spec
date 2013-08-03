@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0t
-Release: 0.1%{?dist}
+Release: 0.2%{?dist}
 Group: Development/System
 License: BSD 
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
@@ -57,6 +57,9 @@ rm -rf %{buildroot}
 %attr(0644,root,root) /boot/efi/EFI/redhat/*.efi
 
 %changelog
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0t-0.2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Fri Jun 07 2013 Peter Jones <pjones@redhat.com> - 3.0t-0.1
 - Update to 3.0t
 - Don't allow use of mmx or sse registers.
