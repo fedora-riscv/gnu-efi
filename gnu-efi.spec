@@ -1,22 +1,47 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
-Version: 3.0t
+Version: 3.0u
 Release: 0.2%{?dist}
 Group: Development/System
 License: BSD 
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
 Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi_%{version}.orig.tar.gz
+Patch0001: 0001-fix-compilation-on-x86_64-without-HAVE_USE_MS_ABI.patch
+Patch0002: 0002-be-more-pedantic-when-linking.patch
+Patch0003: 0003-Sample-boot-service-driver.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Patch01: 0001-Removes-the-ElfW-macro-usage-from-reloc_ia32.c-and-r.patch
-Patch02: 0001-Disable-MMX-and-SSE.patch
 ExclusiveArch: i686 x86_64 ia64
 BuildRequires: git
 
 %define debug_package %{nil}
 
+# Figure out the right file path to use
+%if 0%{?rhel}
+%global efidir redhat
+%endif
+%if 0%{?fedora}
+%global efidir fedora
+%endif
+
 %description
 This package contains development headers and libraries for developing
 applications that run under EFI (Extensible Firmware Interface).
+
+%package devel
+Summary: Development Libraries and headers for EFI
+Group: Development/System
+Obsoletes: gnu-efi < %{version}-%{release}
+
+%description devel
+This package contains development headers and libraries for developing
+applications that run under EFI (Extensible Firmware Interface).
+
+%package utils
+Summary: Utilities for EFI systems
+Group: Applications/System
+
+%description utils
+This package contains utilties for debugging and developing EFI systems.
 
 %prep
 %setup -q -n gnu-efi-3.0
@@ -42,21 +67,30 @@ mkdir -p %{buildroot}/%{_libdir}/gnuefi
 mv %{buildroot}/%{_libdir}/*.lds %{buildroot}/%{_libdir}/*.o %{buildroot}/%{_libdir}/gnuefi
 
 make -C apps clean route80h.efi modelist.efi
-mkdir -p %{buildroot}/boot/efi/EFI/redhat/
-mv apps/{route80h.efi,modelist.efi} %{buildroot}/boot/efi/EFI/redhat/
+mkdir -p %{buildroot}/boot/efi/EFI/%{efidir}/
+mv apps/{route80h.efi,modelist.efi} %{buildroot}/boot/efi/EFI/%{efidir}/
 
 %clean
 rm -rf %{buildroot}
 
 %files
+%{_libdir}/*
+
+%files devel
 %defattr(-,root,root,-)
 %doc README.* ChangeLog
 %{_includedir}/efi
-%{_libdir}/*
-%dir /boot/efi/EFI/redhat/
-%attr(0644,root,root) /boot/efi/EFI/redhat/*.efi
+
+%files utils
+%dir /boot/efi/EFI/%{efidir}/
+%attr(0644,root,root) /boot/efi/EFI/%{efidir}/*.efi
 
 %changelog
+* Tue Sep 24 2013 Peter Jones <pjones@redhat.com> - 3.0u-0.1
+- Update to 3.0u
+- Split out subpackages so -devel can be multilib
+- Fix path in apps subpackage to vary by distro.
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0t-0.2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
