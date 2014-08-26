@@ -1,14 +1,12 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
-Version: 3.0u
-Release: 0.4%{?dist}
+Version: 3.0w
+Release: 0.1%{?dist}
 Group: Development/System
 License: BSD 
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
 Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi_%{version}.orig.tar.gz
-Patch0001: 0001-fix-compilation-on-x86_64-without-HAVE_USE_MS_ABI.patch
-Patch0002: 0002-be-more-pedantic-when-linking.patch
-Patch0003: 0003-Sample-boot-service-driver.patch
+Patch0: build-fix.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: %{ix86} x86_64 ia64
 BuildRequires: git
@@ -86,6 +84,11 @@ rm -rf %{buildroot}
 %attr(0644,root,root) /boot/efi/EFI/%{efidir}/*.efi
 
 %changelog
+* Fri Aug 22 2014 Kyle McMartin <kyle@fedoraproject.org> - 3.0w-0.1
+- New upstream version 3.0w
+- Add pjones' build fixes patch from that other distro.
+- Enable AArch64
+
 * Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0u-0.4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
