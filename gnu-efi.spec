@@ -10,7 +10,7 @@ Patch0001: 0001-fix-compilation-on-x86_64-without-HAVE_USE_MS_ABI.patch
 Patch0002: 0002-be-more-pedantic-when-linking.patch
 Patch0003: 0003-Sample-boot-service-driver.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-ExclusiveArch: i686 x86_64 ia64
+ExclusiveArch: %{ix86} x86_64 ia64
 BuildRequires: git
 
 %define debug_package %{nil}
