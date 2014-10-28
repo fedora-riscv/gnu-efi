@@ -8,7 +8,7 @@ URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
 Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi_%{version}.orig.tar.gz
 Patch0: build-fix.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-ExclusiveArch: %{ix86} x86_64 ia64
+ExclusiveArch: %{ix86} x86_64 ia64 aarch64
 BuildRequires: git
 
 %define debug_package %{nil}
