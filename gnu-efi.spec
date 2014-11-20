@@ -1,15 +1,20 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0w
-Release: 0.1%{?dist}
+Release: 2%{?dist}
 Group: Development/System
 License: BSD 
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
-Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi_%{version}.orig.tar.gz
-Patch0: build-fix.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: %{ix86} x86_64 ia64 aarch64
 BuildRequires: git
+
+Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi_%{version}.orig.tar.gz
+Patch0001: 0001-Make-gnuefi-build-and-install-right.patch
+Patch0002: 0002-Make-command-lines-work-with-FreeBSD-s-objcopy-versi.patch
+Patch0003: 0003-Add-the-capsule-API.patch
+Patch0004: 0004-Add-the-QueryVariableInfo-API.patch
+Patch0005: 0005-Add-current-OsIndications-values.patch
 
 %define debug_package %{nil}
 
@@ -84,6 +89,10 @@ rm -rf %{buildroot}
 %attr(0644,root,root) /boot/efi/EFI/%{efidir}/*.efi
 
 %changelog
+* Thu Nov 20 2014 Peter Jones <pjones@redhat.com> - 3.0w-2
+- Use patches upstream is going to take for the build fixes
+- Add some new protocol definitons.
+
 * Fri Aug 22 2014 Kyle McMartin <kyle@fedoraproject.org> - 3.0w-0.1
 - New upstream version 3.0w
 - Add pjones' build fixes patch from that other distro.

@@ -1,0 +1,41 @@
+From 99050251a94d1cf2179cc614e9a9b19277afea5f Mon Sep 17 00:00:00 2001
+From: Peter Jones <pjones@redhat.com>
+Date: Thu, 20 Nov 2014 13:43:38 -0500
+Subject: [PATCH 4/5] Add the QueryVariableInfo() API.
+
+Signed-off-by: Peter Jones <pjones@redhat.com>
+---
+ gnu-efi-3.0/inc/efiapi.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/gnu-efi-3.0/inc/efiapi.h b/gnu-efi-3.0/inc/efiapi.h
+index a3e3fd9..708c67f 100644
+--- a/gnu-efi-3.0/inc/efiapi.h
++++ b/gnu-efi-3.0/inc/efiapi.h
+@@ -621,6 +621,15 @@ EFI_STATUS
+     OUT EFI_RESET_TYPE           *ResetType
+     );
+ 
++typedef
++EFI_STATUS
++(EFIAPI *EFI_QUERY_VARIABLE_INFO) (
++    IN  UINT32                  Attributes,
++    OUT UINT64                  *MaximumVariableStorageSize,
++    OUT UINT64                  *RemainingVariableStorageSize,
++    OUT UINT64                  *MaximumVariableSize
++    );
++
+ //
+ // Protocol handler functions
+ //
+@@ -758,6 +767,7 @@ typedef struct  {
+ 
+     EFI_UPDATE_CAPSULE              UpdateCapsule;
+     EFI_QUERY_CAPSULE_CAPABILITIES  QueryCapsuleCapabilities;
++    EFI_QUERY_VARIABLE_INFO         QueryVariableInfo;
+ } EFI_RUNTIME_SERVICES;
+ 
+ 
+-- 
+2.1.0
+
