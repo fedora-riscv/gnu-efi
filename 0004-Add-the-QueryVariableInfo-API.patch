@@ -5,13 +5,13 @@ Subject: [PATCH 4/5] Add the QueryVariableInfo() API.
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
- gnu-efi-3.0/inc/efiapi.h | 10 ++++++++++
+ inc/efiapi.h | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
-diff --git a/gnu-efi-3.0/inc/efiapi.h b/gnu-efi-3.0/inc/efiapi.h
+diff --git a/inc/efiapi.h b/inc/efiapi.h
 index a3e3fd9..708c67f 100644
---- a/gnu-efi-3.0/inc/efiapi.h
-+++ b/gnu-efi-3.0/inc/efiapi.h
+--- a/inc/efiapi.h
++++ b/inc/efiapi.h
 @@ -621,6 +621,15 @@ EFI_STATUS
      OUT EFI_RESET_TYPE           *ResetType
      );

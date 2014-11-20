@@ -5,13 +5,13 @@ Subject: [PATCH 5/5] Add current OsIndications values.
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
- gnu-efi-3.0/inc/efidef.h | 9 +++++++++
+ inc/efidef.h | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/gnu-efi-3.0/inc/efidef.h b/gnu-efi-3.0/inc/efidef.h
+diff --git a/inc/efidef.h b/inc/efidef.h
 index 666b193..8b70051 100644
---- a/gnu-efi-3.0/inc/efidef.h
-+++ b/gnu-efi-3.0/inc/efidef.h
+--- a/inc/efidef.h
++++ b/inc/efidef.h
 @@ -208,4 +208,13 @@ typedef UINT8   ISO_639_2;
  #define EFI_SIZE_TO_PAGES(a)  \
      ( ((a) >> EFI_PAGE_SHIFT) + ((a) & EFI_PAGE_MASK ? 1 : 0) )

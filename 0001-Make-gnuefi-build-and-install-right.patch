@@ -11,14 +11,14 @@ stuff on the fly.
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
- gnu-efi-3.0/gnuefi/Makefile | 34 ++++++++++++----------------------
- gnu-efi-3.0/inc/Makefile    | 36 +++++++++++-------------------------
+ gnuefi/Makefile | 34 ++++++++++++----------------------
+ inc/Makefile    | 36 +++++++++++-------------------------
  2 files changed, 23 insertions(+), 47 deletions(-)
 
-diff --git a/gnu-efi-3.0/gnuefi/Makefile b/gnu-efi-3.0/gnuefi/Makefile
+diff --git a/gnuefi/Makefile b/gnuefi/Makefile
 index 4717227..d234ac0 100644
---- a/gnu-efi-3.0/gnuefi/Makefile
-+++ b/gnu-efi-3.0/gnuefi/Makefile
+--- a/gnuefi/Makefile
++++ b/gnuefi/Makefile
 @@ -52,19 +52,6 @@ reloc_aarch64.o: CFLAGS += -fno-jump-tables
  
  TARGETS	= crt0-efi-$(ARCH).o libgnuefi.a
@@ -66,10 +66,10 @@ index 4717227..d234ac0 100644
 +endif
  
  include $(SRCDIR)/../Make.rules
-diff --git a/gnu-efi-3.0/inc/Makefile b/gnu-efi-3.0/inc/Makefile
+diff --git a/inc/Makefile b/inc/Makefile
 index 526af22..71fded5 100644
---- a/gnu-efi-3.0/inc/Makefile
-+++ b/gnu-efi-3.0/inc/Makefile
+--- a/inc/Makefile
++++ b/inc/Makefile
 @@ -8,34 +8,20 @@ TOPDIR = $(SRCDIR)/..
  
  CDIR=$(TOPDIR)/..
