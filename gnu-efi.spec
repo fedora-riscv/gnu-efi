@@ -1,20 +1,15 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
-Version: 3.0w
-Release: 2%{?dist}
+Version: 3.0.1
+Release: 1%{?dist}
+Epoch:	1
 Group: Development/System
 License: BSD 
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: %{ix86} x86_64 ia64 aarch64
 BuildRequires: git
-
-Source: ftp://ftp.hpl.hp.com/pub/linux-ia64/gnu-efi_%{version}.orig.tar.gz
-Patch0001: 0001-Make-gnuefi-build-and-install-right.patch
-Patch0002: 0002-Make-command-lines-work-with-FreeBSD-s-objcopy-versi.patch
-Patch0003: 0003-Add-the-capsule-API.patch
-Patch0004: 0004-Add-the-QueryVariableInfo-API.patch
-Patch0005: 0005-Add-current-OsIndications-values.patch
+Source: http://superb-dca2.dl.sourceforge.net/project/gnu-efi/gnu-efi-%{version}.tar.bz2
 
 %define debug_package %{nil}
 
@@ -47,13 +42,15 @@ Group: Applications/System
 This package contains utilties for debugging and developing EFI systems.
 
 %prep
-%setup -q -n gnu-efi-3.0
+%setup -q -n gnu-efi-%{version}
 git init
 git config user.email "pjones@fedoraproject.org"
 git config user.name "Fedora Ninjas"
 git add .
 git commit -a -q -m "%{version} baseline."
 git am %{patches} </dev/null
+git config --unset user.email
+git config --unset user.name
 
 %build
 # Package cannot build with %{?_smp_mflags}.
@@ -89,6 +86,10 @@ rm -rf %{buildroot}
 %attr(0644,root,root) /boot/efi/EFI/%{efidir}/*.efi
 
 %changelog
+* Tue Mar 10 2015 Peter Jones <pjones@redhat.com> - 3.0.1-1
+- Update to 3.0.1
+- New versioning scheme!
+
 * Thu Nov 20 2014 Peter Jones <pjones@redhat.com> - 3.0w-2
 - Use patches upstream is going to take for the build fixes
 - Add some new protocol definitons.
