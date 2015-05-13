@@ -1,6 +1,6 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
-Version: 3.0.1
+Version: 3.0.2
 Release: 1%{?dist}
 Epoch:	1
 Group: Development/System
@@ -10,16 +10,12 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: %{ix86} x86_64 ia64 aarch64
 BuildRequires: git
 Source: http://superb-dca2.dl.sourceforge.net/project/gnu-efi/gnu-efi-%{version}.tar.bz2
+Patch0001: 0001-Add-setjmp-back-once-again.patch
 
 %define debug_package %{nil}
 
 # Figure out the right file path to use
-%if 0%{?rhel}
-%global efidir redhat
-%endif
-%if 0%{?fedora}
-%global efidir fedora
-%endif
+%global efidir %(eval grep ^ID= /etc/os-release | sed -e 's/^ID=//' -e 's/rhel/redhat/')
 
 %description
 This package contains development headers and libraries for developing
@@ -28,7 +24,8 @@ applications that run under EFI (Extensible Firmware Interface).
 %package devel
 Summary: Development Libraries and headers for EFI
 Group: Development/System
-Obsoletes: gnu-efi < %{version}-%{release}
+Obsoletes: gnu-efi < 3.0.1-1
+Requires: gnu-efi
 
 %description devel
 This package contains development headers and libraries for developing
@@ -44,8 +41,9 @@ This package contains utilties for debugging and developing EFI systems.
 %prep
 %setup -q -n gnu-efi-%{version}
 git init
-git config user.email "pjones@fedoraproject.org"
+git config user.email "gnu-efi-owner@fedoraproject.org"
 git config user.name "Fedora Ninjas"
+git config sendemail.to "gnu-efi-owner@fedoraproject.org"
 git add .
 git commit -a -q -m "%{version} baseline."
 git am %{patches} </dev/null
@@ -86,6 +84,11 @@ rm -rf %{buildroot}
 %attr(0644,root,root) /boot/efi/EFI/%{efidir}/*.efi
 
 %changelog
+* Wed May 13 2015 Peter Jones <pjones@redhat.com> - 3.0.2-1
+- Update to 3.0.2
+- Fix base package requirement on subpackages
+- Add setjmp, because this is my life.
+
 * Tue Mar 10 2015 Peter Jones <pjones@redhat.com> - 3.0.1-1
 - Update to 3.0.1
 - New versioning scheme!
