@@ -17,6 +17,16 @@ Patch0001: 0001-Add-setjmp-back-once-again.patch
 # Figure out the right file path to use
 %global efidir %(eval grep ^ID= /etc/os-release | sed -e 's/^ID=//' -e 's/rhel/redhat/')
 
+%ifarch x86_64
+%global efiarch x86_64
+%endif
+%ifarch aarch64
+%global efiarch aarch64
+%endif
+%ifarch %{ix86}
+%global efiarch ia32
+%endif
+
 %description
 This package contains development headers and libraries for developing
 applications that run under EFI (Extensible Firmware Interface).
@@ -53,6 +63,7 @@ git config --unset user.name
 %build
 # Package cannot build with %{?_smp_mflags}.
 make
+make apps
 
 %install
 rm -rf %{buildroot}
@@ -64,9 +75,8 @@ make PREFIX=%{_prefix} LIBDIR=%{_libdir} INSTALLROOT=%{buildroot} install
 mkdir -p %{buildroot}/%{_libdir}/gnuefi
 mv %{buildroot}/%{_libdir}/*.lds %{buildroot}/%{_libdir}/*.o %{buildroot}/%{_libdir}/gnuefi
 
-make -C apps clean route80h.efi modelist.efi
 mkdir -p %{buildroot}/boot/efi/EFI/%{efidir}/
-mv apps/{route80h.efi,modelist.efi} %{buildroot}/boot/efi/EFI/%{efidir}/
+mv %{efiarch}/apps/{route80h.efi,modelist.efi} %{buildroot}/boot/efi/EFI/%{efidir}/
 
 %clean
 rm -rf %{buildroot}
