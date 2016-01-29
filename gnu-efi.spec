@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 Epoch:	1
 Group: Development/System
 License: BSD 
@@ -15,7 +15,7 @@ Patch0001: 0001-Add-setjmp-back-once-again.patch
 %define debug_package %{nil}
 
 # Figure out the right file path to use
-%global efidir %(eval grep ^ID= /etc/os-release | sed -e 's/^ID=//' -e 's/rhel/redhat/')
+%global efidir %(eval echo $(grep ^ID= /etc/os-release | sed -e 's/^ID=//' -e 's/rhel/redhat/'))
 
 %ifarch x86_64
 %global efiarch x86_64
@@ -94,6 +94,9 @@ rm -rf %{buildroot}
 %attr(0644,root,root) /boot/efi/EFI/%{efidir}/*.efi
 
 %changelog
+* Fri Jan 29 2016 Dan Horák <dan[at]danny.cz> - 1:3.0.2-3
+- use safer method to evaluate %%efidir
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:3.0.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
