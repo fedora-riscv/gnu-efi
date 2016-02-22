@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
-Version: 3.0.2
-Release: 4%{?dist}
+Version: 3.0.3
+Release: 1%{?dist}
 Epoch:	1
 Group: Development/System
 License: BSD 
@@ -10,7 +10,6 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: %{ix86} x86_64 ia64 aarch64
 BuildRequires: git
 Source: http://superb-dca2.dl.sourceforge.net/project/gnu-efi/gnu-efi-%{version}.tar.bz2
-Patch0001: 0001-Add-setjmp-back-once-again.patch
 
 %define debug_package %{nil}
 
@@ -94,6 +93,9 @@ rm -rf %{buildroot}
 %attr(0644,root,root) /boot/efi/EFI/%{efidir}/*.efi
 
 %changelog
+* Mon Feb 22 2016 Peter Jones <pjones@redhat.com> - 3.0.3-1
+- Rebase to 3.0.3
+
 * Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 1:3.0.2-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
