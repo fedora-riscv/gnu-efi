@@ -23,6 +23,9 @@ Patch0001: 0001-Explicitly-place-our-build-id-notes.patch
 %ifarch aarch64
 %global efiarch aarch64
 %endif
+%ifarch %{arm}
+%global efiarch arm
+%endif
 %ifarch %{ix86}
 %global efiarch ia32
 %endif
