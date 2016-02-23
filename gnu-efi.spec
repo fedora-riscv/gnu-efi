@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0.3
-Release: 2%{?dist}
+Release: 3%{?dist}
 Epoch:	1
 Group: Development/System
 License: BSD 
@@ -10,7 +10,16 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: %{ix86} x86_64 ia64 aarch64
 BuildRequires: git
 Source: http://superb-dca2.dl.sourceforge.net/project/gnu-efi/gnu-efi-%{version}.tar.bz2
-Patch0001: 0001-Explicitly-place-our-build-id-notes.patch
+Patch0001: 0001-Add-the-missing-URI-device-path-to-the-unions.patch
+Patch0002: 0002-From-Pete-Batard-pete-akeo.ie.patch
+Patch0003: 0003-From-Pete-Batard-pete-akeo.ie.patch
+Patch0004: 0004-From-Julian-Andres-Klode-jak-debian.org.patch
+Patch0005: 0005-From-Ard-Biesheuvel-ard.biesheuvel-linaro.org.patch
+Patch0006: 0006-From-Ard-Biesheuvel-ard.biesheuvel-linaro.org.patch
+Patch0007: 0007-From-Ard-Biesheuvel-ard.biesheuvel-linaro.org.patch
+Patch0008: 0008-From-Ard-Biesheuvel-ard.biesheuvel-linaro.org.patch
+Patch0009: 0009-arm-fix-linker-script-for-building-efi-binaries.patch
+Patch0010: 0010-Explicitly-place-our-build-id-notes-on-all-arches.patch
 
 %define debug_package %{nil}
 
@@ -97,6 +106,10 @@ rm -rf %{buildroot}
 %attr(0644,root,root) /boot/efi/EFI/%{efidir}/*.efi
 
 %changelog
+* Tue Feb 23 2016 Peter Jones <pjones@redhat.com> - 3.0.3-3
+- Include patches from upstream that are after 3.0.3 This should fix the arm
+  and aarch64 builds.
+
 * Tue Feb 23 2016 Peter Jones <pjones@redhat.com> - 3.0.3-2
 - We still need build-id patches in some places.
 
