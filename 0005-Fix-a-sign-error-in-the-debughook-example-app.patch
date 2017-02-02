@@ -1,0 +1,26 @@
+From 82e20ab31675b5177e0e05ad26c12d84ff632bc0 Mon Sep 17 00:00:00 2001
+From: Peter Jones <pjones@redhat.com>
+Date: Thu, 2 Feb 2017 15:25:48 -0500
+Subject: [PATCH] Fix a sign error in the debughook example app
+
+Signed-off-by: Peter Jones <pjones@redhat.com>
+---
+ apps/debughook.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/apps/debughook.c b/apps/debughook.c
+index fb6cdad..9888173 100644
+--- a/apps/debughook.c
++++ b/apps/debughook.c
+@@ -66,7 +66,7 @@ DebugHook(void)
+ 	while (x++) {
+ 		/* Make this so it can't /totally/ DoS us. */
+ #if defined(__x86_64__) || defined(__i386__) || defined(__i686__)
+-		if (x > 4294967294)
++		if (x > 4294967294ULL)
+ 			break;
+ 		__asm__ __volatile__("pause");
+ #elif defined(__aarch64__)
+-- 
+2.9.3
+

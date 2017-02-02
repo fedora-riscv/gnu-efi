@@ -14,6 +14,8 @@ Source: http://superb-dca2.dl.sourceforge.net/project/gnu-efi/gnu-efi-%{version}
 Patch0001: 0001-Mark-our-explicit-fall-through-so-Wextra-will-work-i.patch
 Patch0002: 0002-Fix-some-types-gcc-doesn-t-like.patch
 Patch0003: 0003-Fix-arm-build-paths-in-the-makefile.patch
+Patch0004: 0004-Work-around-Werror-maybe-uninitialized-not-being-ver.patch
+Patch0005: 0005-Fix-a-sign-error-in-the-debughook-example-app.patch
 
 %define debug_package %{nil}
 

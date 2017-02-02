@@ -1,0 +1,27 @@
+From a031ddee7c78a7d66d214da8f5cd329641b1e6a8 Mon Sep 17 00:00:00 2001
+From: Peter Jones <pjones@redhat.com>
+Date: Thu, 2 Feb 2017 15:23:55 -0500
+Subject: [PATCH] Work around -Werror=maybe-uninitialized not being very
+ bright.
+
+Signed-off-by: Peter Jones <pjones@redhat.com>
+---
+ apps/route80h.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/apps/route80h.c b/apps/route80h.c
+index 723dd85..bf550a1 100644
+--- a/apps/route80h.c
++++ b/apps/route80h.c
+@@ -102,7 +102,7 @@ efi_main (EFI_HANDLE image_handle, EFI_SYSTEM_TABLE *systab)
+ 	InitializeLib(image_handle, systab);
+ 	EFI_PCI_IO *pciio = NULL;
+ 	lpcif_t lpcif;
+-	EFI_STATUS rc;
++	EFI_STATUS rc = EFI_SUCCESS;
+ 	struct {
+ 		uint16_t vendor;
+ 		uint16_t device;
+-- 
+2.9.3
+
