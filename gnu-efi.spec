@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0.5
-Release: 3%{?dist}
+Release: 4%{?dist}
 Epoch:	1
 Group: Development/System
 License: BSD 
@@ -102,6 +102,9 @@ rm -rf %{buildroot}
 %attr(0644,root,root) /boot/efi/EFI/%{efidir}/*.efi
 
 %changelog
+* Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1:3.0.5-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
 * Thu Feb 02 2017 Peter Jones <pjones@redhat.com> - 3.0.5-3
 - Update to 3.0.5
 
