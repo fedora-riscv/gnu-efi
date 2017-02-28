@@ -1,0 +1,26 @@
+From 0281df3c77fc4d8c67c0d23c656b4debed862989 Mon Sep 17 00:00:00 2001
+From: Peter Jones <pjones@redhat.com>
+Date: Fri, 10 Feb 2017 16:14:12 -0500
+Subject: [PATCH 08/10] Fix another place clang complains about
+
+Signed-off-by: Peter Jones <pjones@redhat.com>
+---
+ lib/guid.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/guid.c b/lib/guid.c
+index bd1f1a5..6498e90 100644
+--- a/lib/guid.c
++++ b/lib/guid.c
+@@ -97,7 +97,7 @@ static struct {
+ 	{  &SMapId,                                         L"ShellDevPathMap" },
+ 	{  &SAliasId,                                       L"ShellAlias" },
+ 
+-	{  NULL }
++	{  NULL, L"" }
+ };
+ 
+ //
+-- 
+2.9.3
+

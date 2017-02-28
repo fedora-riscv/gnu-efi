@@ -1,8 +1,12 @@
-From a031ddee7c78a7d66d214da8f5cd329641b1e6a8 Mon Sep 17 00:00:00 2001
+From 6f5781e191cca6c20a75b82cc467c2256cbb5901 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Thu, 2 Feb 2017 15:23:55 -0500
-Subject: [PATCH] Work around -Werror=maybe-uninitialized not being very
+Subject: [PATCH 04/10] Work around -Werror=maybe-uninitialized not being very
  bright.
+
+The compiler doesn't believe the loop always executes at least once,
+even though the data in the first array entry doesn't satisfy the exit
+condition.  So just initialize the thing to shut it up.
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---

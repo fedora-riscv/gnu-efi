@@ -1,7 +1,7 @@
 From bbd65152010e04275825736f203a4bf929927a7f Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Thu, 2 Feb 2017 14:00:59 -0500
-Subject: [PATCH] Fix some types gcc doesn't like
+Subject: [PATCH 02/10] Fix some types gcc doesn't like
 
 Most of these come from building on i386 with -Wextra, but they're still
 incorrect everywhere else; they just happen to have identical typedefs

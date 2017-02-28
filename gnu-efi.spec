@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0.5
-Release: 4%{?dist}
+Release: 5%{?dist}
 Epoch:	1
 Group: Development/System
 License: BSD 
@@ -16,6 +16,11 @@ Patch0002: 0002-Fix-some-types-gcc-doesn-t-like.patch
 Patch0003: 0003-Fix-arm-build-paths-in-the-makefile.patch
 Patch0004: 0004-Work-around-Werror-maybe-uninitialized-not-being-ver.patch
 Patch0005: 0005-Fix-a-sign-error-in-the-debughook-example-app.patch
+Patch0006: 0006-Fix-typedef-of-EFI_PXE_BASE_CODE.patch
+Patch0007: 0007-make-clang-not-complain-about-fno-merge-constants.patch
+Patch0008: 0008-Fix-another-place-clang-complains-about.patch
+Patch0009: 0009-route80h-remove-some-dead-code.patch
+Patch0010: 0010-Make-clang-not-complain-about-the-debughook-s-optimi.patch
 
 %define debug_package %{nil}
 
@@ -102,6 +107,9 @@ rm -rf %{buildroot}
 %attr(0644,root,root) /boot/efi/EFI/%{efidir}/*.efi
 
 %changelog
+* Tue Feb 28 2017 Peter Jones <pjones@redhat.com> - 3.0.5-5
+- Fix some bugs from the 3.0.5 release...
+
 * Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1:3.0.5-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 

@@ -1,0 +1,33 @@
+From ba05cb606c6c3a4ec9f60c588abef52e355e5c1a Mon Sep 17 00:00:00 2001
+From: Peter Jones <pjones@redhat.com>
+Date: Fri, 10 Feb 2017 16:14:55 -0500
+Subject: [PATCH 09/10] route80h: remove some dead code
+
+Signed-off-by: Peter Jones <pjones@redhat.com>
+---
+ apps/route80h.c | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/apps/route80h.c b/apps/route80h.c
+index bf550a1..5272dd3 100644
+--- a/apps/route80h.c
++++ b/apps/route80h.c
+@@ -40,15 +40,6 @@ static inline void set_bit(volatile uint32_t *flag, int bit, int value)
+ 	Print(L"new value is 0x%2x\n", val);
+ }
+ 
+-static inline int configspace_matches_ids(void *config, uint32_t vendor_id,
+-				uint32_t device_id)
+-{
+-	uint32_t *cfg = config;
+-	if (cfg[0] == vendor_id && cfg[1] == device_id)
+-		return 1;
+-	return 0;
+-}
+-
+ static int is_device(EFI_PCI_IO *pciio, uint16_t vendor_id, uint16_t device_id)
+ {
+ 	lpcif_t lpcif;
+-- 
+2.9.3
+

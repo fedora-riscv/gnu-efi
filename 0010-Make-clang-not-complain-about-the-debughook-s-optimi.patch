@@ -1,0 +1,57 @@
+From a94906bd487c1a2e6d7827f31d7eb46bc09f3b43 Mon Sep 17 00:00:00 2001
+From: Peter Jones <pjones@redhat.com>
+Date: Fri, 10 Feb 2017 16:18:14 -0500
+Subject: [PATCH 10/10] Make clang not complain about the debughook's
+ optimization settings
+
+... still won't work, of course, because nobody at clang takes compiler
+compatibility seriously while they keep implying that you can pretend
+it's gcc.
+
+Signed-off-by: Peter Jones <pjones@redhat.com>
+---
+ Make.defaults    | 3 ++-
+ apps/debughook.c | 5 +++--
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/Make.defaults b/Make.defaults
+index cc52195..a7778a7 100755
+--- a/Make.defaults
++++ b/Make.defaults
+@@ -161,7 +161,8 @@ CFLAGS  += $(ARCH3264) -g -O2 -Wall -Wextra -Werror \
+            -fshort-wchar -fno-strict-aliasing \
+ 	   -ffreestanding -fno-stack-protector \
+            -fno-stack-check \
+-           $(if $(findstring gcc,$(CC)),-fno-merge-constants,)
++           $(if $(findstring gcc,$(CC)),-fno-merge-constants,) \
++	   $(if $(findstring clang,$(CC)),-Wno-unknown-pragmas,)
+ endif
+ 
+ ARFLAGS += -U
+diff --git a/apps/debughook.c b/apps/debughook.c
+index e1d1c50..fa36f62 100644
+--- a/apps/debughook.c
++++ b/apps/debughook.c
+@@ -37,8 +37,9 @@ GetVariable(CHAR16 *var, UINT8 **data, UINTN *len, EFI_GUID owner)
+ EFI_GUID DUMMY_GUID =
+ {0x55aad538, 0x8f82, 0x4e2a, {0xa4,0xf0,0xbe, 0x59, 0x13, 0xb6, 0x5f, 0x1e}};
+ 
++#pragma GCC push_options
++#pragma GCC optimize ("0")
+ static void
+-__attribute__((__optimize__("0")))
+ DebugHook(void)
+ {
+ 	EFI_GUID guid = DUMMY_GUID;
+@@ -81,7 +82,7 @@ DebugHook(void)
+ 	}
+ 	x = 1;
+ }
+-
++#pragma GCC pop_options
+ 
+ EFI_STATUS
+ efi_main (EFI_HANDLE image, EFI_SYSTEM_TABLE *systab)
+-- 
+2.9.3
+
