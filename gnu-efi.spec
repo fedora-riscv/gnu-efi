@@ -1,14 +1,17 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0.5
-Release: 5%{?dist}
+Release: 6%{?dist}
 Epoch:	1
 Group: Development/System
 License: BSD 
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-ExclusiveArch: %{ix86} x86_64 aarch64 %{arm}
+ExclusiveArch: x86_64 aarch64 %{arm}
 BuildRequires: git
+%ifarch x86_64
+BuildRequires: glibc-devel(x86-32)
+%endif
 Source: http://superb-dca2.dl.sourceforge.net/project/gnu-efi/gnu-efi-%{version}.tar.bz2
 
 Patch0001: 0001-Mark-our-explicit-fall-through-so-Wextra-will-work-i.patch
@@ -36,9 +39,6 @@ Patch0010: 0010-Make-clang-not-complain-about-the-debughook-s-optimi.patch
 %ifarch %{arm}
 %global efiarch arm
 %endif
-%ifarch %{ix86}
-%global efiarch ia32
-%endif
 
 %description
 This package contains development headers and libraries for developing
@@ -47,7 +47,7 @@ applications that run under EFI (Extensible Firmware Interface).
 %package devel
 Summary: Development Libraries and headers for EFI
 Group: Development/System
-Obsoletes: gnu-efi < 3.0.1-1
+Obsoletes: gnu-efi < 1:3.0.2-1
 Requires: gnu-efi
 
 %description devel
@@ -76,6 +76,9 @@ git config --unset user.name
 %build
 # Package cannot build with %{?_smp_mflags}.
 make
+%ifarch x86_64
+make ARCH=ia32 SUBDIRS=gnuefi
+%endif
 make apps
 
 %install
@@ -84,6 +87,9 @@ rm -rf %{buildroot}
 mkdir -p %{buildroot}/%{_libdir}
 
 make PREFIX=%{_prefix} LIBDIR=%{_libdir} INSTALLROOT=%{buildroot} install
+%ifarch x86_64
+setarch linux32 -B make PREFIX=%{_prefix} LIBDIR=%{_libdir} INSTALLROOT=%{buildroot} ARCH=ia32 install
+%endif
 
 mkdir -p %{buildroot}/%{_libdir}/gnuefi
 mv %{buildroot}/%{_libdir}/*.lds %{buildroot}/%{_libdir}/*.o %{buildroot}/%{_libdir}/gnuefi
@@ -107,6 +113,10 @@ rm -rf %{buildroot}
 %attr(0644,root,root) /boot/efi/EFI/%{efidir}/*.efi
 
 %changelog
+* Mon Mar 13 2017 Peter Jones <pjones@redhat.com> - 3.0.5-6
+- Include ia32 bits in the x86_64 packages instead of making a separate
+  32-bit package
+
 * Tue Feb 28 2017 Peter Jones <pjones@redhat.com> - 3.0.5-5
 - Fix some bugs from the 3.0.5 release...
 
