@@ -76,32 +76,37 @@ git config --unset user.name
 %build
 # Package cannot build with %{?_smp_mflags}.
 make
-%ifarch x86_64
-make ARCH=ia32 SUBDIRS=gnuefi
-%endif
 make apps
+%ifarch x86_64
+setarch linux32 -B make ARCH=ia32 PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib
+setarch linux32 -B make ARCH=ia32 PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib apps
+%endif
 
 %install
 rm -rf %{buildroot}
 
-mkdir -p %{buildroot}/%{_libdir}
-
+mkdir -p %{buildroot}/%{_libdir}/gnuefi
+mkdir -p %{buildroot}/boot/efi/EFI/%{efidir}/%{efiarch}
 make PREFIX=%{_prefix} LIBDIR=%{_libdir} INSTALLROOT=%{buildroot} install
+mv %{buildroot}/%{_libdir}/*.lds %{buildroot}/%{_libdir}/*.o %{buildroot}/%{_libdir}/gnuefi
+mv %{efiarch}/apps/{route80h.efi,modelist.efi} %{buildroot}/boot/efi/EFI/%{efidir}/%{efiarch}/
+
 %ifarch x86_64
-setarch linux32 -B make PREFIX=%{_prefix} LIBDIR=%{_libdir} INSTALLROOT=%{buildroot} ARCH=ia32 install
+mkdir -p %{buildroot}/%{_prefix}/lib/gnuefi
+mkdir -p %{buildroot}/boot/efi/EFI/%{efidir}/ia32
+
+setarch linux32 -B make PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib INSTALLROOT=%{buildroot} ARCH=ia32 install
+mv %{buildroot}/%{_prefix}/lib/*.{lds,o} %{buildroot}/%{_prefix}/lib/gnuefi/
+mv ia32/apps/{route80h.efi,modelist.efi} %{buildroot}/boot/efi/EFI/%{efidir}/ia32/
 %endif
 
-mkdir -p %{buildroot}/%{_libdir}/gnuefi
-mv %{buildroot}/%{_libdir}/*.lds %{buildroot}/%{_libdir}/*.o %{buildroot}/%{_libdir}/gnuefi
 
-mkdir -p %{buildroot}/boot/efi/EFI/%{efidir}/
-mv %{efiarch}/apps/{route80h.efi,modelist.efi} %{buildroot}/boot/efi/EFI/%{efidir}/
 
 %clean
 rm -rf %{buildroot}
 
 %files
-%{_libdir}/*
+%{_prefix}/lib*/*
 
 %files devel
 %defattr(-,root,root,-)
@@ -110,7 +115,7 @@ rm -rf %{buildroot}
 
 %files utils
 %dir /boot/efi/EFI/%{efidir}/
-%attr(0644,root,root) /boot/efi/EFI/%{efidir}/*.efi
+%attr(0644,root,root) /boot/efi/EFI/%{efidir}/*/*.efi
 
 %changelog
 * Mon Mar 13 2017 Peter Jones <pjones@redhat.com> - 3.0.5-6
