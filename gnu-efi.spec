@@ -10,7 +10,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: x86_64 aarch64 %{arm}
 BuildRequires: git
 %ifarch x86_64
-BuildRequires: glibc-devel(x86-32)
+BuildRequires: glibc32
 %endif
 Source: http://superb-dca2.dl.sourceforge.net/project/gnu-efi/gnu-efi-%{version}.tar.bz2
 
