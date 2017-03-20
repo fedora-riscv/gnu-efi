@@ -1,13 +1,13 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0.5
-Release: 6%{?dist}
+Release: 7%{?dist}
 Epoch:	1
 Group: Development/System
 License: BSD 
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-ExclusiveArch: x86_64 aarch64 %{arm}
+ExclusiveArch: x86_64 aarch64 %{arm} %{ix86}
 BuildRequires: git
 %ifarch x86_64
 BuildRequires: glibc32
@@ -38,6 +38,10 @@ Patch0010: 0010-Make-clang-not-complain-about-the-debughook-s-optimi.patch
 %endif
 %ifarch %{arm}
 %global efiarch arm
+%endif
+
+%ifarch %{ix86}
+%global efiarch ia32
 %endif
 
 %description
@@ -100,8 +104,6 @@ mv %{buildroot}/%{_prefix}/lib/*.{lds,o} %{buildroot}/%{_prefix}/lib/gnuefi/
 mv ia32/apps/{route80h.efi,modelist.efi} %{buildroot}/boot/efi/EFI/%{efidir}/ia32/
 %endif
 
-
-
 %clean
 rm -rf %{buildroot}
 
@@ -118,6 +120,9 @@ rm -rf %{buildroot}
 %attr(0644,root,root) /boot/efi/EFI/%{efidir}/*/*.efi
 
 %changelog
+* Mon Mar 20 2017 Peter Jones <pjones@redhat.com> - 3.0.5-7
+- Also build the ia32 bits in a separate 32-bit package for other consumers.
+
 * Mon Mar 13 2017 Peter Jones <pjones@redhat.com> - 3.0.5-6
 - Include ia32 bits in the x86_64 packages instead of making a separate
   32-bit package
