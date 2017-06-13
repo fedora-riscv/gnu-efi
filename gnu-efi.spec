@@ -1,8 +1,8 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0.5
-Release: 7%{?dist}
-Epoch:	1
+Release: 8%{?dist}%{?buildid}
+Epoch: 1
 Group: Development/System
 License: BSD 
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
@@ -10,9 +10,13 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: x86_64 aarch64 %{arm} %{ix86}
 BuildRequires: git
 %ifarch x86_64
-BuildRequires: glibc32
+#BuildRequires: glibc32
+BuildRequires: glibc-devel(x86-32)
 %endif
 Source: http://superb-dca2.dl.sourceforge.net/project/gnu-efi/gnu-efi-%{version}.tar.bz2
+
+# dammit, rpmlint, shut up.
+%define lib %{nil}lib%{nil}
 
 Patch0001: 0001-Mark-our-explicit-fall-through-so-Wextra-will-work-i.patch
 Patch0002: 0002-Fix-some-types-gcc-doesn-t-like.patch
@@ -24,8 +28,24 @@ Patch0007: 0007-make-clang-not-complain-about-fno-merge-constants.patch
 Patch0008: 0008-Fix-another-place-clang-complains-about.patch
 Patch0009: 0009-route80h-remove-some-dead-code.patch
 Patch0010: 0010-Make-clang-not-complain-about-the-debughook-s-optimi.patch
+Patch0011: 0011-Nerf-Werror-pragma-away.patch
+Patch0012: 0012-Make-ia32-use-our-own-div-asm-on-gnu-C-as-well.patch
+Patch0013: 0013-Call-ar-in-deterministic-mode.patch
 
 %define debug_package %{nil}
+
+# brp-strip-static-archive will senselessly /add/ timestamps and uid/gid
+# data to our .a and make them not multilib clean if we don't have this.
+# Note that if we don't have the shell quotes there, -p becomes $2 on its
+# invocation, and so it completely ignores it.
+#
+# Also note that if we try to use -D as we should (so it doesn't add
+# uid/gid), strip(1) from binutils-2.25.1-22.base.el7.x86_64 throws a
+# syntax error.
+#
+# True story.
+#
+%global __strip "%{__strip} -p"
 
 # Figure out the right file path to use
 %global efidir %(eval echo $(grep ^ID= /etc/os-release | sed -e 's/^ID=//' -e 's/rhel/redhat/'))
@@ -82,8 +102,8 @@ git config --unset user.name
 make
 make apps
 %ifarch x86_64
-setarch linux32 -B make ARCH=ia32 PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib
-setarch linux32 -B make ARCH=ia32 PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib apps
+setarch linux32 -B make ARCH=ia32 PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib}
+setarch linux32 -B make ARCH=ia32 PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib} apps
 %endif
 
 %install
@@ -96,11 +116,11 @@ mv %{buildroot}/%{_libdir}/*.lds %{buildroot}/%{_libdir}/*.o %{buildroot}/%{_lib
 mv %{efiarch}/apps/{route80h.efi,modelist.efi} %{buildroot}/boot/efi/EFI/%{efidir}/%{efiarch}/
 
 %ifarch x86_64
-mkdir -p %{buildroot}/%{_prefix}/lib/gnuefi
+mkdir -p %{buildroot}/%{_prefix}/%{lib}/gnuefi
 mkdir -p %{buildroot}/boot/efi/EFI/%{efidir}/ia32
 
-setarch linux32 -B make PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib INSTALLROOT=%{buildroot} ARCH=ia32 install
-mv %{buildroot}/%{_prefix}/lib/*.{lds,o} %{buildroot}/%{_prefix}/lib/gnuefi/
+setarch linux32 -B make PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib} INSTALLROOT=%{buildroot} ARCH=ia32 install
+mv %{buildroot}/%{_prefix}/%{lib}/*.{lds,o} %{buildroot}/%{_prefix}/%{lib}/gnuefi/
 mv ia32/apps/{route80h.efi,modelist.efi} %{buildroot}/boot/efi/EFI/%{efidir}/ia32/
 %endif
 
@@ -108,7 +128,7 @@ mv ia32/apps/{route80h.efi,modelist.efi} %{buildroot}/boot/efi/EFI/%{efidir}/ia3
 rm -rf %{buildroot}
 
 %files
-%{_prefix}/lib*/*
+%{_prefix}/%{lib}*/*
 
 %files devel
 %defattr(-,root,root,-)
@@ -120,6 +140,9 @@ rm -rf %{buildroot}
 %attr(0644,root,root) /boot/efi/EFI/%{efidir}/*/*.efi
 
 %changelog
+* Tue Jun 13 2017 Peter Jones <pjones@redhat.com> - 3.0.5-8
+- Update this to try to get determanistic builds.
+
 * Mon Mar 20 2017 Peter Jones <pjones@redhat.com> - 3.0.5-7
 - Also build the ia32 bits in a separate 32-bit package for other consumers.
 
