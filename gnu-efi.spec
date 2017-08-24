@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0.5
-Release: 10%{?dist}%{?buildid}
+Release: 11%{?dist}%{?buildid}
 Epoch: 1
 Group: Development/System
 License: BSD 
@@ -31,6 +31,7 @@ Patch0010: 0010-Make-clang-not-complain-about-the-debughook-s-optimi.patch
 Patch0011: 0011-Nerf-Werror-pragma-away.patch
 Patch0012: 0012-Make-ia32-use-our-own-div-asm-on-gnu-C-as-well.patch
 Patch0013: 0013-Call-ar-in-deterministic-mode.patch
+Patch0014: 0001-arm64-efi-remove-pointless-dummy-.reloc-section.patch
 
 %define debug_package %{nil}
 
@@ -140,6 +141,9 @@ rm -rf %{buildroot}
 %attr(0644,root,root) /boot/efi/EFI/%{efidir}/*/*.efi
 
 %changelog
+* Thu Aug 24 2017 Peter Jones <pjones@redhat.com> - 3.0.5-11
+- Don't make .reloc sections on Aarch64 binaries.
+
 * Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1:3.0.5-10
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
