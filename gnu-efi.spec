@@ -1,7 +1,7 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0.5
-Release: 11%{?dist}%{?buildid}
+Release: 12%{?dist}%{?buildid}
 Epoch: 1
 Group: Development/System
 License: BSD 
@@ -141,6 +141,9 @@ rm -rf %{buildroot}
 %attr(0644,root,root) /boot/efi/EFI/%{efidir}/*/*.efi
 
 %changelog
+* Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1:3.0.5-12
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
 * Thu Aug 24 2017 Peter Jones <pjones@redhat.com> - 3.0.5-11
 - Don't make .reloc sections on Aarch64 binaries.
 
