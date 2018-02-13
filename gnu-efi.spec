@@ -6,7 +6,6 @@ Epoch: 1
 Group: Development/System
 License: BSD 
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: x86_64 aarch64 %{arm} %{ix86}
 BuildRequires: git
 %ifarch x86_64
