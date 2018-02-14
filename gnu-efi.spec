@@ -124,9 +124,6 @@ mv %{buildroot}/%{_prefix}/%{lib}/*.{lds,o} %{buildroot}/%{_prefix}/%{lib}/gnuef
 mv ia32/apps/{route80h.efi,modelist.efi} %{buildroot}/boot/efi/EFI/%{efidir}/ia32/
 %endif
 
-%clean
-rm -rf %{buildroot}
-
 %files
 %{_prefix}/%{lib}*/*
 
