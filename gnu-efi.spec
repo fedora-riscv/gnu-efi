@@ -1,7 +1,8 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
-Version: 3.0.5
-Release: 12%{?dist}%{?buildid}
+Version: 3.0.7
+%global tarball_version 3.0.6
+Release: 1%{?dist}%{?buildid}
 Epoch: 1
 Group: Development/System
 License: BSD 
@@ -9,28 +10,39 @@ URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
 ExclusiveArch: x86_64 aarch64 %{arm} %{ix86}
 BuildRequires: git
 %ifarch x86_64
-BuildRequires: glibc32
+# So... in some build environments, glibc32 provides some headers.  In
+# others, glibc-devel.i686 does.  They have no non-file provides in common.
+#BuildRequires: glibc32
 #BuildRequires: glibc-devel(x86-32)
+BuildRequires: /usr/include/gnu/stubs-32.h
 %endif
-Source: http://superb-dca2.dl.sourceforge.net/project/gnu-efi/gnu-efi-%{version}.tar.bz2
+Source: http://superb-dca2.dl.sourceforge.net/project/gnu-efi/gnu-efi-%{tarball_version}.tar.bz2
 
 # dammit, rpmlint, shut up.
 %define lib %{nil}lib%{nil}
 
-Patch0001: 0001-Mark-our-explicit-fall-through-so-Wextra-will-work-i.patch
-Patch0002: 0002-Fix-some-types-gcc-doesn-t-like.patch
-Patch0003: 0003-Fix-arm-build-paths-in-the-makefile.patch
-Patch0004: 0004-Work-around-Werror-maybe-uninitialized-not-being-ver.patch
-Patch0005: 0005-Fix-a-sign-error-in-the-debughook-example-app.patch
-Patch0006: 0006-Fix-typedef-of-EFI_PXE_BASE_CODE.patch
-Patch0007: 0007-make-clang-not-complain-about-fno-merge-constants.patch
-Patch0008: 0008-Fix-another-place-clang-complains-about.patch
-Patch0009: 0009-route80h-remove-some-dead-code.patch
-Patch0010: 0010-Make-clang-not-complain-about-the-debughook-s-optimi.patch
-Patch0011: 0011-Nerf-Werror-pragma-away.patch
-Patch0012: 0012-Make-ia32-use-our-own-div-asm-on-gnu-C-as-well.patch
-Patch0013: 0013-Call-ar-in-deterministic-mode.patch
-Patch0014: 0001-arm64-efi-remove-pointless-dummy-.reloc-section.patch
+Patch0001: 0001-PATCH-Disable-AVX-instruction-set-on-IA32-and-x86_64.patch
+Patch0002: 0002-Use-ARFLAGS-when-invoking-ar.patch
+Patch0003: 0003-Stripped-diff-for-makefile.patch
+Patch0004: 0004-Make-sure-stdint.h-is-always-used-with-MSVC-on-ARM-A.patch
+Patch0005: 0005-Add-EFI_DRIVER_ENTRY_POINT-support-for-MSVC-ARM64.patch
+Patch0006: 0006-Move-memcpy-memset-definition-to-global-init.c.patch
+Patch0007: 0007-Bump-revision-from-VERSION-3.0.6-to-VERSION-3.0.7.patch
+Patch0008: 0008-Fix-some-types-gcc-doesn-t-like.patch
+Patch0009: 0009-Fix-arm-build-paths-in-the-makefile.patch
+Patch0010: 0010-Work-around-Werror-maybe-uninitialized-not-being-ver.patch
+Patch0011: 0011-Fix-a-sign-error-in-the-debughook-example-app.patch
+Patch0012: 0012-Fix-typedef-of-EFI_PXE_BASE_CODE.patch
+Patch0013: 0013-make-clang-not-complain-about-fno-merge-all-constant.patch
+Patch0014: 0014-Fix-another-place-clang-complains-about.patch
+Patch0015: 0015-gnu-efi-add-some-more-common-string-functions.patch
+Patch0016: 0016-Add-D-to-print-device-paths.patch
+Patch0017: 0017-Make-ARCH-overrideable-on-the-command-line.patch
+Patch0018: 0018-apps-Add-bltgrid-and-lfbgrid-and-add-error-checks-to.patch
+Patch0019: 0019-Nerf-Werror-pragma-away.patch
+Patch0020: 0020-Make-ia32-use-our-own-div-asm-on-gnu-C-as-well.patch
+Patch0021: 0021-Call-ar-in-deterministic-mode.patch
+Patch0022: 0022-Add-debug-helper-applications.patch
 
 %define debug_package %{nil}
 
@@ -86,7 +98,7 @@ Group: Applications/System
 This package contains utilties for debugging and developing EFI systems.
 
 %prep
-%setup -q -n gnu-efi-%{version}
+%setup -q -n gnu-efi-%{tarball_version}
 git init
 git config user.email "gnu-efi-owner@fedoraproject.org"
 git config user.name "Fedora Ninjas"
@@ -137,6 +149,9 @@ mv ia32/apps/{route80h.efi,modelist.efi} %{buildroot}/boot/efi/EFI/%{efidir}/ia3
 %attr(0644,root,root) /boot/efi/EFI/%{efidir}/*/*.efi
 
 %changelog
+* Tue Mar 13 2018 Peter Jones <pjones@redhat.com> - 3.0.7-1
+- Update to 3.0.7 (from git) and add some pending patches we need.
+
 * Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1:3.0.5-12
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 

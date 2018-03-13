@@ -1,7 +1,7 @@
-From fa85eb1b6ac4ceff1672c7152b6f842c2f2ff728 Mon Sep 17 00:00:00 2001
+From 6082de48568bb85b4878fe7934ede76821114d34 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Thu, 2 Feb 2017 14:31:25 -0500
-Subject: [PATCH 03/10] Fix arm build paths in the makefile
+Subject: [PATCH 09/22] Fix arm build paths in the makefile
 
 Previous work was apparently done with arm-linux-gnueabi-gcc as a
 cross-builder, but our armv7 builders have native gcc with the target as
@@ -14,7 +14,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/Make.defaults b/Make.defaults
-index 51bd7d8..e4d2ac1 100755
+index 446e676dc14..6d300fb0f24 100755
 --- a/Make.defaults
 +++ b/Make.defaults
 @@ -62,12 +62,12 @@ OBJCOPY      := $(prefix)$(CROSS_COMPILE)objcopy
@@ -33,5 +33,5 @@ index 51bd7d8..e4d2ac1 100755
  
  # FreeBSD (and possibly others) reports amd64 instead of x86_64
 -- 
-2.9.3
+2.14.3
 

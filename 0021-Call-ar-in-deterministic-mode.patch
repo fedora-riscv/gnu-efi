@@ -1,7 +1,7 @@
-From 0e95c51225b01f0ca79dafd607ae6a3e404db6be Mon Sep 17 00:00:00 2001
+From 5cbaa179424c239263cf460db1cd5e19db856df2 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Tue, 28 Mar 2017 17:59:55 -0400
-Subject: [PATCH 13/13] Call ar in deterministic mode.
+Subject: [PATCH 21/22] Call ar in deterministic mode.
 
 We need the x86_64 and i686 builds of .a's to be the same, and that
 means we need to not have timestamps.  Also force the timestamps on disk
@@ -51,14 +51,14 @@ Related: rhbz#1310782
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
  Make.defaults | 2 +-
- 1 files changed, 1 insertions(+), 1 deletion(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/Make.defaults b/Make.defaults
-index aa15c73..8f36365 100755
+index ed4b60c2423..ba743f17893 100755
 --- a/Make.defaults
 +++ b/Make.defaults
-@@ -167,7 +167,7 @@ CFLAGS  += $(ARCH3264) -g -O2 -Wall -Wextra -Werror \
- 	   $(if $(findstring clang,$(CC)),-Wno-unknown-pragmas,)
+@@ -177,7 +177,7 @@ CFLAGS  += $(ARCH3264) -g -O2 -Wall -Wextra -Werror \
+            $(if $(findstring gcc,$(CC)),-fno-merge-all-constants,)
  endif
  
 -ARFLAGS += -U
@@ -67,5 +67,5 @@ index aa15c73..8f36365 100755
  LDFLAGS	+= -nostdlib --warn-common --no-undefined --fatal-warnings \
  	   --build-id=sha1
 -- 
-2.9.3
+2.14.3
 

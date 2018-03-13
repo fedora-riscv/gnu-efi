@@ -1,7 +1,7 @@
-From e4ca94374c7ece8ec0100075710af8638e42c203 Mon Sep 17 00:00:00 2001
+From 44c9ce3c94d26ab4b8f778827bcaded30dc1fa22 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Wed, 8 Feb 2017 15:28:18 -0500
-Subject: [PATCH 06/10] Fix typedef of EFI_PXE_BASE_CODE
+Subject: [PATCH 12/22] Fix typedef of EFI_PXE_BASE_CODE
 
 Commit 751cbce3 fixed up a bunch of types to better match the edk2
 definitions and the names in the UEFI Spec, but while doing so
@@ -32,18 +32,18 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/inc/efipxebc.h b/inc/efipxebc.h
-index 580a6ef..3760c7c 100644
+index 035a853a7ef..3760c7cbb78 100644
 --- a/inc/efipxebc.h
 +++ b/inc/efipxebc.h
 @@ -419,7 +419,7 @@ typedef struct _EFI_PXE_BASE_CODE_PROTOCOL {
  // Use 'EFI_PXE_BASE_CODE_PROTOCOL_GUID' instead.
  
  typedef struct _EFI_PXE_BASE_CODE_PROTOCOL _EFI_PXE_BASE_CODE;
--typedef struct EFI_PXE_BASE_CODE_PROTOCOL EFI_PXE_BASE_CODE;
+-typedef EFI_PXE_BASE_CODE_PROTOCOL EFI_PXE_BASE_CODE;
 +typedef struct _EFI_PXE_BASE_CODE_PROTOCOL EFI_PXE_BASE_CODE;
  
  //
  // Call Back Definitions
 -- 
-2.9.3
+2.14.3
 

@@ -1,7 +1,7 @@
-From 6f5781e191cca6c20a75b82cc467c2256cbb5901 Mon Sep 17 00:00:00 2001
+From d7e380f0ebf2292ddcd534c407483450b74a9f12 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Thu, 2 Feb 2017 15:23:55 -0500
-Subject: [PATCH 04/10] Work around -Werror=maybe-uninitialized not being very
+Subject: [PATCH 10/22] Work around -Werror=maybe-uninitialized not being very
  bright.
 
 The compiler doesn't believe the loop always executes at least once,
@@ -14,10 +14,10 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/apps/route80h.c b/apps/route80h.c
-index 723dd85..bf550a1 100644
+index e1f62f06824..5272dd3cd44 100644
 --- a/apps/route80h.c
 +++ b/apps/route80h.c
-@@ -102,7 +102,7 @@ efi_main (EFI_HANDLE image_handle, EFI_SYSTEM_TABLE *systab)
+@@ -93,7 +93,7 @@ efi_main (EFI_HANDLE image_handle, EFI_SYSTEM_TABLE *systab)
  	InitializeLib(image_handle, systab);
  	EFI_PCI_IO *pciio = NULL;
  	lpcif_t lpcif;
@@ -27,5 +27,5 @@ index 723dd85..bf550a1 100644
  		uint16_t vendor;
  		uint16_t device;
 -- 
-2.9.3
+2.14.3
 

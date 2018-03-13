@@ -1,14 +1,14 @@
-From 6671a712db5c4dfecd4e7026057a99d9b1c4fe5e Mon Sep 17 00:00:00 2001
+From caef829abc431a694d6e231705eb013366658865 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Tue, 7 Mar 2017 10:11:19 -0500
-Subject: [PATCH] Nerf -Werror=pragma away
+Subject: [PATCH 19/22] Nerf -Werror=pragma away
 
 ---
  Make.defaults | 2 ++
  1 file changed, 2 insertions(+)
 
 diff --git a/Make.defaults b/Make.defaults
-index a7778a7..8882701 100755
+index 4aa57ac5f7c..ed4b60c2423 100755
 --- a/Make.defaults
 +++ b/Make.defaults
 @@ -87,6 +87,8 @@ OBJDIR       := $(TOPDIR)/$(ARCH)
@@ -21,5 +21,5 @@ index a7778a7..8882701 100755
    CFLAGS += -mfixed-range=f32-f127
  endif
 -- 
-2.9.3
+2.14.3
 
