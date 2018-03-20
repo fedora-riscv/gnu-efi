@@ -1,7 +1,7 @@
 From 15bcddc996694c904b3848c83031da5cd3a4719e Mon Sep 17 00:00:00 2001
 From: Nigel Croxon <ncroxon@redhat.com>
 Date: Mon, 6 Nov 2017 09:06:31 -0500
-Subject: [PATCH 03/22] Stripped diff for makefile
+Subject: [PATCH 03/25] Stripped diff for makefile
 
 This patch allows one to run make outside the source tree
 with make -f <makefile>.
@@ -27,5 +27,5 @@ index 646de6f7044..37592bd6930 100644
  VPATH = $(SRCDIR)
  
 -- 
-2.14.3
+2.15.0
 

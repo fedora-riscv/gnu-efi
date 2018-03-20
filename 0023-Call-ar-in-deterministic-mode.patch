@@ -1,7 +1,7 @@
-From 5cbaa179424c239263cf460db1cd5e19db856df2 Mon Sep 17 00:00:00 2001
+From 656e495d515b0fc1f01add164aa4bba9a49ceb31 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
-Date: Tue, 28 Mar 2017 17:59:55 -0400
-Subject: [PATCH 21/22] Call ar in deterministic mode.
+Date: Tue, 13 Mar 2018 15:20:34 -0400
+Subject: [PATCH 23/25] Call ar in deterministic mode.
 
 We need the x86_64 and i686 builds of .a's to be the same, and that
 means we need to not have timestamps.  Also force the timestamps on disk
@@ -49,6 +49,7 @@ just to discover the problem isn't even in there.
 Related: rhbz#1310782
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
+Signed-off-by: Nigel Croxon <ncroxon@redhat.com>
 ---
  Make.defaults | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
@@ -67,5 +68,5 @@ index ed4b60c2423..ba743f17893 100755
  LDFLAGS	+= -nostdlib --warn-common --no-undefined --fatal-warnings \
  	   --build-id=sha1
 -- 
-2.14.3
+2.15.0
 

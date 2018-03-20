@@ -1,13 +1,14 @@
-From 3fa80d0d7b103975b765fa936c24d05544985805 Mon Sep 17 00:00:00 2001
+From a46a62b12b58139c31d4288384808365c4053bf2 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
-Date: Thu, 2 Feb 2017 14:00:59 -0500
-Subject: [PATCH 08/22] Fix some types gcc doesn't like
+Date: Tue, 13 Mar 2018 15:20:21 -0400
+Subject: [PATCH 11/25] Fix some types gcc doesn't like
 
 Most of these come from building on i386 with -Wextra, but they're still
 incorrect everywhere else; they just happen to have identical typedefs
 at other places, so the compiler doesn't care.
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
+Signed-off-by: Nigel Croxon <ncroxon@redhat.com>
 ---
  apps/AllocPages.c | 2 +-
  apps/FreePages.c  | 2 +-
@@ -68,5 +69,5 @@ index b2ff4fa2f87..cc5aa2dc57b 100644
  //
  //  CONTAINING_RECORD - returns a pointer to the structure
 -- 
-2.14.3
+2.15.0
 

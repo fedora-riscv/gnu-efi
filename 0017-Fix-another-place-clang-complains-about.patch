@@ -1,9 +1,12 @@
-From cc5794a36021be063f069529d99f63ecd8e66a18 Mon Sep 17 00:00:00 2001
+From 5abc3858a25fa6774c6e2d89cc5d1d14a9c9f7cb Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
-Date: Fri, 10 Feb 2017 16:14:12 -0500
-Subject: [PATCH 14/22] Fix another place clang complains about
+Date: Tue, 13 Mar 2018 15:20:27 -0400
+Subject: [PATCH 17/25] Fix another place clang complains about
+
+Fix another place clang complains about.
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
+Signed-off-by: Nigel Croxon <ncroxon@redhat.com>
 ---
  lib/guid.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
@@ -22,5 +25,5 @@ index 8daa505ed97..6498e9063cf 100644
  
  //
 -- 
-2.14.3
+2.15.0
 

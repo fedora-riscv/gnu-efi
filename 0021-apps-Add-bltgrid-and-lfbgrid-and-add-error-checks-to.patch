@@ -1,7 +1,7 @@
-From f0a9b5d76db9842206faaf7e3d19b13c7e969f6c Mon Sep 17 00:00:00 2001
+From 5ec879ace760faacfa940a1933e0339e8f3811bd Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
-Date: Fri, 22 Sep 2017 15:26:05 -0400
-Subject: [PATCH 18/22] apps: Add bltgrid and lfbgrid, and add error checks to
+Date: Tue, 13 Mar 2018 15:20:31 -0400
+Subject: [PATCH 21/25] apps: Add bltgrid and lfbgrid, and add error checks to
  modelist
 
 This adds bltgrid and lfbgrid, which draw checkerboards using GOP's
@@ -9,6 +9,7 @@ Blt() and linear framebuffer, respectively, and adds some error checks
 to modelist.efi.
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
+Signed-off-by: Nigel Croxon <ncroxon@redhat.com>
 ---
  apps/bltgrid.c  | 131 +++++++++++++++++++++++++++++++++++++++++++
  apps/lfbgrid.c  | 170 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -442,5 +443,5 @@ index 5fffd4254c8..4e26444c469 100644
  TARGET_RTDRIVERS =
  
 -- 
-2.14.3
+2.15.0
 

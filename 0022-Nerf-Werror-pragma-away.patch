@@ -1,8 +1,12 @@
-From caef829abc431a694d6e231705eb013366658865 Mon Sep 17 00:00:00 2001
+From be57aadba6092027d21c04d4ededb2e83abe9016 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
-Date: Tue, 7 Mar 2017 10:11:19 -0500
-Subject: [PATCH 19/22] Nerf -Werror=pragma away
+Date: Tue, 13 Mar 2018 15:20:32 -0400
+Subject: [PATCH 22/25] Nerf -Werror=pragma away
 
+Nerf -Werror=-pragma away
+
+Signed-off-by: Peter Jones <pjones@redhat.com>
+Signed-off-by: Nigel Croxon <ncroxon@redhat.com>
 ---
  Make.defaults | 2 ++
  1 file changed, 2 insertions(+)
@@ -21,5 +25,5 @@ index 4aa57ac5f7c..ed4b60c2423 100755
    CFLAGS += -mfixed-range=f32-f127
  endif
 -- 
-2.14.3
+2.15.0
 

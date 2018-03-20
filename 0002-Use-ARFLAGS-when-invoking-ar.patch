@@ -1,7 +1,7 @@
 From 08a46615c70f5af195443fcf5d0fd425fa329096 Mon Sep 17 00:00:00 2001
 From: Nigel Croxon <ncroxon@redhat.com>
 Date: Mon, 7 Aug 2017 13:32:54 -0400
-Subject: [PATCH 02/22] Use ARFLAGS when invoking ar.
+Subject: [PATCH 02/25] Use ARFLAGS when invoking ar.
 
 The use of ARFLAGS makes these flags overridable.
 The '-U' option is already added to ARFLAGS in Make.defaults.
@@ -26,5 +26,5 @@ index b8d1ce70d48..0e6410dac55 100644
  clean:
  	rm -f libefi.a *~ $(OBJS) */*.o
 -- 
-2.14.3
+2.15.0
 

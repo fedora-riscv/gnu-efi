@@ -1,7 +1,7 @@
 From b1d426ce67cbeaa1a8ec7d9b8d0d8071ae4563b4 Mon Sep 17 00:00:00 2001
 From: Nigel Croxon <ncroxon@redhat.com>
 Date: Mon, 6 Nov 2017 09:38:38 -0500
-Subject: [PATCH 06/22] Move memcpy/memset definition to global init.c
+Subject: [PATCH 06/25] Move memcpy/memset definition to global init.c
 
 Following up on previous patch, I think we should move
 memcpy/memset definitions to the global init.c, since MSVC does
@@ -211,5 +211,5 @@ index 4b118656d7c..6c5e1fa5217 100644
 -    return dest;
 -}
 -- 
-2.14.3
+2.15.0
 

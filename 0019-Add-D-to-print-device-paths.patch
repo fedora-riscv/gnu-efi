@@ -1,9 +1,12 @@
-From ea1bc0d8cdb3005cdf1718083eb49075b60c8b97 Mon Sep 17 00:00:00 2001
+From 28793041d7f26a6771837967c495f3ae7ba1134a Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
-Date: Mon, 31 Jul 2017 15:03:26 -0400
-Subject: [PATCH 16/22] Add %D to print device paths
+Date: Tue, 13 Mar 2018 15:20:29 -0400
+Subject: [PATCH 19/25] Add %D to print device paths
+
+Add %D to print device paths.
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
+Signed-off-by: Nigel Croxon <ncroxon@redhat.com>
 ---
  lib/print.c | 13 +++++++++++++
  1 file changed, 13 insertions(+)
@@ -40,5 +43,5 @@ index ed79c43825b..35e43c03db5 100644
                  FloatToString (
                      Item.Scratch,
 -- 
-2.14.3
+2.15.0
 
