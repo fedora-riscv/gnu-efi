@@ -1,6 +1,6 @@
 Summary: Development Libraries and headers for EFI
 Name: gnu-efi
-Version: 3.0.7
+Version: 3.0.8
 %global tarball_version 3.0.6
 Release: 1%{?dist}%{?buildid}
 Epoch: 1
@@ -28,21 +28,24 @@ Patch0004: 0004-Make-sure-stdint.h-is-always-used-with-MSVC-on-ARM-A.patch
 Patch0005: 0005-Add-EFI_DRIVER_ENTRY_POINT-support-for-MSVC-ARM64.patch
 Patch0006: 0006-Move-memcpy-memset-definition-to-global-init.c.patch
 Patch0007: 0007-Bump-revision-from-VERSION-3.0.6-to-VERSION-3.0.7.patch
-Patch0008: 0008-Fix-some-types-gcc-doesn-t-like.patch
-Patch0009: 0009-Fix-arm-build-paths-in-the-makefile.patch
-Patch0010: 0010-Work-around-Werror-maybe-uninitialized-not-being-ver.patch
-Patch0011: 0011-Fix-a-sign-error-in-the-debughook-example-app.patch
-Patch0012: 0012-Fix-typedef-of-EFI_PXE_BASE_CODE.patch
-Patch0013: 0013-make-clang-not-complain-about-fno-merge-all-constant.patch
-Patch0014: 0014-Fix-another-place-clang-complains-about.patch
-Patch0015: 0015-gnu-efi-add-some-more-common-string-functions.patch
-Patch0016: 0016-Add-D-to-print-device-paths.patch
-Patch0017: 0017-Make-ARCH-overrideable-on-the-command-line.patch
-Patch0018: 0018-apps-Add-bltgrid-and-lfbgrid-and-add-error-checks-to.patch
-Patch0019: 0019-Nerf-Werror-pragma-away.patch
-Patch0020: 0020-Make-ia32-use-our-own-div-asm-on-gnu-C-as-well.patch
-Patch0021: 0021-Call-ar-in-deterministic-mode.patch
-Patch0022: 0022-Add-debug-helper-applications.patch
+Patch0008: 0008-Currently-we-have-DivU64x32-on-ia32-but-it-tries-to-.patch
+Patch0009: 0009-gnuefi-preserve-.gnu.hash-sections-unbreaks-elilo-on.patch
+Patch0010: 0010-gnu-efi-fix-lib-ia64-setjmp.S-IA-64-build-failure.patch
+Patch0011: 0011-Fix-some-types-gcc-doesn-t-like.patch
+Patch0012: 0012-Fix-arm-build-paths-in-the-makefile.patch
+Patch0013: 0013-Work-around-Werror-maybe-uninitialized-not-being-ver.patch
+Patch0014: 0014-Fix-a-sign-error-in-the-debughook-example-app.patch
+Patch0015: 0015-Fix-typedef-of-EFI_PXE_BASE_CODE.patch
+Patch0016: 0016-make-clang-not-complain-about-fno-merge-all-constant.patch
+Patch0017: 0017-Fix-another-place-clang-complains-about.patch
+Patch0018: 0018-gnu-efi-add-some-more-common-string-functions.patch
+Patch0019: 0019-Add-D-to-print-device-paths.patch
+Patch0020: 0020-Make-ARCH-overrideable-on-the-command-line.patch
+Patch0021: 0021-apps-Add-bltgrid-and-lfbgrid-and-add-error-checks-to.patch
+Patch0022: 0022-Nerf-Werror-pragma-away.patch
+Patch0023: 0023-Call-ar-in-deterministic-mode.patch
+Patch0024: 0024-Add-debug-helper-applications.patch
+Patch0025: 0025-Bump-revision-from-VERSION-3.0.7-to-VERSION-3.0.8.patch
 
 %define debug_package %{nil}
 
@@ -149,6 +152,9 @@ mv ia32/apps/{route80h.efi,modelist.efi} %{buildroot}/boot/efi/EFI/%{efidir}/ia3
 %attr(0644,root,root) /boot/efi/EFI/%{efidir}/*/*.efi
 
 %changelog
+* Tue Mar 20 2018 Peter Jones <pjones@redhat.com> - 3.0.8-1
+- Update to 3.0.8 (from git).
+
 * Tue Mar 13 2018 Peter Jones <pjones@redhat.com> - 3.0.7-1
 - Update to 3.0.7 (from git) and add some pending patches we need.
 

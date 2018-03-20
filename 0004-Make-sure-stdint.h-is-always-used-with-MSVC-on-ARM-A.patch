@@ -1,7 +1,7 @@
 From 39ce220cb6fde14bedf2ef61695f3d20726e41ef Mon Sep 17 00:00:00 2001
 From: Nigel Croxon <ncroxon@redhat.com>
 Date: Mon, 6 Nov 2017 09:26:05 -0500
-Subject: [PATCH 04/22] Make sure stdint.h is always used with MSVC on
+Subject: [PATCH 04/25] Make sure stdint.h is always used with MSVC on
  ARM/ARM64, since all the versions of Visual Studio that support ARM or ARM64
  have that header. Without this, uint64_t would be defined to unsigned long,
  which is 32-bits in the Microsoft world.
@@ -90,5 +90,5 @@ index 06f6ea1aeb8..40a5a9cd428 100644
  // ANSI C 1999/2000 stdint.h integer width declarations
  
 -- 
-2.14.3
+2.15.0
 

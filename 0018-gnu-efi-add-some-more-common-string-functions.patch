@@ -1,7 +1,7 @@
-From 4e69cb7426ae7bd9e8e27e4195d41e64b722da95 Mon Sep 17 00:00:00 2001
+From 9485c65f6d28b71ff697849c1c8d47fd077ccd07 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
-Date: Mon, 31 Jul 2017 15:01:02 -0400
-Subject: [PATCH 15/22] gnu-efi: add some more common string functions.
+Date: Tue, 13 Mar 2018 15:20:28 -0400
+Subject: [PATCH 18/25] gnu-efi: add some more common string functions.
 
 This adds bounded string helper functions:
 
@@ -13,6 +13,7 @@ StpnCpy()
 And the unbounded function StpCpy().
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
+Signed-off-by: Nigel Croxon <ncroxon@redhat.com>
 ---
  lib/runtime/rtstr.c | 92 +++++++++++++++++++++++++++++++++++++++++++++++++++--
  lib/str.c           | 53 ++++++++++++++++++++++++++++++
@@ -340,5 +341,5 @@ index c073ead97a7..49d0b4d3ae0 100644
  RUNTIMEFUNCTION
  RtStrSize (
 -- 
-2.14.3
+2.15.0
 

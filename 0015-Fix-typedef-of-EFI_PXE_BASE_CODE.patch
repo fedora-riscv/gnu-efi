@@ -1,7 +1,7 @@
-From 44c9ce3c94d26ab4b8f778827bcaded30dc1fa22 Mon Sep 17 00:00:00 2001
+From 28b487d1ae66c7311e13c07c802276ea26f026e9 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
-Date: Wed, 8 Feb 2017 15:28:18 -0500
-Subject: [PATCH 12/22] Fix typedef of EFI_PXE_BASE_CODE
+Date: Tue, 13 Mar 2018 15:20:25 -0400
+Subject: [PATCH 15/25] Fix typedef of EFI_PXE_BASE_CODE
 
 Commit 751cbce3 fixed up a bunch of types to better match the edk2
 definitions and the names in the UEFI Spec, but while doing so
@@ -27,6 +27,7 @@ This patch changes both _EFI_PXE_BASE_CODE and EFI_PXE_BASE_CODE
 typedefs to inherit from struct _EFI_PXE_BASE_CODE_PROTOCOL.
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
+Signed-off-by: Nigel Croxon <ncroxon@redhat.com>
 ---
  inc/efipxebc.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
@@ -45,5 +46,5 @@ index 035a853a7ef..3760c7cbb78 100644
  //
  // Call Back Definitions
 -- 
-2.14.3
+2.15.0
 

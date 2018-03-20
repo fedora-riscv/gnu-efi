@@ -1,8 +1,12 @@
-From 1d249b810b22c601c4b9e3a684443be841cd1b56 Mon Sep 17 00:00:00 2001
+From b030bfce35fe4b9a4eec88442e2027e4d6ec60de Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
-Date: Mon, 8 Jan 2018 16:50:34 -0500
-Subject: [PATCH 22/22] Add debug helper applications
+Date: Tue, 13 Mar 2018 15:20:35 -0400
+Subject: [PATCH 24/25] Add debug helper applications
 
+Add debug helper applications.
+
+Signed-off-by: Peter Jones <pjones@redhat.com>
+Signed-off-by: Nigel Croxon <ncroxon@redhat.com>
 ---
  apps/setdbg.c   | 37 +++++++++++++++++++++++++++++++++++++
  apps/unsetdbg.c | 37 +++++++++++++++++++++++++++++++++++++
@@ -111,5 +115,5 @@ index 4e26444c469..4e1b69a38c8 100644
  TARGET_RTDRIVERS =
  
 -- 
-2.14.3
+2.15.0
 

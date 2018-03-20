@@ -1,7 +1,7 @@
 From 99d94682de590719f9333fcf091910a9581b44c0 Mon Sep 17 00:00:00 2001
 From: Nigel Croxon <ncroxon@redhat.com>
 Date: Thu, 13 Jul 2017 08:43:16 -0400
-Subject: [PATCH 01/22] [PATCH] Disable AVX instruction set on IA32 and x86_64
+Subject: [PATCH 01/25] [PATCH] Disable AVX instruction set on IA32 and x86_64
  platforms
 
 If gnu-efi is compiled with "-march=native" on a host that supports AVX, both
@@ -40,5 +40,5 @@ index 16f1fd21848..446e676dc14 100755
    CFLAGS += -march=mips64r2
    ARCH3264 = -mabi=64
 -- 
-2.14.3
+2.15.0
 
