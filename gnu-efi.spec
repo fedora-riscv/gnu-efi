@@ -148,8 +148,8 @@ mv ia32/apps/{route80h.efi,modelist.efi} %{buildroot}/boot/efi/EFI/%{efidir}/ia3
 %{_includedir}/efi
 
 %files utils
-%dir /boot/efi/EFI/%{efidir}/
-%attr(0644,root,root) /boot/efi/EFI/%{efidir}/*/*.efi
+%dir %attr(0600,root,root) /boot/efi/EFI/%{efidir}/
+%attr(0600,root,root) /boot/efi/EFI/%{efidir}/*/*.efi
 
 %changelog
 * Tue Mar 20 2018 Peter Jones <pjones@redhat.com> - 3.0.8-1
