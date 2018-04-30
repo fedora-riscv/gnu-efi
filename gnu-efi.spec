@@ -98,7 +98,7 @@ Summary: Utilities for EFI systems
 Group: Applications/System
 
 %description utils
-This package contains utilties for debugging and developing EFI systems.
+This package contains utilities for debugging and developing EFI systems.
 
 %prep
 %setup -q -n gnu-efi-%{tarball_version}
