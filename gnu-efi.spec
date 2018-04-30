@@ -2,7 +2,7 @@ Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0.8
 %global tarball_version 3.0.6
-Release: 1%{?dist}%{?buildid}
+Release: 2%{?dist}%{?buildid}
 Epoch: 1
 Group: Development/System
 License: BSD 
@@ -148,10 +148,14 @@ mv ia32/apps/{route80h.efi,modelist.efi} %{buildroot}/boot/efi/EFI/%{efidir}/ia3
 %{_includedir}/efi
 
 %files utils
-%dir %attr(0600,root,root) /boot/efi/EFI/%{efidir}/
-%attr(0600,root,root) /boot/efi/EFI/%{efidir}/*/*.efi
+%dir %attr(0700,root,root) /boot/efi/EFI/%{efidir}/
+%dir %attr(0700,root,root) /boot/efi/EFI/%{efidir}/*/
+%attr(0700,root,root) /boot/efi/EFI/%{efidir}/*/*.efi
 
 %changelog
+* Mon Apr 30 2018 Peter Jones <pjones@redhat.com> - 3.0.8-2
+- Fix permissions on /boot/efi/...
+
 * Tue Mar 20 2018 Peter Jones <pjones@redhat.com> - 3.0.8-1
 - Update to 3.0.8 (from git).
 
