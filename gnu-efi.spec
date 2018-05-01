@@ -2,12 +2,13 @@ Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0.8
 %global tarball_version 3.0.6
-Release: 2%{?dist}%{?buildid}
+Release: 3%{?dist}%{?buildid}
 Epoch: 1
 Group: Development/System
 License: BSD 
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
-ExclusiveArch: x86_64 aarch64 %{arm} %{ix86}
+ExclusiveArch: %{efi}
+BuildRequires: efi-rpm-macros
 BuildRequires: git
 %ifarch x86_64
 # So... in some build environments, glibc32 provides some headers.  In
@@ -46,6 +47,7 @@ Patch0022: 0022-Nerf-Werror-pragma-away.patch
 Patch0023: 0023-Call-ar-in-deterministic-mode.patch
 Patch0024: 0024-Add-debug-helper-applications.patch
 Patch0025: 0025-Bump-revision-from-VERSION-3.0.7-to-VERSION-3.0.8.patch
+Patch0026: 0026-Use-EFI-canonical-names-everywhere-the-compiler-does.patch
 
 %define debug_package %{nil}
 
@@ -61,23 +63,6 @@ Patch0025: 0025-Bump-revision-from-VERSION-3.0.7-to-VERSION-3.0.8.patch
 # True story.
 #
 %global __strip "%{__strip} -p"
-
-# Figure out the right file path to use
-%global efidir %(eval echo $(grep ^ID= /etc/os-release | sed -e 's/^ID=//' -e 's/rhel/redhat/'))
-
-%ifarch x86_64
-%global efiarch x86_64
-%endif
-%ifarch aarch64
-%global efiarch aarch64
-%endif
-%ifarch %{arm}
-%global efiarch arm
-%endif
-
-%ifarch %{ix86}
-%global efiarch ia32
-%endif
 
 %description
 This package contains development headers and libraries for developing
@@ -116,28 +101,28 @@ git config --unset user.name
 # Package cannot build with %{?_smp_mflags}.
 make
 make apps
-%ifarch x86_64
-setarch linux32 -B make ARCH=ia32 PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib}
-setarch linux32 -B make ARCH=ia32 PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib} apps
-%endif
+if [[ -n "%{efi_alt_arch}" ]] ; then
+	setarch linux32 -B make ARCH=%{efi_alt_arch} PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib}
+	setarch linux32 -B make ARCH=%{efi_alt_arch} PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib} apps
+fi
 
 %install
 rm -rf %{buildroot}
 
 mkdir -p %{buildroot}/%{_libdir}/gnuefi
-mkdir -p %{buildroot}/boot/efi/EFI/%{efidir}/%{efiarch}
+mkdir -p %{buildroot}/%{efi_esp_dir}/%{efi_arch}
 make PREFIX=%{_prefix} LIBDIR=%{_libdir} INSTALLROOT=%{buildroot} install
 mv %{buildroot}/%{_libdir}/*.lds %{buildroot}/%{_libdir}/*.o %{buildroot}/%{_libdir}/gnuefi
-mv %{efiarch}/apps/{route80h.efi,modelist.efi} %{buildroot}/boot/efi/EFI/%{efidir}/%{efiarch}/
+mv %{efi_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi_arch}/
 
-%ifarch x86_64
-mkdir -p %{buildroot}/%{_prefix}/%{lib}/gnuefi
-mkdir -p %{buildroot}/boot/efi/EFI/%{efidir}/ia32
+if [[ -n "%{efi_alt_arch}" ]] ; then
+	mkdir -p %{buildroot}/%{_prefix}/%{lib}/gnuefi
+	mkdir -p %{buildroot}%{efi_esp_dir}/%{efi_alt_arch}
 
-setarch linux32 -B make PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib} INSTALLROOT=%{buildroot} ARCH=ia32 install
-mv %{buildroot}/%{_prefix}/%{lib}/*.{lds,o} %{buildroot}/%{_prefix}/%{lib}/gnuefi/
-mv ia32/apps/{route80h.efi,modelist.efi} %{buildroot}/boot/efi/EFI/%{efidir}/ia32/
-%endif
+	setarch linux32 -B make PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib} INSTALLROOT=%{buildroot} ARCH=%{efi_alt_arch} install
+	mv %{buildroot}/%{_prefix}/%{lib}/*.{lds,o} %{buildroot}/%{_prefix}/%{lib}/gnuefi/
+	mv %{efi_alt_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi_alt_arch}/
+fi
 
 %files
 %{_prefix}/%{lib}*/*
@@ -148,11 +133,15 @@ mv ia32/apps/{route80h.efi,modelist.efi} %{buildroot}/boot/efi/EFI/%{efidir}/ia3
 %{_includedir}/efi
 
 %files utils
-%dir %attr(0700,root,root) /boot/efi/EFI/%{efidir}/
-%dir %attr(0700,root,root) /boot/efi/EFI/%{efidir}/*/
-%attr(0700,root,root) /boot/efi/EFI/%{efidir}/*/*.efi
+%dir %attr(0700,root,root) %{efi_esp_dir}/
+%dir %attr(0700,root,root) %{efi_esp_dir}/*/
+%attr(0700,root,root) %{efi_esp_dir}/*/*.efi
 
 %changelog
+* Tue May 01 2018 Peter Jones <pjones@redhat.com> - 3.0.8-3
+- Use efi-rpm-macros instead of defining all the efi directory and arch
+  stuff ourselves.
+
 * Mon Apr 30 2018 Peter Jones <pjones@redhat.com> - 3.0.8-2
 - Fix permissions on /boot/efi/...
 
