@@ -2,13 +2,13 @@ Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0.8
 %global tarball_version 3.0.6
-Release: 3%{?dist}%{?buildid}
+Release: 4%{?dist}%{?buildid}
 Epoch: 1
 Group: Development/System
 License: BSD 
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
 ExclusiveArch: %{efi}
-BuildRequires: efi-rpm-macros
+BuildRequires: efi-srpm-macros >= 3-2
 BuildRequires: git
 %ifarch x86_64
 # So... in some build environments, glibc32 provides some headers.  In
@@ -98,13 +98,13 @@ git config --unset user.email
 git config --unset user.name
 
 %build
-# Package cannot build with %{?_smp_mflags}.
+# Package cannot build with %%{?_smp_mflags}.
 make
 make apps
-if [[ -n "%{efi_alt_arch}" ]] ; then
+%if %{efi_has_alt_arch}
 	setarch linux32 -B make ARCH=%{efi_alt_arch} PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib}
 	setarch linux32 -B make ARCH=%{efi_alt_arch} PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib} apps
-fi
+%endif
 
 %install
 rm -rf %{buildroot}
@@ -115,14 +115,14 @@ make PREFIX=%{_prefix} LIBDIR=%{_libdir} INSTALLROOT=%{buildroot} install
 mv %{buildroot}/%{_libdir}/*.lds %{buildroot}/%{_libdir}/*.o %{buildroot}/%{_libdir}/gnuefi
 mv %{efi_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi_arch}/
 
-if [[ -n "%{efi_alt_arch}" ]] ; then
+%if %{efi_has_alt_arch}
 	mkdir -p %{buildroot}/%{_prefix}/%{lib}/gnuefi
 	mkdir -p %{buildroot}%{efi_esp_dir}/%{efi_alt_arch}
 
 	setarch linux32 -B make PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib} INSTALLROOT=%{buildroot} ARCH=%{efi_alt_arch} install
 	mv %{buildroot}/%{_prefix}/%{lib}/*.{lds,o} %{buildroot}/%{_prefix}/%{lib}/gnuefi/
 	mv %{efi_alt_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi_alt_arch}/
-fi
+%endif
 
 %files
 %{_prefix}/%{lib}*/*
@@ -133,11 +133,17 @@ fi
 %{_includedir}/efi
 
 %files utils
-%dir %attr(0700,root,root) %{efi_esp_dir}/
-%dir %attr(0700,root,root) %{efi_esp_dir}/*/
-%attr(0700,root,root) %{efi_esp_dir}/*/*.efi
+%dir %attr(0700,root,root) %{efi_esp_dir}/%{efi_arch}/
+%attr(0700,root,root) %{efi_esp_dir}/%{efi_arch}/*.efi
+%if %{efi_has_alt_arch}
+	%dir %attr(0700,root,root) %{efi_esp_dir}/%{efi_alt_arch}/
+	%attr(0700,root,root) %{efi_esp_dir}/%{efi_alt_arch}/*.efi
+%endif
 
 %changelog
+* Fri May 04 2018 Peter Jones <pjones@redhat.com> - 3.0.8-4
+- Rebuild for new efi-rpm-macros, now that it has settled down a bit.
+
 * Tue May 01 2018 Peter Jones <pjones@redhat.com> - 3.0.8-3
 - Use efi-rpm-macros instead of defining all the efi directory and arch
   stuff ourselves.
