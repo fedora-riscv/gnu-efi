@@ -128,7 +128,6 @@ mv %{efi_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi
 %{_prefix}/%{lib}*/*
 
 %files devel
-%defattr(-,root,root,-)
 %doc README.* ChangeLog
 %{_includedir}/efi
 
