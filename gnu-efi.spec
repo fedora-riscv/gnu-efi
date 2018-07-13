@@ -2,7 +2,7 @@ Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0.8
 %global tarball_version 3.0.6
-Release: 4%{?dist}%{?buildid}
+Release: 5%{?dist}%{?buildid}
 Epoch: 1
 Group: Development/System
 License: BSD 
@@ -140,6 +140,9 @@ mv %{efi_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi
 %endif
 
 %changelog
+* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org>
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
 * Fri May 04 2018 Peter Jones <pjones@redhat.com> - 3.0.8-4
 - Rebuild for new efi-rpm-macros, now that it has settled down a bit.
 
