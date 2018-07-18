@@ -8,6 +8,7 @@ Group: Development/System
 License: BSD 
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
 ExclusiveArch: %{efi}
+BuildRequires:  gcc
 BuildRequires: efi-srpm-macros >= 3-2
 BuildRequires: git
 %ifarch x86_64
