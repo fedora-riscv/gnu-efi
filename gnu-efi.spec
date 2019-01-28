@@ -4,7 +4,6 @@ Version: 3.0.8
 %global tarball_version 3.0.6
 Release: 5%{?dist}%{?buildid}
 Epoch: 1
-Group: Development/System
 License: BSD 
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
 ExclusiveArch: %{efi}
@@ -71,7 +70,6 @@ applications that run under EFI (Extensible Firmware Interface).
 
 %package devel
 Summary: Development Libraries and headers for EFI
-Group: Development/System
 Obsoletes: gnu-efi < 1:3.0.2-1
 Requires: gnu-efi
 
@@ -81,7 +79,6 @@ applications that run under EFI (Extensible Firmware Interface).
 
 %package utils
 Summary: Utilities for EFI systems
-Group: Applications/System
 
 %description utils
 This package contains utilities for debugging and developing EFI systems.
