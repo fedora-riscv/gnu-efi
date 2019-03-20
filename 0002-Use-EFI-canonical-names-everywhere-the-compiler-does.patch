@@ -1,7 +1,7 @@
 From a92a9ed2db67c415c7bad5a9b041aca4efc33cf2 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Tue, 1 May 2018 14:12:01 -0400
-Subject: [PATCH] Use EFI canonical names everywhere the compiler doesn't care.
+Subject: [PATCH 2/2] Use EFI canonical names everywhere the compiler doesn't care.
 
 Always use x64/X64 and aa64/AA64 unless the toolchain cares about
 "x86_64" or whatnot.
