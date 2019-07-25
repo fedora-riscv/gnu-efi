@@ -2,7 +2,7 @@ Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0.9
 %global tarball_version 3.0.9
-Release: 1%{?dist}%{?buildid}
+Release: 2%{?dist}%{?buildid}
 Epoch: 1
 License: BSD 
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
@@ -114,6 +114,9 @@ mv %{efi_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi
 %endif
 
 %changelog
+* Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1:3.0.9-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
 * Wed Mar 20 2019 Peter Jones <pjones@redhat.com> - 3.0.9-1
 - Update to gnu-efi 3.0.9
 
