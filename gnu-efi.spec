@@ -76,8 +76,8 @@ git config --unset user.name
 make
 make apps
 %if %{efi_has_alt_arch}
-	setarch linux32 -B make ARCH=%{efi_alt_arch} PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib}
-	setarch linux32 -B make ARCH=%{efi_alt_arch} PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib} apps
+  setarch linux32 -B make ARCH=%{efi_alt_arch} PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib}
+  setarch linux32 -B make ARCH=%{efi_alt_arch} PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib} apps
 %endif
 
 %install
@@ -90,12 +90,12 @@ mv %{buildroot}/%{_libdir}/*.lds %{buildroot}/%{_libdir}/*.o %{buildroot}/%{_lib
 mv %{efi_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi_arch}/
 
 %if %{efi_has_alt_arch}
-	mkdir -p %{buildroot}/%{_prefix}/%{lib}/gnuefi
-	mkdir -p %{buildroot}%{efi_esp_dir}/%{efi_alt_arch}
+  mkdir -p %{buildroot}/%{_prefix}/%{lib}/gnuefi
+  mkdir -p %{buildroot}%{efi_esp_dir}/%{efi_alt_arch}
 
-	setarch linux32 -B make PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib} INSTALLROOT=%{buildroot} ARCH=%{efi_alt_arch} install
-	mv %{buildroot}/%{_prefix}/%{lib}/*.{lds,o} %{buildroot}/%{_prefix}/%{lib}/gnuefi/
-	mv %{efi_alt_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi_alt_arch}/
+  setarch linux32 -B make PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib} INSTALLROOT=%{buildroot} ARCH=%{efi_alt_arch} install
+  mv %{buildroot}/%{_prefix}/%{lib}/*.{lds,o} %{buildroot}/%{_prefix}/%{lib}/gnuefi/
+  mv %{efi_alt_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi_alt_arch}/
 %endif
 
 %files
@@ -109,11 +109,14 @@ mv %{efi_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi
 %dir %attr(0700,root,root) %{efi_esp_dir}/%{efi_arch}/
 %attr(0700,root,root) %{efi_esp_dir}/%{efi_arch}/*.efi
 %if %{efi_has_alt_arch}
-	%dir %attr(0700,root,root) %{efi_esp_dir}/%{efi_alt_arch}/
-	%attr(0700,root,root) %{efi_esp_dir}/%{efi_alt_arch}/*.efi
+  %dir %attr(0700,root,root) %{efi_esp_dir}/%{efi_alt_arch}/
+  %attr(0700,root,root) %{efi_esp_dir}/%{efi_alt_arch}/*.efi
 %endif
 
 %changelog
+* Mon Aug 26 2019 Peter Jones <pjones@redhat.com> - 3.0.9-3
+- Fix some minor rpmlint complaints
+
 * Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1:3.0.9-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
