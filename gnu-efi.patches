@@ -13,5 +13,5 @@ Patch0012: 0012-Make-travis-build-the-right-project.patch
 Patch0013: 0013-Use-EFI-canonical-names-everywhere-the-compiler-does.patch
 Patch0014: 0014-Fix-a-minor-coverity-complaint-in-some-apps.patch
 Patch0015: 0015-Get-rid-of-some-unused-junk-that-has-the-BSD-4-claus.patch
-Patch0017: 0016-Make-CHAR8-and-similar-be-defined-the-same-way-edk2-.patch
-Patch0018: 0017-CFLAGS-add-Wno-pointer-sign.patch
+Patch0016: 0016-Make-CHAR8-and-similar-be-defined-the-same-way-edk2-.patch
+Patch0017: 0017-CFLAGS-add-Wno-pointer-sign.patch
