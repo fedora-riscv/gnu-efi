@@ -2,7 +2,7 @@ Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0.9
 %global tarball_version 3.0.9
-Release: 2%{?dist}%{?buildid}
+Release: 3%{?dist}%{?buildid}
 Epoch: 1
 License: BSD 
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
@@ -17,13 +17,13 @@ BuildRequires: git
 #BuildRequires: glibc-devel(x86-32)
 BuildRequires: /usr/include/gnu/stubs-32.h
 %endif
-Source: http://superb-dca2.dl.sourceforge.net/project/gnu-efi/gnu-efi-%{tarball_version}.tar.bz2
+Source0: http://superb-dca2.dl.sourceforge.net/project/gnu-efi/gnu-efi-%{tarball_version}.tar.bz2
+Source1: gnu-efi.patches
 
 # dammit, rpmlint, shut up.
 %define lib %{nil}lib%{nil}
 
-Patch0001: 0001-PATCH-Disable-AVX-instruction-set-on-IA32-and-x86_64.patch
-Patch0002: 0002-Use-EFI-canonical-names-everywhere-the-compiler-does.patch
+%include %{SOURCE1}
 
 %define debug_package %{nil}
 
@@ -67,7 +67,7 @@ git config user.name "Fedora Ninjas"
 git config sendemail.to "gnu-efi-owner@fedoraproject.org"
 git add .
 git commit -a -q -m "%{version} baseline."
-git am %{patches} </dev/null
+git am --ignore-whitespace %{patches} </dev/null
 git config --unset user.email
 git config --unset user.name
 
@@ -116,6 +116,9 @@ mv %{efi_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi
 %changelog
 * Mon Aug 26 2019 Peter Jones <pjones@redhat.com> - 3.0.9-3
 - Fix some minor rpmlint complaints
+- Pull recent patches from upstream
+- Add support for ELF constructors and destructors
+- Fix a minor licensing problem
 
 * Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1:3.0.9-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
