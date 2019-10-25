@@ -1,0 +1,17 @@
+Patch0001: 0001-Set-0-properly-in-StrnCpy.patch
+Patch0002: 0002-Fix-typeo-in-efierr.h-EFI_WARN_UNKNOWN_GLYPH-definit.patch
+Patch0003: 0003-Fixed-typeo-lib-error.c-EFI_WARN_UNKNOWN_GLYPH-defin.patch
+Patch0004: 0004-efilink-fix-build-with-gcc-4.8.patch
+Patch0005: 0005-Fix-for-problem-with-undeclared-intptr_t-type.patch
+Patch0006: 0006-Redefine-jmp_buf-to-comply-with-C-calling-convention.patch
+Patch0007: 0007-Make.rules-incomplete-wrong-make-r-failure.patch
+Patch0008: 0008-gnuefi-Makefile-uses-a-strange-rule-to-create-libgnu.patch
+Patch0009: 0009-efiapi.h-fix-EventGroup-parameter-of-EFI_CREATE_EVEN.patch
+Patch0010: 0010-Do-not-include-efisetjmp.h-on-efi.h.patch
+Patch0011: 0011-Add-.travis.yml.patch
+Patch0012: 0012-Make-travis-build-the-right-project.patch
+Patch0013: 0013-Use-EFI-canonical-names-everywhere-the-compiler-does.patch
+Patch0014: 0014-Fix-a-minor-coverity-complaint-in-some-apps.patch
+Patch0015: 0015-Get-rid-of-some-unused-junk-that-has-the-BSD-4-claus.patch
+Patch0016: 0016-Make-ELF-constructors-and-destructors-work.patch
+Patch0017: 0017-Make-CHAR8-and-similar-be-defined-the-same-way-edk2-.patch

@@ -17,13 +17,13 @@ BuildRequires: git
 #BuildRequires: glibc-devel(x86-32)
 BuildRequires: /usr/include/gnu/stubs-32.h
 %endif
-Source: http://superb-dca2.dl.sourceforge.net/project/gnu-efi/gnu-efi-%{tarball_version}.tar.bz2
+Source0: http://superb-dca2.dl.sourceforge.net/project/gnu-efi/gnu-efi-%{tarball_version}.tar.bz2
+Source1: gnu-efi.patches
 
 # dammit, rpmlint, shut up.
 %define lib %{nil}lib%{nil}
 
-Patch0001: 0001-PATCH-Disable-AVX-instruction-set-on-IA32-and-x86_64.patch
-Patch0002: 0002-Use-EFI-canonical-names-everywhere-the-compiler-does.patch
+%include %{SOURCE1}
 
 %define debug_package %{nil}
 
