@@ -1,0 +1,30 @@
+From 5139f7315ef5fee331ced3e851a8833f30aac656 Mon Sep 17 00:00:00 2001
+From: Peter Jones <pjones@redhat.com>
+Date: Fri, 25 Oct 2019 15:45:38 -0400
+Subject: [PATCH 30/45] Add stuff that's got weird characters to .gitattributes
+
+Some of these files will be removed in a later patch, but they need to
+stay in .gitattributes until after the next release, because they make
+patch application break in weird ways.
+
+Signed-off-by: Peter Jones <pjones@redhat.com>
+---
+ .gitattributes | 6 ++++++
+ 1 file changed, 6 insertions(+)
+ create mode 100644 .gitattributes
+
+diff --git a/.gitattributes b/.gitattributes
+new file mode 100644
+index 00000000000..d3a9be78dfa
+--- /dev/null
++++ b/.gitattributes
+@@ -0,0 +1,6 @@
++inc/inc.mak binary
++inc/make.inf binary
++inc/makefile.hdr binary
++inc/protocol/ia64/eficontext.h binary
++inc/protocol/make.inf binary
++inc/protocol/makefile.hdr binary
+-- 
+2.24.1
+

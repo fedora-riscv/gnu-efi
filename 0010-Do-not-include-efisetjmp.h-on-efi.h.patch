@@ -1,7 +1,7 @@
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From 486ba3c3bdd147b7d98159b9e650be60bce0f027 Mon Sep 17 00:00:00 2001
 From: leo <leo.sartre@geebol.fr>
 Date: Wed, 15 May 2019 05:32:21 +0200
-Subject: [PATCH] Do not include efisetjmp.h on efi.h
+Subject: [PATCH 10/45] Do not include efisetjmp.h on efi.h
 
 People than really want to use efisetjmp implementation can include
 the header on their own.
@@ -35,3 +35,6 @@ index 9cbc22dc370..2ddd53e0d95 100644
 -#include "efisetjmp.h"
  
  #endif
+-- 
+2.24.1
+

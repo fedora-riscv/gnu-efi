@@ -1,0 +1,40 @@
+From 0a12613849ffb6e32e1014b94d1e48b6ba2bef45 Mon Sep 17 00:00:00 2001
+From: Peter Jones <pjones@redhat.com>
+Date: Fri, 25 Oct 2019 15:42:10 -0400
+Subject: [PATCH 37/45] Install all headers for all arches.
+
+This further enables cross-builds by installing all the arches headers.
+
+Signed-off-by: Peter Jones <pjones@redhat.com>
+---
+ inc/Makefile | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/inc/Makefile b/inc/Makefile
+index 13022fd6ae1..f993cc5b108 100644
+--- a/inc/Makefile
++++ b/inc/Makefile
+@@ -9,12 +9,14 @@ all:
+ 
+ clean:
+ 
++SOURCE=$(realpath $(SRCDIR))
++DEST=$(INSTALLROOT)$(PREFIX)/include/efi
++INCLUDEDIRS=$(sort $(shell find $(SOURCE) -type d))
++
+ install:
+-	mkdir -p $(INSTALLROOT)$(PREFIX)/include/efi
+-	mkdir -p $(INSTALLROOT)$(PREFIX)/include/efi/protocol
+-	mkdir -p $(INSTALLROOT)$(PREFIX)/include/efi/$(ARCH)
+-	$(INSTALL) -m 644 $(SRCDIR)/*.h $(INSTALLROOT)$(PREFIX)/include/efi
+-	$(INSTALL) -m 644 $(SRCDIR)/protocol/*.h $(INSTALLROOT)$(PREFIX)/include/efi/protocol
+-	$(INSTALL) -m 644 $(SRCDIR)/$(ARCH)/*.h $(INSTALLROOT)$(PREFIX)/include/efi/$(ARCH)
++	@$(foreach d,$(INCLUDEDIRS), \
++		$(INSTALL) -v -m 755 -d $(subst $(SOURCE),$(DEST),$(d)); \
++		$(INSTALL) -v -m 644 -t $(subst $(SOURCE),$(DEST),$(d)) $(wildcard $(d)/*.h); \
++	)
+ 
+ include $(SRCDIR)/../Make.rules
+-- 
+2.24.1
+

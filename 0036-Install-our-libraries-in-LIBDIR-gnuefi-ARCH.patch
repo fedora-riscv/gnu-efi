@@ -1,0 +1,56 @@
+From 1071f82a88908aacc2de36111045f721ec53a644 Mon Sep 17 00:00:00 2001
+From: Peter Jones <pjones@redhat.com>
+Date: Fri, 25 Oct 2019 15:41:16 -0400
+Subject: [PATCH 36/45] Install our libraries in $(LIBDIR)/gnuefi/$(ARCH)
+
+This makes it possible to install all the output on the same machine for
+cross-builds.
+
+Signed-off-by: Peter Jones <pjones@redhat.com>
+---
+ gnuefi/Makefile | 10 +++++-----
+ lib/Makefile    |  2 +-
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/gnuefi/Makefile b/gnuefi/Makefile
+index bea629b0b29..5bdaec7579b 100644
+--- a/gnuefi/Makefile
++++ b/gnuefi/Makefile
+@@ -60,16 +60,16 @@ clean:
+ 	@rm -vf $(TARGETS) *~ *.o $(OBJS)
+ 
+ install:
+-	mkdir -p $(INSTALLROOT)$(LIBDIR)
+-	$(INSTALL) -m 644 $(TARGETS) $(INSTALLROOT)$(LIBDIR)
++	mkdir -p $(INSTALLROOT)$(LIBDIR)/gnuefi/$(ARCH)
++	$(INSTALL) -m 644 -t $(INSTALLROOT)$(LIBDIR)/gnuefi/$(ARCH)/ $(TARGETS)
+ ifneq (,$(findstring FreeBSD,$(OS)))
+  ifeq ($(ARCH),x64)
+-	$(INSTALL) -m 644 $(SRCDIR)/elf_$(ARCH)_fbsd_efi.lds $(INSTALLROOT)$(LIBDIR)
++	$(INSTALL) -m 644 $(SRCDIR)/elf_$(ARCH)_fbsd_efi.lds $(INSTALLROOT)$(LIBDIR)/gnuefi/$(ARCH)
+  else
+-	$(INSTALL) -m 644 $(SRCDIR)/elf_$(ARCH)_efi.lds $(INSTALLROOT)$(LIBDIR)
++	$(INSTALL) -m 644 $(SRCDIR)/elf_$(ARCH)_efi.lds $(INSTALLROOT)$(LIBDIR)/gnuefi/$(ARCH)
+  endif
+ else
+-	$(INSTALL) -m 644 $(SRCDIR)/elf_$(ARCH)_efi.lds $(INSTALLROOT)$(LIBDIR)
++	$(INSTALL) -m 644 $(SRCDIR)/elf_$(ARCH)_efi.lds $(INSTALLROOT)$(LIBDIR)/gnuefi/$(ARCH)
+ endif
+ 
+ include $(SRCDIR)/../Make.rules
+diff --git a/lib/Makefile b/lib/Makefile
+index 9a2b611cab7..14cf9059b28 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -66,7 +66,7 @@ OBJS  = $(FILES:%=%.o)
+ 
+ SUBDIRS = $(ARCHES) runtime
+ 
+-LIBDIRINSTALL = $(INSTALLROOT)$(LIBDIR)
++LIBDIRINSTALL = $(INSTALLROOT)$(LIBDIR)/gnuefi/$(ARCH)
+ 
+ all: libsubdirs libefi.a
+ 
+-- 
+2.24.1
+

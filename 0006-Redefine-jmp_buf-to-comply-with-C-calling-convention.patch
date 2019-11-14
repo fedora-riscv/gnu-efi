@@ -1,7 +1,7 @@
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From 5b74db0e154ffd2fba4bcc254069844f21913988 Mon Sep 17 00:00:00 2001
 From: Nigel Croxon <ncroxon@redhat.com>
 Date: Fri, 15 Mar 2019 09:32:06 -0400
-Subject: [PATCH] Redefine jmp_buf to comply with C calling convention.
+Subject: [PATCH 06/45] Redefine jmp_buf to comply with C calling convention.
 
 Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
 Signed-off-by: Nigel Croxon <ncroxon@redhat.com>
@@ -129,3 +129,6 @@ index a489993c174..b1ad1fe3087 100644
 +} ALIGN(JMPBUF_ALIGN) jmp_buf[1];
  
  #endif /* GNU_EFI_X86_64_SETJMP_H */
+-- 
+2.24.1
+

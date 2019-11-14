@@ -1,44 +1,48 @@
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From 452e6edc834fcbc8eb033b85b48e27ff199058ec Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Tue, 1 May 2018 14:12:01 -0400
-Subject: [PATCH] Use EFI canonical names everywhere the compiler doesn't care.
+Subject: [PATCH 22/45] Use EFI canonical names everywhere the compiler doesn't
+ care.
 
 Always use x64/X64 and aa64/AA64 unless the toolchain cares about
 "x86_64" or whatnot.
 
+Note that we still have mips64el as an arch name, which is not actually
+defined in the UEFI specs.
+
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
- Make.defaults                                      | 39 +++++++++++++++-------
- README.gnuefi                                      |  6 ++--
- apps/Makefile                                      |  6 ++--
- gnuefi/Makefile                                    |  6 ++--
- gnuefi/{crt0-efi-aarch64.S => crt0-efi-aa64.S}     |  2 +-
- gnuefi/{crt0-efi-x86_64.S => crt0-efi-x64.S}       |  2 +-
- gnuefi/{elf_aarch64_efi.lds => elf_aa64_efi.lds}   |  0
- gnuefi/{elf_x86_64_efi.lds => elf_x64_efi.lds}     |  2 +-
- ...lf_x86_64_fbsd_efi.lds => elf_x64_fbsd_efi.lds} |  2 +-
- gnuefi/{reloc_aarch64.c => reloc_aa64.c}           |  2 +-
- gnuefi/{reloc_x86_64.c => reloc_x64.c}             |  2 +-
- inc/{aarch64 => aa64}/efibind.h                    |  4 ++-
- inc/{aarch64 => aa64}/efilibplat.h                 |  0
- inc/{aarch64 => aa64}/efisetjmp_arch.h             |  6 ++--
- inc/efiapi.h                                       |  5 ++-
- inc/efidebug.h                                     |  2 +-
- inc/{x86_64 => x64}/efibind.h                      |  4 +--
- inc/{x86_64 => x64}/efilibplat.h                   |  0
- inc/{x86_64 => x64}/efisetjmp_arch.h               |  6 ++--
- inc/{x86_64 => x64}/pe.h                           |  0
- lib/Makefile                                       |  4 +--
- lib/{aarch64 => aa64}/efi_stub.S                   |  0
- lib/{aarch64 => aa64}/initplat.c                   |  0
- lib/{aarch64 => aa64}/math.c                       |  0
- lib/{aarch64 => aa64}/setjmp.S                     |  0
- lib/{x86_64 => x64}/callwrap.c                     |  0
- lib/{x86_64 => x64}/efi_stub.S                     |  0
- lib/{x86_64 => x64}/initplat.c                     |  0
- lib/{x86_64 => x64}/math.c                         |  0
- lib/{x86_64 => x64}/setjmp.S                       |  0
- 30 files changed, 60 insertions(+), 40 deletions(-)
+ Make.defaults                                 | 39 +++++++++++++------
+ README.gnuefi                                 |  6 +--
+ apps/Makefile                                 |  6 +--
+ gnuefi/Makefile                               |  6 +--
+ .../{crt0-efi-aarch64.S => crt0-efi-aa64.S}   |  2 +-
+ gnuefi/{crt0-efi-x86_64.S => crt0-efi-x64.S}  |  2 +-
+ .../{elf_aarch64_efi.lds => elf_aa64_efi.lds} |  0
+ .../{elf_x86_64_efi.lds => elf_x64_efi.lds}   |  2 +-
+ ...6_64_fbsd_efi.lds => elf_x64_fbsd_efi.lds} |  2 +-
+ gnuefi/{reloc_aarch64.c => reloc_aa64.c}      |  2 +-
+ gnuefi/{reloc_x86_64.c => reloc_x64.c}        |  2 +-
+ inc/{aarch64 => aa64}/efibind.h               |  3 ++
+ inc/{aarch64 => aa64}/efilibplat.h            |  0
+ inc/{aarch64 => aa64}/efisetjmp_arch.h        |  6 +--
+ inc/efiapi.h                                  |  5 ++-
+ inc/efidebug.h                                |  2 +-
+ inc/{x86_64 => x64}/efibind.h                 |  4 +-
+ inc/{x86_64 => x64}/efilibplat.h              |  0
+ inc/{x86_64 => x64}/efisetjmp_arch.h          |  6 +--
+ inc/{x86_64 => x64}/pe.h                      |  0
+ lib/Makefile                                  |  4 +-
+ lib/{aarch64 => aa64}/efi_stub.S              |  0
+ lib/{aarch64 => aa64}/initplat.c              |  0
+ lib/{aarch64 => aa64}/math.c                  |  0
+ lib/{aarch64 => aa64}/setjmp.S                |  0
+ lib/{x86_64 => x64}/callwrap.c                |  0
+ lib/{x86_64 => x64}/efi_stub.S                |  0
+ lib/{x86_64 => x64}/initplat.c                |  0
+ lib/{x86_64 => x64}/math.c                    |  0
+ lib/{x86_64 => x64}/setjmp.S                  |  0
+ 30 files changed, 60 insertions(+), 39 deletions(-)
  rename gnuefi/{crt0-efi-aarch64.S => crt0-efi-aa64.S} (98%)
  rename gnuefi/{crt0-efi-x86_64.S => crt0-efi-x64.S} (97%)
  rename gnuefi/{elf_aarch64_efi.lds => elf_aa64_efi.lds} (100%)
@@ -64,36 +68,36 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  rename lib/{x86_64 => x64}/setjmp.S (100%)
 
 diff --git a/Make.defaults b/Make.defaults
-index ba743f17893..7a8a95c5704 100755
+index 5d34ff47157..585f3a00aa5 100755
 --- a/Make.defaults
 +++ b/Make.defaults
 @@ -62,17 +62,32 @@ OBJCOPY      := $(prefix)$(CROSS_COMPILE)objcopy
  
  # Host/target identification
  OS           := $(shell uname -s)
--HOSTARCH     ?= $(shell $(HOSTCC) -dumpmachine | cut -f1 -d- | sed -e s,i[3456789]86,ia32, -e 's,armv7.*,arm,' )
--ARCH         ?= $(shell $(HOSTCC) -dumpmachine | cut -f1 -d- | sed -e s,i[3456789]86,ia32, -e 's,armv7.*,arm,' )
+-HOSTARCH     ?= $(shell $(HOSTCC) -dumpmachine | cut -f1 -d- | sed -e s,i[3456789]86,ia32, -e 's,armv[67].*,arm,' )
+-ARCH         ?= $(shell $(HOSTCC) -dumpmachine | cut -f1 -d- | sed -e s,i[3456789]86,ia32, -e 's,armv[67].*,arm,' )
 +HOSTARCH     ?= $(shell $(HOSTCC) -dumpmachine | cut -f1 -d- | sed \
 +			-e s,i[3456789]86,ia32, \
 +			-e s,amd64,x64, -e s,x86_64,x64, \
 +			-e s,aarch64,aa64, \
-+			-e 's,armv7.*,arm,' \
++			-e 's,armv[[:digit:]].*,arm,' \
 +			)
 +ARCH         ?= $(shell $(HOSTCC) -dumpmachine | cut -f1 -d- | sed \
 +			-e s,i[3456789]86,ia32, \
 +			-e s,amd64,x64, -e s,x86_64,x64, \
 +			-e s,aarch64,aa64, \
-+			-e 's,armv7.*,arm,' \
++			-e 's,armv[[:digit:]].*,arm,' \
 +			)
 +BFD_ARCH     ?= $(shell $(HOSTCC) -dumpmachine | cut -f1 -d- | sed \
 +			-e s,i[3456789]86,ia32, \
 +			-e s,amd64,x86_64, \
-+			-e 's,armv7.*,arm,' \
++			-e 's,armv[[:digit:]].*,arm,' \
 +			)
  
- # Get ARCH from the compiler if cross compiling 
+ # Get ARCH from the compiler if cross compiling
  ifneq ($(CROSS_COMPILE),)
--  override ARCH := $(shell $(CC) -dumpmachine | cut -f1 -d-| sed -e s,i[3456789]86,ia32, -e 's,armv7.*,arm,' )
+-  override ARCH := $(shell $(CC) -dumpmachine | cut -f1 -d-| sed -e s,i[3456789]86,ia32, -e 's,armv[67].*,arm,' )
 -endif
 -
 -# FreeBSD (and possibly others) reports amd64 instead of x86_64
@@ -103,7 +107,7 @@ index ba743f17893..7a8a95c5704 100755
 +			-e s,i[3456789]86,ia32, \
 +			-e s,amd64,x64, -e s,x86_64,x64, \
 +			-e s,aarch64,aa64, \
-+			-e 's,armv7.*,arm,' \
++			-e 's,armv[[:digit:]].*,arm,' \
 +			)
  endif
  
@@ -142,7 +146,7 @@ index ba743f17893..7a8a95c5704 100755
  ifneq ($(ARCH),mips64el)
  export HAVE_EFI_OBJCOPY=y
 diff --git a/README.gnuefi b/README.gnuefi
-index 512698c28b4..ac3f0aa6b04 100644
+index a65e5f9042a..dd714de116d 100644
 --- a/README.gnuefi
 +++ b/README.gnuefi
 @@ -100,7 +100,7 @@ the appropriate compiler, assembler, linker, ar, and ranlib binaries,
@@ -173,7 +177,7 @@ index 512698c28b4..ac3f0aa6b04 100644
  
  The self-relocator operates as follows: the startup code invokes it
 diff --git a/apps/Makefile b/apps/Makefile
-index 4e1b69a38c8..cba84f4a3c1 100644
+index 310c6fdb5fc..a95620cba2d 100644
 --- a/apps/Makefile
 +++ b/apps/Makefile
 @@ -68,9 +68,9 @@ TARGET_RTDRIVERS =
@@ -300,20 +304,19 @@ diff --git a/inc/aarch64/efibind.h b/inc/aa64/efibind.h
 similarity index 98%
 rename from inc/aarch64/efibind.h
 rename to inc/aa64/efibind.h
-index 3c8cf963c31..a58b0e1cbef 100644
+index c2c546b892a..c4eafa0d8a8 100644
 --- a/inc/aarch64/efibind.h
 +++ b/inc/aa64/efibind.h
-@@ -14,7 +14,8 @@
-  * GNU General Public License as published by the Free Software Foundation;
+@@ -15,6 +15,8 @@
   * either version 2 of the License, or (at your option) any later version.
   */
--
+ 
 +#ifndef GNU_EFI_AA64_EFI_BIND_H
 +#define GNU_EFI_AA64_EFI_BIND_H
- #if !defined(_MSC_VER) && (!defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L ))
+ #if !defined(_MSC_VER) && (!defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L )) && !defined(__cplusplus)
  
  // ANSI C 1999/2000 stdint.h integer width declarations
-@@ -156,3 +157,4 @@ typedef uint64_t   UINTN;
+@@ -156,3 +158,4 @@ typedef uint64_t   UINTN;
  
  #define uefi_call_wrapper(func, va_num, ...) func(__VA_ARGS__)
  #define EFI_FUNCTION
@@ -377,7 +380,7 @@ diff --git a/inc/x86_64/efibind.h b/inc/x64/efibind.h
 similarity index 99%
 rename from inc/x86_64/efibind.h
 rename to inc/x64/efibind.h
-index ae40595be0b..986a73b7775 100644
+index 31e9e119d74..2750ab9be7d 100644
 --- a/inc/x86_64/efibind.h
 +++ b/inc/x64/efibind.h
 @@ -16,8 +16,8 @@ Abstract:
@@ -478,3 +481,6 @@ diff --git a/lib/x86_64/setjmp.S b/lib/x64/setjmp.S
 similarity index 100%
 rename from lib/x86_64/setjmp.S
 rename to lib/x64/setjmp.S
+-- 
+2.24.1
+

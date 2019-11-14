@@ -1,7 +1,7 @@
-From f08f27f5939559997c3177692348fdb7fcde7c89 Mon Sep 17 00:00:00 2001
+From 3788e125ecaf08e8cb23ea817bbd9aff42e0bdfe Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Fri, 23 Aug 2019 16:23:21 -0400
-Subject: [PATCH 01/18] Make ELF constructors and destructors work.
+Subject: [PATCH 25/45] Make ELF constructors and destructors work.
 
 This makes setup and teardown functions defined with
 __attribute__((__constructor__) and __attribute__((__destructor__)) work
@@ -55,7 +55,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  create mode 100644 lib/entry.c
 
 diff --git a/apps/Makefile b/apps/Makefile
-index a95620c..2808837 100644
+index a95620cba2d..28088370da7 100644
 --- a/apps/Makefile
 +++ b/apps/Makefile
 @@ -62,7 +62,8 @@ TARGET_APPS = t.efi t2.efi t3.efi t4.efi t5.efi t6.efi \
@@ -79,7 +79,7 @@ index a95620c..2808837 100644
  
 diff --git a/apps/ctors_fns.c b/apps/ctors_fns.c
 new file mode 100644
-index 0000000..6241904
+index 00000000000..624190462ea
 --- /dev/null
 +++ b/apps/ctors_fns.c
 @@ -0,0 +1,26 @@
@@ -111,7 +111,7 @@ index 0000000..6241904
 +// vim:fenc=utf-8:tw=75:noet
 diff --git a/apps/ctors_test.c b/apps/ctors_test.c
 new file mode 100644
-index 0000000..7e48da8
+index 00000000000..7e48da8ef35
 --- /dev/null
 +++ b/apps/ctors_test.c
 @@ -0,0 +1,20 @@
@@ -136,7 +136,7 @@ index 0000000..7e48da8
 +
 +// vim:fenc=utf-8:tw=75:noet
 diff --git a/gnuefi/crt0-efi-aa64.S b/gnuefi/crt0-efi-aa64.S
-index d6e610b..a930258 100644
+index d6e610b8c79..a9302588b71 100644
 --- a/gnuefi/crt0-efi-aa64.S
 +++ b/gnuefi/crt0-efi-aa64.S
 @@ -124,7 +124,7 @@ _start:
@@ -149,7 +149,7 @@ index d6e610b..a930258 100644
  0:	ldp		x29, x30, [sp], #32
  	ret
 diff --git a/gnuefi/crt0-efi-arm.S b/gnuefi/crt0-efi-arm.S
-index c5bb6d4..04e75e9 100644
+index c5bb6d482da..04e75e9481a 100644
 --- a/gnuefi/crt0-efi-arm.S
 +++ b/gnuefi/crt0-efi-arm.S
 @@ -136,7 +136,7 @@ _start:
@@ -162,7 +162,7 @@ index c5bb6d4..04e75e9 100644
  0:	add		sp, sp, #12
  	ldr		pc, [sp], #4
 diff --git a/gnuefi/crt0-efi-ia32.S b/gnuefi/crt0-efi-ia32.S
-index f9d5191..8e8e372 100644
+index f9d5191ecb5..8e8e372f551 100644
 --- a/gnuefi/crt0-efi-ia32.S
 +++ b/gnuefi/crt0-efi-ia32.S
 @@ -56,13 +56,13 @@ _start:
@@ -184,7 +184,7 @@ index f9d5191..8e8e372 100644
   	// hand-craft a dummy .reloc section so EFI knows it's a relocatable executable:
   
 diff --git a/gnuefi/crt0-efi-ia64.S b/gnuefi/crt0-efi-ia64.S
-index 40c3c83..dacb4c4 100644
+index 40c3c837a1c..dacb4c4c658 100644
 --- a/gnuefi/crt0-efi-ia64.S
 +++ b/gnuefi/crt0-efi-ia64.S
 @@ -56,7 +56,7 @@ _start:
@@ -197,7 +197,7 @@ index 40c3c83..dacb4c4 100644
  .exit:
  	mov ar.pfs=loc0
 diff --git a/gnuefi/crt0-efi-mips64el.S b/gnuefi/crt0-efi-mips64el.S
-index 6a62aca..5ad2503 100644
+index 6a62aca98b4..5ad2503ca79 100644
 --- a/gnuefi/crt0-efi-mips64el.S
 +++ b/gnuefi/crt0-efi-mips64el.S
 @@ -172,8 +172,8 @@ _pc:
@@ -212,7 +212,7 @@ index 6a62aca..5ad2503 100644
  	// a1: SystemTable
  	ld		$a1, 24($sp)
 diff --git a/gnuefi/crt0-efi-x64.S b/gnuefi/crt0-efi-x64.S
-index 6533af7..3fe361b 100644
+index 6533af7461f..3fe361b7ffd 100644
 --- a/gnuefi/crt0-efi-x64.S
 +++ b/gnuefi/crt0-efi-x64.S
 @@ -56,7 +56,7 @@ _start:
@@ -225,7 +225,7 @@ index 6533af7..3fe361b 100644
  
  .exit:	
 diff --git a/gnuefi/elf_aa64_efi.lds b/gnuefi/elf_aa64_efi.lds
-index 836d982..7220636 100644
+index 836d98255d8..7220636e40c 100644
 --- a/gnuefi/elf_aa64_efi.lds
 +++ b/gnuefi/elf_aa64_efi.lds
 @@ -26,6 +26,20 @@ SECTIONS
@@ -258,7 +258,7 @@ index 836d982..7220636 100644
    }
  
 diff --git a/gnuefi/elf_arm_efi.lds b/gnuefi/elf_arm_efi.lds
-index 665bbdb..f891921 100644
+index 665bbdbf065..f891921e58f 100644
 --- a/gnuefi/elf_arm_efi.lds
 +++ b/gnuefi/elf_arm_efi.lds
 @@ -26,6 +26,20 @@ SECTIONS
@@ -283,7 +283,7 @@ index 665bbdb..f891921 100644
        it all into .data: */
     . = ALIGN(16);
 diff --git a/gnuefi/elf_ia32_efi.lds b/gnuefi/elf_ia32_efi.lds
-index f27fe5f..739c370 100644
+index f27fe5fc6e6..739c370c9eb 100644
 --- a/gnuefi/elf_ia32_efi.lds
 +++ b/gnuefi/elf_ia32_efi.lds
 @@ -40,6 +40,21 @@ SECTIONS
@@ -309,7 +309,7 @@ index f27fe5f..739c370 100644
        it all into .data: */
     *(.sbss)
 diff --git a/gnuefi/elf_ia32_fbsd_efi.lds b/gnuefi/elf_ia32_fbsd_efi.lds
-index cd309e2..33c38a0 100644
+index cd309e24f7f..33c38a0b2d0 100644
 --- a/gnuefi/elf_ia32_fbsd_efi.lds
 +++ b/gnuefi/elf_ia32_fbsd_efi.lds
 @@ -40,6 +40,21 @@ SECTIONS
@@ -335,7 +335,7 @@ index cd309e2..33c38a0 100644
        it all into .data: */
     *(.sbss)
 diff --git a/gnuefi/elf_ia64_efi.lds b/gnuefi/elf_ia64_efi.lds
-index 190792a..5afd644 100644
+index 190792a0c94..5afd6443722 100644
 --- a/gnuefi/elf_ia64_efi.lds
 +++ b/gnuefi/elf_ia64_efi.lds
 @@ -39,6 +39,21 @@ SECTIONS
@@ -361,7 +361,7 @@ index 190792a..5afd644 100644
        it all into .data: */
     *(.dynbss)
 diff --git a/gnuefi/elf_mips64el_efi.lds b/gnuefi/elf_mips64el_efi.lds
-index 4d1a077..cc0eee3 100644
+index 4d1a077d8f8..cc0eee3bdcd 100644
 --- a/gnuefi/elf_mips64el_efi.lds
 +++ b/gnuefi/elf_mips64el_efi.lds
 @@ -27,6 +27,20 @@ SECTIONS
@@ -386,7 +386,7 @@ index 4d1a077..cc0eee3 100644
        it all into .data: */
     . = ALIGN(16);
 diff --git a/gnuefi/elf_x64_efi.lds b/gnuefi/elf_x64_efi.lds
-index c7a1058..356e63b 100644
+index c7a105898c8..356e63bb8a7 100644
 --- a/gnuefi/elf_x64_efi.lds
 +++ b/gnuefi/elf_x64_efi.lds
 @@ -30,6 +30,7 @@ SECTIONS
@@ -420,7 +420,7 @@ index c7a1058..356e63b 100644
        it all into .data: */
     *(.sbss)
 diff --git a/gnuefi/elf_x64_fbsd_efi.lds b/gnuefi/elf_x64_fbsd_efi.lds
-index 705719b..e371e5b 100644
+index 705719bf68b..e371e5b784f 100644
 --- a/gnuefi/elf_x64_fbsd_efi.lds
 +++ b/gnuefi/elf_x64_fbsd_efi.lds
 @@ -36,6 +36,21 @@ SECTIONS
@@ -446,7 +446,7 @@ index 705719b..e371e5b 100644
        it all into .data: */
     *(.sbss)
 diff --git a/lib/Makefile b/lib/Makefile
-index 8bf9400..1c2ff1d 100644
+index 8bf94000e33..1c2ff1db89a 100644
 --- a/lib/Makefile
 +++ b/lib/Makefile
 @@ -43,8 +43,8 @@ include $(SRCDIR)/../Make.defaults
@@ -462,7 +462,7 @@ index 8bf9400..1c2ff1d 100644
  	$(ARCH)/initplat $(ARCH)/math $(ARCH)/setjmp
 diff --git a/lib/entry.c b/lib/entry.c
 new file mode 100644
-index 0000000..79d0002
+index 00000000000..79d00025eda
 --- /dev/null
 +++ b/lib/entry.c
 @@ -0,0 +1,58 @@
@@ -525,7 +525,7 @@ index 0000000..79d0002
 +
 +// vim:fenc=utf-8:tw=75:noet
 diff --git a/lib/init.c b/lib/init.c
-index 4f238c0..c3df3ee 100644
+index 4f238c0a2cc..c3df3ee8879 100644
 --- a/lib/init.c
 +++ b/lib/init.c
 @@ -46,57 +46,59 @@ Returns:

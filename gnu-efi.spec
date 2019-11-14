@@ -1,8 +1,8 @@
 Name: gnu-efi
 Epoch: 1
-Version: 3.0.9
+Version: 3.0.11
 %global tarball_version 3.0.9
-Release: 4%{?dist}%{?buildid}
+Release: 1%{?dist}%{?buildid}
 Summary: Development Libraries and headers for EFI
 License: BSD 
 URL: https://sourceforge.net/projects/gnu-efi/
@@ -59,6 +59,7 @@ applications that run under EFI (Extensible Firmware Interface).
 Summary: Development Libraries and headers for EFI
 Obsoletes: gnu-efi < 1:3.0.2-1
 Requires: gnu-efi
+BuildArch: noarch
 
 %description devel
 This package contains development headers and libraries for developing
@@ -84,35 +85,69 @@ git config --unset user.name
 
 %build
 # Package cannot build with %%{?_smp_mflags}.
-make
+make LIBDIR=%{_prefix}/lib
 make apps
 %if %{efi_has_alt_arch}
-  setarch linux32 -B make ARCH=%{efi_alt_arch} PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib}
-  setarch linux32 -B make ARCH=%{efi_alt_arch} PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib} apps
+  setarch linux32 -B make ARCH=%{efi_alt_arch} PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib
+  setarch linux32 -B make ARCH=%{efi_alt_arch} PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib apps
 %endif
 
 %install
 mkdir -p %{buildroot}/%{_libdir}/gnuefi
+mkdir -p %{buildroot}/%{_prefix}/lib/
 mkdir -p %{buildroot}/%{efi_esp_dir}/%{efi_arch}
-make PREFIX=%{_prefix} LIBDIR=%{_libdir} INSTALLROOT=%{buildroot} install
-mv %{buildroot}/%{_libdir}/*.lds %{buildroot}/%{_libdir}/*.o %{buildroot}/%{_libdir}/gnuefi
+make PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib INSTALLROOT=%{buildroot} install
 mv %{efi_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi_arch}/
 
+# temporarily, for compatibility with our older packages
+mkdir -p %{buildroot}/%{_libdir}/gnuefi/
+mkdir -p %{buildroot}/%{_includedir}/efi/
+
 %if %{efi_has_alt_arch}
-  mkdir -p %{buildroot}/%{_prefix}/%{lib}/gnuefi
   mkdir -p %{buildroot}%{efi_esp_dir}/%{efi_alt_arch}
 
-  setarch linux32 -B make PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib} INSTALLROOT=%{buildroot} ARCH=%{efi_alt_arch} install
-  mv %{buildroot}/%{_prefix}/%{lib}/*.{lds,o} %{buildroot}/%{_prefix}/%{lib}/gnuefi/
+  setarch linux32 -B make PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib INSTALLROOT=%{buildroot} ARCH=%{efi_alt_arch} install
   mv %{efi_alt_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi_alt_arch}/
+
+  # temporarily, for compatibility with our older packages
+  cd %{buildroot}/%{_prefix}/lib/
+  ln -s gnuefi/%{efi_alt_arch}/*.a .
+  cd gnuefi
+  ln -s %{efi_alt_arch}/crt0.o crt0-efi-%{efi_alt_arch}.o
+  ln -s %{efi_alt_arch}/efi.lds elf_%{efi_alt_arch}_efi.lds
 %endif
 
+# temporarily, for compatibility with our older packages
+cd %{buildroot}/%{_libdir}/
+ln -s ../lib/gnuefi/%{efi_arch}/*.a .
+cd gnuefi
+ln -s ../../lib/gnuefi/%{efi_arch}/crt0.o crt0-efi-%{efi_arch}.o
+ln -s ../../lib/gnuefi/%{efi_arch}/efi.lds elf_%{efi_arch}_efi.lds
+%ifarch x86_64
+ln -s ../../lib/gnuefi/%{efi_arch}/crt0.o crt0-efi-x86_64.o
+ln -s ../../lib/gnuefi/%{efi_arch}/efi.lds elf_x86_64_efi.lds
+%endif
+%ifarch aarch64
+ln -s ../../lib/gnuefi/%{efi_arch}/crt0.o crt0-efi-aarch64.o
+ln -s ../../lib/gnuefi/%{efi_arch}/efi.lds elf_aarch64_efi.lds
+%endif
+
+cd %{buildroot}/%{_includedir}/efi
+if [[ -d aa64 ]] ; then
+  ln -s aa64 aarch64
+fi
+if [[ -d x64 ]] ; then
+  ln -s x64 x86_64
+fi
+
 %files
-%{_prefix}/%{lib}*/*
+%{_prefix}/lib*/*
 
 %files devel
 %doc README.*
+%{_mandir}/man3/*
 %{_includedir}/efi
+%{_includedir}/*.mk
 
 %files utils
 %dir %attr(0700,root,root) %{efi_esp_dir}/%{efi_arch}/
@@ -123,6 +158,20 @@ mv %{efi_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi
 %endif
 
 %changelog
+* Wed Jan 22 2020 Peter Jones <pjones@redhat.com> - 3.0.11-1
+- Update to 3.0.11 (via patches generated from git)
+- Plus newer upstream fixes (also via patches generated from git)
+- Fix shell exit failures in make
+- Fix .reloc section generation
+- Fix CHAR8 definition
+- Fix "make DESTDIR=..."
+- Change the installed .a/.o layout
+- Provide makefiles for consumers to use.
+- Make the -devel noarch since it's just headers.
+- Add a bunch of compatibility symlinks for the 3.0.8 filesystem layout
+  These will go away once we've migrated everything using them in fedora
+  to use the newer make system...
+
 * Thu Dec 26 2019 Peter Robinson <pbrobinson@fedoraproject.org> 3.0.9-4
 - Upstream patch for efibind.h
 - Latest ELF constructors/destructors patch
