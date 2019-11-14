@@ -1,4 +1,4 @@
-From 34e890bcf098ef21194db9d440762b5a34e50196 Mon Sep 17 00:00:00 2001
+From 55ea0b4b8ce651bf9d1048754e7a2981624509a2 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Tue, 19 Nov 2019 13:23:14 -0500
 Subject: [PATCH 42/45] Switch to -fPIE
@@ -9,10 +9,10 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/Make.defaults b/Make.defaults
-index 284819977ed..27d74a74954 100755
+index 01269660ab8..15af35e6e26 100755
 --- a/Make.defaults
 +++ b/Make.defaults
-@@ -192,10 +192,10 @@ endif
+@@ -193,10 +193,10 @@ endif
  INCDIR  += -I$(SRCDIR) -I$(TOPDIR)/inc -I$(TOPDIR)/inc/$(ARCH) \
             -I$(TOPDIR)/inc/protocol
  

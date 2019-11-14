@@ -1,4 +1,4 @@
-From 0a12613849ffb6e32e1014b94d1e48b6ba2bef45 Mon Sep 17 00:00:00 2001
+From 16d17b0d947b66ce76f79749123431b678f998df Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Fri, 25 Oct 2019 15:42:10 -0400
 Subject: [PATCH 37/45] Install all headers for all arches.
@@ -7,14 +7,14 @@ This further enables cross-builds by installing all the arches headers.
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
- inc/Makefile | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ inc/Makefile | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
 diff --git a/inc/Makefile b/inc/Makefile
-index 13022fd6ae1..f993cc5b108 100644
+index 445d340f0fa..e8123fd3115 100644
 --- a/inc/Makefile
 +++ b/inc/Makefile
-@@ -9,12 +9,14 @@ all:
+@@ -9,15 +9,18 @@ all:
  
  clean:
  
@@ -33,6 +33,11 @@ index 13022fd6ae1..f993cc5b108 100644
 +		$(INSTALL) -v -m 755 -d $(subst $(SOURCE),$(DEST),$(d)); \
 +		$(INSTALL) -v -m 644 -t $(subst $(SOURCE),$(DEST),$(d)) $(wildcard $(d)/*.h); \
 +	)
+ 
+ install_compat: install
+-	@if [ ! -h $(DEST)/$(BFD_ARCH) ]; then $(SYMLINK) $(ARCH) $(INSTALLROOT)$(PREFIX)/include/efi/$(BFD_ARCH) ; fi
++	@if [ ! -h $(DEST)/x86_64 ]; then $(SYMLINK) x64/ $(DEST)/x86_64 ; fi
++	@if [ ! -h $(DEST)/aarch64 ]; then $(SYMLINK) aa64/ $(DEST)/aarch64 ; fi
  
  include $(SRCDIR)/../Make.rules
 -- 

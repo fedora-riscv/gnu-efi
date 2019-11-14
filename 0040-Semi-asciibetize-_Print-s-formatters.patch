@@ -1,4 +1,4 @@
-From ff402db6d28775e0ff5412d9d00f1986b877ea77 Mon Sep 17 00:00:00 2001
+From 212920a4c3dedc6fc119fb371be798dfc971a749 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Mon, 18 Nov 2019 13:05:15 -0500
 Subject: [PATCH 40/45] Semi-asciibetize _Print()'s formatters.

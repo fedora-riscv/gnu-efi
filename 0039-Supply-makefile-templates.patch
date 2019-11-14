@@ -1,4 +1,4 @@
-From ea15a51ab4f9d513c773d9d8824e0dac8c883c0b Mon Sep 17 00:00:00 2001
+From 456fb32b345ba87565bd3b99291c6009f499c22f Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Wed, 13 Nov 2019 15:24:41 -0500
 Subject: [PATCH 39/45] Supply makefile templates.
@@ -33,10 +33,10 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  create mode 100644 inc/x64.mk
 
 diff --git a/Make.defaults b/Make.defaults
-index 157559d20ee..284819977ed 100755
+index 7231e9bced2..01269660ab8 100755
 --- a/Make.defaults
 +++ b/Make.defaults
-@@ -81,12 +81,14 @@ HOSTARCH     ?= $(shell $(HOSTCC) -dumpmachine | cut -f1 -d- | sed \
+@@ -82,12 +82,14 @@ HOSTARCH     ?= $(shell $(HOSTCC) -dumpmachine | cut -f1 -d- | sed \
  			-e s,amd64,x64, -e s,x86_64,x64, \
  			-e s,aarch64,aa64, \
  			-e 's,armv[[:digit:]].*,arm,' \
@@ -51,7 +51,7 @@ index 157559d20ee..284819977ed 100755
  			)
  BFD_ARCH     ?= $(shell $(HOSTCC) -dumpmachine | cut -f1 -d- | sed \
  			-e s,i[3456789]86,ia32, \
-@@ -101,6 +103,7 @@ ifneq ($(CROSS_COMPILE),)
+@@ -102,6 +104,7 @@ ifneq ($(CROSS_COMPILE),)
  			-e s,amd64,x64, -e s,x86_64,x64, \
  			-e s,aarch64,aa64, \
  			-e 's,armv[[:digit:]].*,arm,' \
@@ -59,7 +59,7 @@ index 157559d20ee..284819977ed 100755
  			)
  endif
  
-@@ -160,7 +163,8 @@ ifneq (,$(filter $(ARCH),ia32 x64))
+@@ -161,7 +164,8 @@ ifneq (,$(filter $(ARCH),ia32 x64))
  endif
  
  ifeq ($(ARCH),mips64el)
@@ -78,10 +78,10 @@ index 00000000000..91716c91aab
 +efi.mk
 +efi.mk.3
 diff --git a/inc/Makefile b/inc/Makefile
-index f993cc5b108..34d49a075d0 100644
+index e8123fd3115..c7f1406f026 100644
 --- a/inc/Makefile
 +++ b/inc/Makefile
-@@ -5,18 +5,37 @@ TOPDIR = $(SRCDIR)/..
+@@ -5,19 +5,38 @@ TOPDIR = $(SRCDIR)/..
  
  include $(SRCDIR)/../Make.defaults
  
@@ -121,7 +121,8 @@ index f993cc5b108..34d49a075d0 100644
 +
 +.PHONY: install
  
- include $(SRCDIR)/../Make.rules
+ install_compat: install
+ 	@if [ ! -h $(DEST)/x86_64 ]; then $(SYMLINK) x64/ $(DEST)/x86_64 ; fi
 diff --git a/inc/aa64.mk b/inc/aa64.mk
 new file mode 100644
 index 00000000000..406915ef742

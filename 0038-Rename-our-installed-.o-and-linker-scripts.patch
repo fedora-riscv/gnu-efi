@@ -1,4 +1,4 @@
-From 01560cac5ddbbb93d642c29758c27909ce1c1d18 Mon Sep 17 00:00:00 2001
+From 6318d6eddeb905a01e81add07d4ab6fc35268ac8 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Wed, 13 Nov 2019 15:24:27 -0500
 Subject: [PATCH 38/45] Rename our installed .o and linker scripts.
@@ -9,14 +9,14 @@ renames them to crt0.o and efi.lds .
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
- gnuefi/Makefile | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ gnuefi/Makefile | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/gnuefi/Makefile b/gnuefi/Makefile
-index 5bdaec7579b..d96ec74e96f 100644
+index 7652669a7cc..86760f55578 100644
 --- a/gnuefi/Makefile
 +++ b/gnuefi/Makefile
-@@ -55,21 +55,21 @@ all:	$(TARGETS)
+@@ -55,35 +55,35 @@ all:	$(TARGETS)
  libgnuefi.a: $(OBJS)
  	$(AR) $(ARFLAGS) $@ $^
  
@@ -41,6 +41,23 @@ index 5bdaec7579b..d96ec74e96f 100644
  else
 -	$(INSTALL) -m 644 $(SRCDIR)/elf_$(ARCH)_efi.lds $(INSTALLROOT)$(LIBDIR)/gnuefi/$(ARCH)
 +	@$(INSTALL) -v -m 644 $(SRCDIR)/elf_$(ARCH)_efi.lds $(INSTALLROOT)$(LIBDIR)/gnuefi/$(ARCH)/efi.lds
+ endif
+ 
+ install_compat: install
+ 	mkdir -p $(INSTALLROOT)$(LIBDIR)
+ 	$(SYMLINK) gnuefi/$(ARCH)/libgnuefi.a $(INSTALLROOT)$(LIBDIR)/libgnuefi.a
+-	$(SYMLINK) gnuefi/$(ARCH)/crt0-efi-$(ARCH).o $(INSTALLROOT)$(LIBDIR)/crt0-efi-$(BFD_ARCH).o
++	$(SYMLINK) gnuefi/$(ARCH)/crt0.o $(INSTALLROOT)$(LIBDIR)/crt0-efi-$(BFD_ARCH).o
+ ifneq (,$(findstring FreeBSD,$(OS)))
+  ifeq ($(ARCH),x64)
+ 	$(SYMLINK) gnuefi/$(ARCH)/elf_$(ARCH)_fbsd_efi.lds $(INSTALLROOT)$(LIBDIR)/elf_$(BFD_ARCH)_fbsd_efi.lds
+  else
+-	$(SYMLINK) gnuefi/$(ARCH)/elf_$(ARCH)_efi.lds $(INSTALLROOT)$(LIBDIR)/elf_$(BFD_ARCH)_efi.lds
++	$(SYMLINK) gnuefi/$(ARCH)/efi.lds $(INSTALLROOT)$(LIBDIR)/elf_$(BFD_ARCH)_efi.lds
+  endif
+ else
+-	$(SYMLINK) gnuefi/$(ARCH)/elf_$(ARCH)_efi.lds $(INSTALLROOT)$(LIBDIR)/elf_$(BFD_ARCH)_efi.lds
++	$(SYMLINK) gnuefi/$(ARCH)/efi.lds $(INSTALLROOT)$(LIBDIR)/elf_$(BFD_ARCH)_efi.lds
  endif
  
  include $(SRCDIR)/../Make.rules

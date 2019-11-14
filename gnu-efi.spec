@@ -58,7 +58,7 @@ applications that run under EFI (Extensible Firmware Interface).
 %package devel
 Summary: Development Libraries and headers for EFI
 Obsoletes: gnu-efi < 1:3.0.2-1
-Requires: gnu-efi
+Requires: gnu-efi = %{epoch}:%{version}-%{release}
 BuildArch: noarch
 
 %description devel
@@ -93,55 +93,45 @@ make apps
 %endif
 
 %install
-mkdir -p %{buildroot}/%{_libdir}/gnuefi
-mkdir -p %{buildroot}/%{_prefix}/lib/
-mkdir -p %{buildroot}/%{efi_esp_dir}/%{efi_arch}
 make PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib INSTALLROOT=%{buildroot} install
+
+mkdir -p %{buildroot}/%{efi_esp_dir}/%{efi_arch}
 mv %{efi_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi_arch}/
 
-# temporarily, for compatibility with our older packages
+# for compatibility with our older packages
+make PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib INSTALLROOT=%{buildroot} install_compat
 mkdir -p %{buildroot}/%{_libdir}/gnuefi/
-mkdir -p %{buildroot}/%{_includedir}/efi/
+if [[ -d %{buildroot}/%{_prefix}/lib/gnuefi/x64 ]] ; then
+  ln -s ../../lib/gnuefi/%{efi_arch} %{buildroot}/%{_libdir}/gnuefi/%{efi_arch}
+  ln -s %{efi_arch}/crt0.o %{buildroot}/%{_libdir}/gnuefi/crt0-efi-x86_64.o
+  ln -s %{efi_arch}/efi.lds %{buildroot}/%{_libdir}/gnuefi/elf_x86_64_efi.lds
+  ln -s %{efi_arch}/libefi.a %{buildroot}/%{_libdir}/gnuefi/libefi.a
+  ln -s %{efi_arch}/libgnuefi.a %{buildroot}/%{_libdir}/gnuefi/libgnuefi.a
+elif [[ -d %{buildroot}/%{_prefix}/lib/gnuefi/aa64 ]] ; then
+  ln -s ../../lib/gnuefi/%{efi_arch} %{buildroot}/%{_libdir}/gnuefi/%{efi_arch}
+  ln -s %{efi_arch}/crt0.o %{buildroot}/%{_libdir}/gnuefi/crt0-efi-aarch64.o
+  ln -s %{efi_arch}/efi.lds %{buildroot}/%{_libdir}/gnuefi/elf_aarch64_efi.lds
+  ln -s %{efi_arch}/libefi.a %{buildroot}/%{_libdir}/gnuefi/libefi.a
+  ln -s %{efi_arch}/libgnuefi.a %{buildroot}/%{_libdir}/gnuefi/libgnuefi.a
+fi
 
 %if %{efi_has_alt_arch}
-  mkdir -p %{buildroot}%{efi_esp_dir}/%{efi_alt_arch}
-
   setarch linux32 -B make PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib INSTALLROOT=%{buildroot} ARCH=%{efi_alt_arch} install
+  mkdir -p %{buildroot}%{efi_esp_dir}/%{efi_alt_arch}
   mv %{efi_alt_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi_alt_arch}/
 
-  # temporarily, for compatibility with our older packages
-  cd %{buildroot}/%{_prefix}/lib/
-  ln -s gnuefi/%{efi_alt_arch}/*.a .
-  cd gnuefi
-  ln -s %{efi_alt_arch}/crt0.o crt0-efi-%{efi_alt_arch}.o
-  ln -s %{efi_alt_arch}/efi.lds elf_%{efi_alt_arch}_efi.lds
+  # for compatibility with our older packages
+  setarch linux32 -B make PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib INSTALLROOT=%{buildroot} ARCH=%{efi_alt_arch} BFD_ARCH=%{efi_alt_arch} install_compat
+  mkdir -p %{buildroot}/%{_prefix}/lib/gnuefi/
+  ln -s %{efi_alt_arch}/crt0.o %{buildroot}/%{_prefix}/lib/gnuefi/crt0-efi-%{efi_alt_arch}.o
+  ln -s %{efi_alt_arch}/efi.lds %{buildroot}/%{_prefix}/lib/gnuefi/elf_%{efi_alt_arch}_efi.lds
+  ln -s %{efi_alt_arch}/libefi.a %{buildroot}/%{_prefix}/lib/gnuefi/libefi.a
+  ln -s %{efi_alt_arch}/libgnuefi.a %{buildroot}/%{_prefix}/lib/gnuefi/libgnuefi.a
 %endif
-
-# temporarily, for compatibility with our older packages
-cd %{buildroot}/%{_libdir}/
-ln -s ../lib/gnuefi/%{efi_arch}/*.a .
-cd gnuefi
-ln -s ../../lib/gnuefi/%{efi_arch}/crt0.o crt0-efi-%{efi_arch}.o
-ln -s ../../lib/gnuefi/%{efi_arch}/efi.lds elf_%{efi_arch}_efi.lds
-%ifarch x86_64
-ln -s ../../lib/gnuefi/%{efi_arch}/crt0.o crt0-efi-x86_64.o
-ln -s ../../lib/gnuefi/%{efi_arch}/efi.lds elf_x86_64_efi.lds
-%endif
-%ifarch aarch64
-ln -s ../../lib/gnuefi/%{efi_arch}/crt0.o crt0-efi-aarch64.o
-ln -s ../../lib/gnuefi/%{efi_arch}/efi.lds elf_aarch64_efi.lds
-%endif
-
-cd %{buildroot}/%{_includedir}/efi
-if [[ -d aa64 ]] ; then
-  ln -s aa64 aarch64
-fi
-if [[ -d x64 ]] ; then
-  ln -s x64 x86_64
-fi
 
 %files
-%{_prefix}/lib*/*
+%{_prefix}/lib*/gnuefi
+%{_prefix}/lib*/*.{o,a,lds}
 
 %files devel
 %doc README.*
