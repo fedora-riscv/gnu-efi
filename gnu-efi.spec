@@ -32,16 +32,24 @@ BuildRequires: /usr/include/gnu/stubs-32.h
 
 # brp-strip-static-archive will senselessly /add/ timestamps and uid/gid
 # data to our .a and make them not multilib clean if we don't have this.
-# Note that if we don't have the shell quotes there, -p becomes $2 on its
-# invocation, and so it completely ignores it.
 #
-# Also note that if we try to use -D as we should (so it doesn't add
-# uid/gid), strip(1) from binutils-2.25.1-22.base.el7.x86_64 throws a
-# syntax error.
+# We used to redefine strip, like so:
+# %% global __strip "%%{__strip} -p"
+# And had this note:
+#   Note that if we don't have the shell quotes there, -p becomes $2 on its
+#   invocation, and so it completely ignores it.
+#
+#   Also note that if we try to use -D as we should (so it doesn't add
+#   uid/gid), strip(1) from binutils-2.25.1-22.base.el7.x86_64 throws a
+#   syntax error.
+#
+# But someone helpfully re-wrote %%__brp_strip_static_archive and that
+# doesn't work any more.
 #
 # True story.
 #
-%global __strip "%{__strip} -p"
+%undefine __brp_strip_static_archive
+%global __brp_strip_static_archive find '%{buildroot}' -name '*.a' -print -exec %{__strip} -gDp {} \\;
 
 %description
 This package contains development headers and libraries for developing
