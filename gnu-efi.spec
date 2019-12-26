@@ -1,15 +1,22 @@
-Summary: Development Libraries and headers for EFI
 Name: gnu-efi
+Epoch: 1
 Version: 3.0.9
 %global tarball_version 3.0.9
 Release: 3%{?dist}%{?buildid}
-Epoch: 1
+Summary: Development Libraries and headers for EFI
 License: BSD 
-URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
+URL: https://sourceforge.net/projects/gnu-efi/
+
+Source0: https://sourceforge.net/projects/gnu-efi/files/gnu-efi-%{tarball_version}.tar.bz2
+Source1: gnu-efi.patches
+Source2: gitattributes
+%include %{SOURCE1}
+
 ExclusiveArch: %{efi}
-BuildRequires:  gcc
+BuildRequires: binutils
 BuildRequires: efi-srpm-macros >= 3-2
-BuildRequires: git
+BuildRequires: gcc
+BuildRequires: git-core
 %ifarch x86_64
 # So... in some build environments, glibc32 provides some headers.  In
 # others, glibc-devel.i686 does.  They have no non-file provides in common.
@@ -17,14 +24,9 @@ BuildRequires: git
 #BuildRequires: glibc-devel(x86-32)
 BuildRequires: /usr/include/gnu/stubs-32.h
 %endif
-Source0: http://superb-dca2.dl.sourceforge.net/project/gnu-efi/gnu-efi-%{tarball_version}.tar.bz2
-Source1: gnu-efi.patches
-Source2: gitattributes
 
 # dammit, rpmlint, shut up.
 %define lib %{nil}lib%{nil}
-
-%include %{SOURCE1}
 
 %define debug_package %{nil}
 
@@ -83,8 +85,6 @@ make apps
 %endif
 
 %install
-rm -rf %{buildroot}
-
 mkdir -p %{buildroot}/%{_libdir}/gnuefi
 mkdir -p %{buildroot}/%{efi_esp_dir}/%{efi_arch}
 make PREFIX=%{_prefix} LIBDIR=%{_libdir} INSTALLROOT=%{buildroot} install
@@ -120,7 +120,7 @@ fi
 %{_prefix}/%{lib}*/*
 
 %files devel
-%doc README.* ChangeLog
+%doc README.*
 %{_includedir}/efi
 
 %files utils
@@ -132,6 +132,9 @@ fi
 %endif
 
 %changelog
+* Tue Jan 21 2020 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor spec cleanups
+
 * Tue Jan 21 2020 Peter Jones <pjones@redhat.com> - 3.0.9-3
 - Create symlinks for the legacy include/link paths to fix rebuilds of
   packages that use this.
