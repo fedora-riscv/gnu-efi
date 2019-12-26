@@ -14,3 +14,4 @@ Patch0013: 0013-Use-EFI-canonical-names-everywhere-the-compiler-does.patch
 Patch0014: 0014-Fix-a-minor-coverity-complaint-in-some-apps.patch
 Patch0015: 0015-Get-rid-of-some-unused-junk-that-has-the-BSD-4-claus.patch
 Patch0016: 0016-Make-ELF-constructors-and-destructors-work.patch
+Patch0017: 0001-efibind-Fix-usage-of-efi-headers-from-C-code.patch

@@ -1,0 +1,111 @@
+From 6685cd000223f6b7d667e2854cd3d622d078d147 Mon Sep 17 00:00:00 2001
+From: Alexander von Gluck IV <kallisti5@unixzen.com>
+Date: Wed, 27 Nov 2019 17:03:42 -0600
+Subject: [PATCH 1/2] efibind: Fix usage of efi headers from C++ code
+
+* __STDC_VERSION__ is undefined when headers are called from C++
+  code resulting in not using stdint.h and efibind.h
+  "making a guess" on what they are. extern "C" will not define
+  __STDC_VERSION__.
+* Always leverage stdint.h on C++.
+* Honestly, gnu-efi should always use stdint.h, or find a better
+  way to detect it. (or platforms without it need to catch up to 2007)
+---
+ inc/aa64/efibind.h  | 2 +-
+ inc/arm/efibind.h      | 2 +-
+ inc/ia32/efibind.h     | 2 +-
+ inc/ia64/efibind.h     | 2 +-
+ inc/mips64el/efibind.h | 2 +-
+ inc/x64/efibind.h   | 4 ++--
+ 6 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/inc/aa64/efibind.h b/inc/aa64/efibind.h
+index 3c8cf96..c2c546b 100644
+--- a/inc/aa64/efibind.h
++++ b/inc/aa64/efibind.h
+@@ -16,7 +16,7 @@
+  */
+ #ifndef GNU_EFI_AA64_EFI_BIND_H
+ #define GNU_EFI_AA64_EFI_BIND_H
+-#if !defined(_MSC_VER) && (!defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L ))
++#if !defined(_MSC_VER) && (!defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L )) && !defined(__cplusplus)
+ 
+ // ANSI C 1999/2000 stdint.h integer width declarations
+ 
+diff --git a/inc/arm/efibind.h b/inc/arm/efibind.h
+index 7a22b9c..012d3d2 100644
+--- a/inc/arm/efibind.h
++++ b/inc/arm/efibind.h
+@@ -15,7 +15,7 @@
+  * either version 2 of the License, or (at your option) any later version.
+  */
+ 
+-#if !defined(_MSC_VER) && (!defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L ))
++#if !defined(_MSC_VER) && (!defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L )) && !defined(__cplusplus)
+ 
+ // ANSI C 1999/2000 stdint.h integer width declarations
+ 
+diff --git a/inc/ia32/efibind.h b/inc/ia32/efibind.h
+index dd01385..27459e4 100644
+--- a/inc/ia32/efibind.h
++++ b/inc/ia32/efibind.h
+@@ -25,7 +25,7 @@ Revision History
+ // Basic int types of various widths
+ //
+ 
+-#if !defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L )
++#if !defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L ) && !defined(__cplusplus)
+ 
+     // No ANSI C 1999/2000 stdint.h integer width declarations 
+ 
+diff --git a/inc/ia64/efibind.h b/inc/ia64/efibind.h
+index b9b2e62..3ace8d5 100644
+--- a/inc/ia64/efibind.h
++++ b/inc/ia64/efibind.h
+@@ -24,7 +24,7 @@ Revision History
+ // Basic int types of various widths
+ //
+ 
+-#if !defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L )
++#if !defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L ) && !defined(__cplusplus)
+ 
+     // No ANSI C 1999/2000 stdint.h integer width declarations 
+ 
+diff --git a/inc/mips64el/efibind.h b/inc/mips64el/efibind.h
+index 32241e5..1f08cd3 100644
+--- a/inc/mips64el/efibind.h
++++ b/inc/mips64el/efibind.h
+@@ -17,7 +17,7 @@
+  * either version 2 of the License, or (at your option) any later version.
+  */
+ 
+-#if !defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L )
++#if !defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L ) && !defined(__cplusplus)
+ 
+ // ANSI C 1999/2000 stdint.h integer width declarations
+ 
+diff --git a/inc/x64/efibind.h b/inc/x64/efibind.h
+index ae40595..31e9e11 100644
+--- a/inc/x64/efibind.h
++++ b/inc/x64/efibind.h
+@@ -34,7 +34,7 @@ Revision History
+ // Basic int types of various widths
+ //
+ 
+-#if !defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L )
++#if !defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L ) && !defined(__cplusplus)
+ 
+     // No ANSI C 1999/2000 stdint.h integer width declarations 
+ 
+@@ -86,7 +86,7 @@ Revision History
+     #endif
+     typedef uint64_t            uintptr_t;
+     typedef int64_t             intptr_t;
+-#elif defined(__GNUC__)
++#else
+     #include <stdint.h>
+ #endif
+ 
+-- 
+2.24.1
+

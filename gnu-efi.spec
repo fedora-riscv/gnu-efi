@@ -1,15 +1,22 @@
-Summary: Development Libraries and headers for EFI
 Name: gnu-efi
+Epoch: 1
 Version: 3.0.9
 %global tarball_version 3.0.9
-Release: 3%{?dist}%{?buildid}
-Epoch: 1
+Release: 4%{?dist}%{?buildid}
+Summary: Development Libraries and headers for EFI
 License: BSD 
-URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
+URL: https://sourceforge.net/projects/gnu-efi/
+
+Source0: https://sourceforge.net/projects/gnu-efi/files/gnu-efi-%{tarball_version}.tar.bz2
+Source1: gnu-efi.patches
+%include %{SOURCE1}
+
 ExclusiveArch: %{efi}
-BuildRequires:  gcc
+BuildRequires: binutils
 BuildRequires: efi-srpm-macros >= 3-2
-BuildRequires: git
+BuildRequires: gcc
+BuildRequires: git-core
+BuildRequires: glibc-headers
 %ifarch x86_64
 # So... in some build environments, glibc32 provides some headers.  In
 # others, glibc-devel.i686 does.  They have no non-file provides in common.
@@ -17,13 +24,9 @@ BuildRequires: git
 #BuildRequires: glibc-devel(x86-32)
 BuildRequires: /usr/include/gnu/stubs-32.h
 %endif
-Source0: http://superb-dca2.dl.sourceforge.net/project/gnu-efi/gnu-efi-%{tarball_version}.tar.bz2
-Source1: gnu-efi.patches
 
 # dammit, rpmlint, shut up.
 %define lib %{nil}lib%{nil}
-
-%include %{SOURCE1}
 
 %define debug_package %{nil}
 
@@ -81,8 +84,6 @@ make apps
 %endif
 
 %install
-rm -rf %{buildroot}
-
 mkdir -p %{buildroot}/%{_libdir}/gnuefi
 mkdir -p %{buildroot}/%{efi_esp_dir}/%{efi_arch}
 make PREFIX=%{_prefix} LIBDIR=%{_libdir} INSTALLROOT=%{buildroot} install
@@ -102,7 +103,7 @@ mv %{efi_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi
 %{_prefix}/%{lib}*/*
 
 %files devel
-%doc README.* ChangeLog
+%doc README.*
 %{_includedir}/efi
 
 %files utils
@@ -114,6 +115,11 @@ mv %{efi_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi
 %endif
 
 %changelog
+* Thu Dec 26 2019 Peter Robinson <pbrobinson@fedoraproject.org> 3.0.9-4
+- Upstream patch for efibind.h
+- Latest ELF constructors/destructors patch
+- Minor spec cleanups
+
 * Mon Aug 26 2019 Peter Jones <pjones@redhat.com> - 3.0.9-3
 - Fix some minor rpmlint complaints
 - Pull recent patches from upstream

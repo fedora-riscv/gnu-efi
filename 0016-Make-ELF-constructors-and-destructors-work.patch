@@ -1,37 +1,61 @@
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From f08f27f5939559997c3177692348fdb7fcde7c89 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Fri, 23 Aug 2019 16:23:21 -0400
-Subject: [PATCH] Make ELF constructors and destructors work.
+Subject: [PATCH 01/18] Make ELF constructors and destructors work.
+
+This makes setup and teardown functions defined with
+__attribute__((__constructor__) and __attribute__((__destructor__)) work
+in normal circumstances in EFI binaries.
+
+A couple of notes:
+- it implements both the old-style .ctors/.dtors methods and the newer
+  style .init_array/.fini_array ELF constructor and destructor arrays,
+  processed in the order:
+    .init_array[]
+    .ctors[]
+    efi_main()
+    .dtors[]
+    .fini_array[]
+- Destructors will only be called if efi_main() exits using "return";
+  any call to Exit() will still longjmp() past them.
+- InitializeLib() has already been called before constructors run, so
+  they don't need to call it (and neither does anything else.)  For
+  compatibility, it has been altered so calling it more than once is
+  safe.
+- No attempt is made to handle any constructor or destructor with a
+  prototype other than "void func(void);", but note that InitializeLib
+  has been called, so LibImageHandle, ST, BS, and RT are set.
+- The ia64 and mips64el arches have not been tested.
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
- apps/Makefile                |   5 +-
- apps/ctors_fns.c             |  26 ++++++++++
- apps/ctors_test.c            |  20 ++++++++
- gnuefi/crt0-efi-aa64.S       |   2 +
- gnuefi/crt0-efi-arm.S        |   2 +
- gnuefi/crt0-efi-ia32.S       |   2 +
- gnuefi/crt0-efi-ia64.S       |   6 +++
- gnuefi/crt0-efi-mips64el.S   |  12 ++++-
- gnuefi/crt0-efi-x64.S        |   2 +
- gnuefi/elf_aa64_efi.lds      |  15 ++++++
- gnuefi/elf_arm_efi.lds       |  14 ++++++
- gnuefi/elf_ia32_efi.lds      |  15 ++++++
- gnuefi/elf_ia32_fbsd_efi.lds |  15 ++++++
- gnuefi/elf_ia64_efi.lds      |  15 ++++++
- gnuefi/elf_mips64el_efi.lds  |  14 ++++++
- gnuefi/elf_x64_efi.lds       |  16 +++++++
- gnuefi/elf_x64_fbsd_efi.lds  |  15 ++++++
- lib/Makefile                 |   2 +-
- lib/ctors.c                  |  45 +++++++++++++++++
- lib/init.c                   | 112 ++++++++++++++++++++++++++-----------------
- 20 files changed, 307 insertions(+), 48 deletions(-)
+ apps/Makefile                |  5 ++-
+ apps/ctors_fns.c             | 26 ++++++++++++
+ apps/ctors_test.c            | 20 +++++++++
+ gnuefi/crt0-efi-aa64.S       |  2 +-
+ gnuefi/crt0-efi-arm.S        |  2 +-
+ gnuefi/crt0-efi-ia32.S       |  8 ++--
+ gnuefi/crt0-efi-ia64.S       |  2 +-
+ gnuefi/crt0-efi-mips64el.S   |  4 +-
+ gnuefi/crt0-efi-x64.S        |  2 +-
+ gnuefi/elf_aa64_efi.lds      | 15 +++++++
+ gnuefi/elf_arm_efi.lds       | 14 ++++++
+ gnuefi/elf_ia32_efi.lds      | 15 +++++++
+ gnuefi/elf_ia32_fbsd_efi.lds | 15 +++++++
+ gnuefi/elf_ia64_efi.lds      | 15 +++++++
+ gnuefi/elf_mips64el_efi.lds  | 14 ++++++
+ gnuefi/elf_x64_efi.lds       | 16 +++++++
+ gnuefi/elf_x64_fbsd_efi.lds  | 15 +++++++
+ lib/Makefile                 |  4 +-
+ lib/entry.c                  | 58 +++++++++++++++++++++++++
+ lib/init.c                   | 82 ++++++++++++++++++------------------
+ 20 files changed, 281 insertions(+), 53 deletions(-)
  create mode 100644 apps/ctors_fns.c
  create mode 100644 apps/ctors_test.c
- create mode 100644 lib/ctors.c
+ create mode 100644 lib/entry.c
 
 diff --git a/apps/Makefile b/apps/Makefile
-index cba84f4a3c1..a2476d37bed 100644
+index a95620c..2808837 100644
 --- a/apps/Makefile
 +++ b/apps/Makefile
 @@ -62,7 +62,8 @@ TARGET_APPS = t.efi t2.efi t3.efi t4.efi t5.efi t6.efi \
@@ -55,7 +79,7 @@ index cba84f4a3c1..a2476d37bed 100644
  
 diff --git a/apps/ctors_fns.c b/apps/ctors_fns.c
 new file mode 100644
-index 00000000000..89c84f43c6b
+index 0000000..6241904
 --- /dev/null
 +++ b/apps/ctors_fns.c
 @@ -0,0 +1,26 @@
@@ -73,21 +97,21 @@ index 00000000000..89c84f43c6b
 +static void __attribute__((__constructor__)) ctor(void)
 +{
 +	Print(L"%a:%d:%a() constructed_value:%d\n", __FILE__, __LINE__, __func__, constructed_value);
-+        constructed_value = 1;
++	constructed_value = 1;
 +	Print(L"%a:%d:%a() constructed_value:%d\n", __FILE__, __LINE__, __func__, constructed_value);
 +}
 +
 +static void __attribute__((__destructor__)) dtor(void)
 +{
 +	Print(L"%a:%d:%a() constructed_value:%d\n", __FILE__, __LINE__, __func__, constructed_value);
-+        constructed_value = 0;
++	constructed_value = 0;
 +	Print(L"%a:%d:%a() constructed_value:%d\n", __FILE__, __LINE__, __func__, constructed_value);
 +}
 +
 +// vim:fenc=utf-8:tw=75:noet
 diff --git a/apps/ctors_test.c b/apps/ctors_test.c
 new file mode 100644
-index 00000000000..7e48da8ef35
+index 0000000..7e48da8
 --- /dev/null
 +++ b/apps/ctors_test.c
 @@ -0,0 +1,20 @@
@@ -112,108 +136,96 @@ index 00000000000..7e48da8ef35
 +
 +// vim:fenc=utf-8:tw=75:noet
 diff --git a/gnuefi/crt0-efi-aa64.S b/gnuefi/crt0-efi-aa64.S
-index d6e610b8c79..1d85d78785e 100644
+index d6e610b..a930258 100644
 --- a/gnuefi/crt0-efi-aa64.S
 +++ b/gnuefi/crt0-efi-aa64.S
-@@ -124,7 +124,9 @@ _start:
+@@ -124,7 +124,7 @@ _start:
  	cbnz		x0, 0f
  
  	ldp		x0, x1, [sp, #16]
-+        bl              _ctors
- 	bl		efi_main
-+        bl              _dtors
+-	bl		efi_main
++	bl		_entry
  
  0:	ldp		x29, x30, [sp], #32
  	ret
 diff --git a/gnuefi/crt0-efi-arm.S b/gnuefi/crt0-efi-arm.S
-index c5bb6d482da..135fdcae8c4 100644
+index c5bb6d4..04e75e9 100644
 --- a/gnuefi/crt0-efi-arm.S
 +++ b/gnuefi/crt0-efi-arm.S
-@@ -136,7 +136,9 @@ _start:
+@@ -136,7 +136,7 @@ _start:
  	bne		0f
  
  	ldmfd		sp, {r0-r1}
-+        bl              _ctors
- 	bl		efi_main
-+        bl              _dtors
+-	bl		efi_main
++	bl		_entry
  
  0:	add		sp, sp, #12
  	ldr		pc, [sp], #4
 diff --git a/gnuefi/crt0-efi-ia32.S b/gnuefi/crt0-efi-ia32.S
-index f9d5191ecb5..93eeda4b703 100644
+index f9d5191..8e8e372 100644
 --- a/gnuefi/crt0-efi-ia32.S
 +++ b/gnuefi/crt0-efi-ia32.S
-@@ -59,7 +59,9 @@ _start:
-  	testl %eax,%eax
-  	jne .exit
+@@ -56,13 +56,13 @@ _start:
+ 	call _relocate
+ 	popl %ebx
+ 	popl %ebx
+- 	testl %eax,%eax
+- 	jne .exit
++	testl %eax,%eax
++	jne .exit
    
-+        call _ctors
-   	call efi_main			# call app with "image" and "systab" argument
-+        call _dtors
+-  	call efi_main			# call app with "image" and "systab" argument
++	call _entry			# call app with "image" and "systab" argument
  
  .exit:	leave
-   	ret
+-  	ret
++	ret
+  
+  	// hand-craft a dummy .reloc section so EFI knows it's a relocatable executable:
+  
 diff --git a/gnuefi/crt0-efi-ia64.S b/gnuefi/crt0-efi-ia64.S
-index 40c3c837a1c..14b5683cac7 100644
+index 40c3c83..dacb4c4 100644
 --- a/gnuefi/crt0-efi-ia64.S
 +++ b/gnuefi/crt0-efi-ia64.S
-@@ -56,7 +56,13 @@ _start:
+@@ -56,7 +56,7 @@ _start:
  
  	mov out0=in0			// image handle
  	mov out1=in1			// systab
-+        ;;
-+        br.call.sptk.few rp=_ctors
-+        ;;
- 	br.call.sptk.few rp=efi_main
-+        ;;
-+        br.call.sptk.few rp=_dtors
-+        ;;
+-	br.call.sptk.few rp=efi_main
++	br.call.sptk.few rp=_entry
  .Lret2:
  .exit:
  	mov ar.pfs=loc0
 diff --git a/gnuefi/crt0-efi-mips64el.S b/gnuefi/crt0-efi-mips64el.S
-index 6a62aca98b4..ee871cd33ce 100644
+index 6a62aca..5ad2503 100644
 --- a/gnuefi/crt0-efi-mips64el.S
 +++ b/gnuefi/crt0-efi-mips64el.S
-@@ -172,11 +172,19 @@ _pc:
+@@ -172,8 +172,8 @@ _pc:
  
  	// a0: ImageHandle
  	ld		$a0, 16($sp)
 -	// call efi_main
 -	dla		$t9, efi_main
-+	// call _ctors
-+	dla		$t9, _ctors
++	// call _start
++	dla		$t9, _entry
  	jalr		$t9
  	// a1: SystemTable
  	ld		$a1, 24($sp)
-+	// call efi_main
-+	dla		$t9, efi_main
-+	jalr		$t9
-+        nop
-+	// call _dtors
-+	dla		$t9, _dtors
-+	jalr		$t9
-+        nop
- 
- 1:
- 	ld		$gp, 8($sp)
 diff --git a/gnuefi/crt0-efi-x64.S b/gnuefi/crt0-efi-x64.S
-index 6533af7461f..5501876bbb3 100644
+index 6533af7..3fe361b 100644
 --- a/gnuefi/crt0-efi-x64.S
 +++ b/gnuefi/crt0-efi-x64.S
-@@ -56,8 +56,10 @@ _start:
+@@ -56,7 +56,7 @@ _start:
  	popq %rdi
  	popq %rsi
  
-+        call _ctors
- 	call efi_main
+-	call efi_main
++	call _entry
  	addq $8, %rsp
-+        call _dtors
  
  .exit:	
-   	ret
 diff --git a/gnuefi/elf_aa64_efi.lds b/gnuefi/elf_aa64_efi.lds
-index 836d98255d8..7220636e40c 100644
+index 836d982..7220636 100644
 --- a/gnuefi/elf_aa64_efi.lds
 +++ b/gnuefi/elf_aa64_efi.lds
 @@ -26,6 +26,20 @@ SECTIONS
@@ -246,7 +258,7 @@ index 836d98255d8..7220636e40c 100644
    }
  
 diff --git a/gnuefi/elf_arm_efi.lds b/gnuefi/elf_arm_efi.lds
-index 665bbdbf065..f891921e58f 100644
+index 665bbdb..f891921 100644
 --- a/gnuefi/elf_arm_efi.lds
 +++ b/gnuefi/elf_arm_efi.lds
 @@ -26,6 +26,20 @@ SECTIONS
@@ -271,7 +283,7 @@ index 665bbdbf065..f891921e58f 100644
        it all into .data: */
     . = ALIGN(16);
 diff --git a/gnuefi/elf_ia32_efi.lds b/gnuefi/elf_ia32_efi.lds
-index f27fe5fc6e6..739c370c9eb 100644
+index f27fe5f..739c370 100644
 --- a/gnuefi/elf_ia32_efi.lds
 +++ b/gnuefi/elf_ia32_efi.lds
 @@ -40,6 +40,21 @@ SECTIONS
@@ -297,7 +309,7 @@ index f27fe5fc6e6..739c370c9eb 100644
        it all into .data: */
     *(.sbss)
 diff --git a/gnuefi/elf_ia32_fbsd_efi.lds b/gnuefi/elf_ia32_fbsd_efi.lds
-index cd309e24f7f..33c38a0b2d0 100644
+index cd309e2..33c38a0 100644
 --- a/gnuefi/elf_ia32_fbsd_efi.lds
 +++ b/gnuefi/elf_ia32_fbsd_efi.lds
 @@ -40,6 +40,21 @@ SECTIONS
@@ -323,7 +335,7 @@ index cd309e24f7f..33c38a0b2d0 100644
        it all into .data: */
     *(.sbss)
 diff --git a/gnuefi/elf_ia64_efi.lds b/gnuefi/elf_ia64_efi.lds
-index 190792a0c94..5afd6443722 100644
+index 190792a..5afd644 100644
 --- a/gnuefi/elf_ia64_efi.lds
 +++ b/gnuefi/elf_ia64_efi.lds
 @@ -39,6 +39,21 @@ SECTIONS
@@ -349,7 +361,7 @@ index 190792a0c94..5afd6443722 100644
        it all into .data: */
     *(.dynbss)
 diff --git a/gnuefi/elf_mips64el_efi.lds b/gnuefi/elf_mips64el_efi.lds
-index 4d1a077d8f8..cc0eee3bdcd 100644
+index 4d1a077..cc0eee3 100644
 --- a/gnuefi/elf_mips64el_efi.lds
 +++ b/gnuefi/elf_mips64el_efi.lds
 @@ -27,6 +27,20 @@ SECTIONS
@@ -374,7 +386,7 @@ index 4d1a077d8f8..cc0eee3bdcd 100644
        it all into .data: */
     . = ALIGN(16);
 diff --git a/gnuefi/elf_x64_efi.lds b/gnuefi/elf_x64_efi.lds
-index c7a105898c8..356e63bb8a7 100644
+index c7a1058..356e63b 100644
 --- a/gnuefi/elf_x64_efi.lds
 +++ b/gnuefi/elf_x64_efi.lds
 @@ -30,6 +30,7 @@ SECTIONS
@@ -408,7 +420,7 @@ index c7a105898c8..356e63bb8a7 100644
        it all into .data: */
     *(.sbss)
 diff --git a/gnuefi/elf_x64_fbsd_efi.lds b/gnuefi/elf_x64_fbsd_efi.lds
-index 705719bf68b..e371e5b784f 100644
+index 705719b..e371e5b 100644
 --- a/gnuefi/elf_x64_fbsd_efi.lds
 +++ b/gnuefi/elf_x64_fbsd_efi.lds
 @@ -36,6 +36,21 @@ SECTIONS
@@ -434,24 +446,26 @@ index 705719bf68b..e371e5b784f 100644
        it all into .data: */
     *(.sbss)
 diff --git a/lib/Makefile b/lib/Makefile
-index 8bf94000e33..6d7896b0496 100644
+index 8bf9400..1c2ff1d 100644
 --- a/lib/Makefile
 +++ b/lib/Makefile
-@@ -43,7 +43,7 @@ include $(SRCDIR)/../Make.defaults
+@@ -43,8 +43,8 @@ include $(SRCDIR)/../Make.defaults
  TOPDIR = $(SRCDIR)/..
  
  CDIR = $(TOPDIR)/..
 -FILES = boxdraw smbios console crc data debug dpath  \
-+FILES = boxdraw smbios console crc ctors data debug dpath  \
-         error event exit guid hand hw init lock   \
+-        error event exit guid hand hw init lock   \
++FILES = boxdraw smbios console crc data debug dpath \
++        entry error event exit guid hand hw init lock \
          misc print sread str cmdline \
  	runtime/rtlock runtime/efirtlib runtime/rtstr runtime/vm runtime/rtdata  \
-diff --git a/lib/ctors.c b/lib/ctors.c
+ 	$(ARCH)/initplat $(ARCH)/math $(ARCH)/setjmp
+diff --git a/lib/entry.c b/lib/entry.c
 new file mode 100644
-index 00000000000..dc979e7b442
+index 0000000..79d0002
 --- /dev/null
-+++ b/lib/ctors.c
-@@ -0,0 +1,45 @@
++++ b/lib/entry.c
+@@ -0,0 +1,58 @@
 +/*
 + * ctors.c
 + * Copyright 2019 Peter Jones <pjones@redhat.com>
@@ -468,10 +482,8 @@ index 00000000000..dc979e7b442
 +
 +typedef void (*funcp)(void);
 +
-+void _ctors(EFI_HANDLE image, EFI_SYSTEM_TABLE *systab)
++static void ctors(void)
 +{
-+	InitializeLib(image, systab);
-+
 +	for (funcp *location = (void *)&_init_array; location < (funcp *)&_init_array_end; location++) {
 +		funcp func = *location;
 +		func();
@@ -481,9 +493,10 @@ index 00000000000..dc979e7b442
 +		funcp func = *location;
 +		func();
 +	}
++
 +}
 +
-+void _dtors(EFI_HANDLE image EFI_UNUSED, EFI_SYSTEM_TABLE *systab EFI_UNUSED)
++static void dtors(void)
 +{
 +	for (funcp *location = (void *)&__DTOR_LIST__; location < (funcp *)&__DTOR_END__; location++) {
 +		funcp func = *location;
@@ -496,26 +509,26 @@ index 00000000000..dc979e7b442
 +	}
 +}
 +
++extern EFI_STATUS efi_main(EFI_HANDLE image, EFI_SYSTEM_TABLE *systab);
++
++EFI_STATUS _entry(EFI_HANDLE image, EFI_SYSTEM_TABLE *systab)
++{
++	EFI_STATUS status;
++	InitializeLib(image, systab);
++
++	ctors();
++	status = efi_main(image, systab);
++	dtors();
++
++	return status;
++}
++
 +// vim:fenc=utf-8:tw=75:noet
 diff --git a/lib/init.c b/lib/init.c
-index 4f238c0a2cc..257366812ce 100644
+index 4f238c0..c3df3ee 100644
 --- a/lib/init.c
 +++ b/lib/init.c
-@@ -21,6 +21,13 @@ EFIDebugVariable (
-     VOID
-     );
- 
-+#if defined(__x86_64__) || defined(__i386__) || defined(__i686__)
-+static inline void pause(void)
-+{
-+	__asm__ __volatile__("pause");
-+}
-+#endif
-+
- VOID
- InitializeLib (
-     IN EFI_HANDLE           ImageHandle,
-@@ -46,53 +53,56 @@ Returns:
+@@ -46,57 +46,59 @@ Returns:
      EFI_STATUS              Status;
      CHAR8                   *LangCode;
  
@@ -523,21 +536,42 @@ index 4f238c0a2cc..257366812ce 100644
 -        LibInitialized = TRUE;
 -        LibFwInstance = FALSE;
 -        LibImageHandle = ImageHandle;
--
--
++    if (LibInitialized)
++	return;
+ 
++    LibInitialized = TRUE;
++    LibFwInstance = FALSE;
++    LibImageHandle = ImageHandle;
+ 
 -        //
 -        // Set up global pointer to the system table, boot services table,
 -        // and runtime services table
 -        //
--
++    //
++    // Set up global pointer to the system table, boot services table,
++    // and runtime services table
++    //
+ 
 -        ST = SystemTable;
 -        BS = SystemTable->BootServices;
 -        RT = SystemTable->RuntimeServices;
 -//        ASSERT (CheckCrc(0, &ST->Hdr));
 -//        ASSERT (CheckCrc(0, &BS->Hdr));
 -//        ASSERT (CheckCrc(0, &RT->Hdr));
--
--
++    ST = SystemTable;
++    BS = SystemTable->BootServices;
++    RT = SystemTable->RuntimeServices;
++    // ASSERT (CheckCrc(0, &ST->Hdr));
++    // ASSERT (CheckCrc(0, &BS->Hdr));
++    // ASSERT (CheckCrc(0, &RT->Hdr));
+ 
++    ST = SystemTable;
++    BS = SystemTable->BootServices;
++    RT = SystemTable->RuntimeServices;
++    // ASSERT (CheckCrc(0, &ST->Hdr));
++    // ASSERT (CheckCrc(0, &BS->Hdr));
++    // ASSERT (CheckCrc(0, &RT->Hdr));
+ 
 -        //
 -        // Initialize pool allocation type
 -        //
@@ -555,85 +589,45 @@ index 4f238c0a2cc..257366812ce 100644
 -                PoolAllocationType = LoadedImage->ImageDataType;
 -            }
 -            EFIDebugVariable ();
-+    register volatile UINTN x = 0;
-+    extern char _text, _data;
-+
-+    if (LibInitialized)
-+            return;
-+
-+    LibInitialized = TRUE;
-+    LibFwInstance = FALSE;
-+    LibImageHandle = ImageHandle;
-+
-+    //
-+    // Set up global pointer to the system table, boot services table,
-+    // and runtime services table
-+    //
-+
-+    ST = SystemTable;
-+    BS = SystemTable->BootServices;
-+    RT = SystemTable->RuntimeServices;
-+    // ASSERT (CheckCrc(0, &ST->Hdr));
-+    // ASSERT (CheckCrc(0, &BS->Hdr));
-+    // ASSERT (CheckCrc(0, &RT->Hdr));
-+
-+
-+    //
-+    // Initialize pool allocation type
-+    //
-+
-+    if (ImageHandle) {
-+        Status = uefi_call_wrapper(
-+            BS->HandleProtocol,
-+            3,
-+            ImageHandle, 
-+            &LoadedImageProtocol,
-+            (VOID*)&LoadedImage
-+        );
-+
-+        if (!EFI_ERROR(Status)) {
-+            PoolAllocationType = LoadedImage->ImageDataType;
-         }
+-        }
 -
 -        //
 -        // Initialize Guid table
 -        //
 -
 -        InitializeGuid();
--
++    //
++    // Initialize pool allocation type
++    //
+ 
 -        InitializeLibPlatform(ImageHandle,SystemTable);
-+        EFIDebugVariable ();
++    if (ImageHandle) {
++	Status = uefi_call_wrapper(
++	    BS->HandleProtocol,
++	    3,
++	    ImageHandle,
++	    &LoadedImageProtocol,
++	    (VOID*)&LoadedImage
++	);
++
++	if (!EFI_ERROR(Status)) {
++	    PoolAllocationType = LoadedImage->ImageDataType;
++	}
++	EFIDebugVariable ();
      }
  
-+    //
+     //
+-    // 
 +    // Initialize Guid table
-+    //
-+
+     //
+ 
 +    InitializeGuid();
 +
 +    InitializeLibPlatform(ImageHandle,SystemTable);
 +
-     //
-     // 
-     //
-@@ -104,6 +114,20 @@ Returns:
-             FreePool (LangCode);
-         }
-     }
-+
-+    Print(L"add-symbol-file x86_64/apps/ctors_test.so 0x%08x -s .data 0x%08x\n",
-+          &_text, &_data);
-+    Print(L"Pausing for debugger attachment.\n");
-+
-+    x = 1;
-+    while (x++) {
-+        /* Make this so it can't /totally/ DoS us. */
-+#if defined(__x86_64__) || defined(__i386__) || defined(__i686__)
-+        if (x > 4294967294ULL)
-+            break;
-+#endif
-+        pause();
-+    }
- }
- 
- VOID
+     if (ImageHandle && UnicodeInterface == &LibStubUnicodeInterface) {
+         LangCode = LibGetVariable (VarLanguage, &EfiGlobalVariable);
+         InitializeUnicodeSupport (LangCode);
+-- 
+2.24.1
+
