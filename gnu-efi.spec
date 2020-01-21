@@ -2,7 +2,7 @@ Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0.8
 %global tarball_version 3.0.6
-Release: 6%{?dist}%{?buildid}
+Release: 7%{?dist}%{?buildid}
 Epoch: 1
 License: BSD 
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
@@ -121,6 +121,22 @@ mv %{efi_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi
 	mv %{buildroot}/%{_prefix}/%{lib}/*.{lds,o} %{buildroot}/%{_prefix}/%{lib}/gnuefi/
 	mv %{efi_alt_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi_alt_arch}/
 %endif
+cd %{buildroot}/%{_libdir}/gnuefi/
+if [[ -f crt0-efi-x64.o ]] ; then
+	ln -s crt0-efi-x64.o crt0-efi-x86_64.o
+	ln -s elf_x64_efi.lds elf_x86_64_efi.lds
+fi
+if [[ -f crt0-efi-aa64.o ]] ; then
+	ln -s crt0-efi-aa64.o crt0-efi-aarch64.o
+	ln -s elf_aa64_efi.lds elf_aarch64_efi.lds
+fi
+cd %{buildroot}/%{_includedir}/efi
+if [[ -d aa64 ]] ; then
+	ln -s aa64 aarch64
+fi
+if [[ -d x64 ]] ; then
+	ln -s x64 x86_64
+fi
 
 %files
 %{_prefix}/%{lib}*/*
@@ -138,6 +154,10 @@ mv %{efi_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi
 %endif
 
 %changelog
+* Tue Jan 21 2020 Peter Jones <pjones@redhat.com> - 3.0.8-7
+- Create symlinks for the legacy include/link paths to fix rebuilds of
+  packages that use this.
+
 * Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1:3.0.8-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
