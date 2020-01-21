@@ -1,7 +1,7 @@
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From e3738309657da8f28e68f6ae8daf14a1be389072 Mon Sep 17 00:00:00 2001
 From: Esben Haabendal <esben@esben1.localdomain>
 Date: Fri, 15 Mar 2019 11:57:51 +0100
-Subject: [PATCH] Fix for problem with undeclared intptr_t type
+Subject: [PATCH 05/17] Fix for problem with undeclared intptr_t type
 
 When building gnu-efi with old compilers with pre C90 compilers:
 
@@ -106,3 +106,6 @@ index 4309f9f0e17..ae40595be0b 100644
  #elif defined(__GNUC__)
      #include <stdint.h>
  #endif
+-- 
+2.24.1
+

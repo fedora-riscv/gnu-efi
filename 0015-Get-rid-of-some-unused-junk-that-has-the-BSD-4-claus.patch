@@ -1,17 +1,17 @@
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From 23c68fc88f39c431b04c70013d2e1d6533401e81 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Thu, 19 Jul 2018 13:12:44 -0400
-Subject: [PATCH] Get rid of some unused junk that has the BSD 4-clause
+Subject: [PATCH 15/17] Get rid of some unused junk that has the BSD 4-clause
  license.
 
 We don't need any of this, and its license is not GPL compatible.
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
- inc/protocol/efidbg.h          | 210 -----------------------------------------
- inc/protocol/ia64/eficontext.h | 208 ----------------------------------------
- inc/protocol/makefile.hdr      |   4 +-
- 3 files changed, 1 insertion(+), 421 deletions(-)
+ inc/protocol/efidbg.h          | 210 ---------------------------------
+ inc/protocol/ia64/eficontext.h | Bin 5111 -> 0 bytes
+ inc/protocol/makefile.hdr      | Bin 640 -> 511 bytes
+ 3 files changed, 210 deletions(-)
  delete mode 100644 inc/protocol/efidbg.h
  delete mode 100644 inc/protocol/ia64/eficontext.h
 
@@ -233,237 +233,59 @@ index 1f95a70bb42..00000000000
 -#endif /* _EFIDBG_H_ */
 diff --git a/inc/protocol/ia64/eficontext.h b/inc/protocol/ia64/eficontext.h
 deleted file mode 100644
-index 1a39a6db1e4..00000000000
---- a/inc/protocol/ia64/eficontext.h
-+++ /dev/null
-@@ -1,208 +0,0 @@
--/*
-- * Copyright (c) 1999, 2000
-- * Intel Corporation.
-- * All rights reserved.
-- * 
-- * Redistribution and use in source and binary forms, with or without
-- * modification, are permitted provided that the following conditions
-- * are met:
-- * 
-- * 1. Redistributions of source code must retain the above copyright
-- *    notice, this list of conditions and the following disclaimer.
-- * 
-- * 2. Redistributions in binary form must reproduce the above copyright
-- *    notice, this list of conditions and the following disclaimer in the
-- *    documentation and/or other materials provided with the distribution.
-- * 
-- * 3. All advertising materials mentioning features or use of this software
-- *    must display the following acknowledgement:
-- * 
-- *    This product includes software developed by Intel Corporation and
-- *    its contributors.
-- * 
-- * 4. Neither the name of Intel Corporation or its contributors may be
-- *    used to endorse or promote products derived from this software
-- *    without specific prior written permission.
-- * 
-- * THIS SOFTWARE IS PROVIDED BY INTEL CORPORATION AND CONTRIBUTORS ``AS IS''
-- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-- * ARE DISCLAIMED.  IN NO EVENT SHALL INTEL CORPORATION OR CONTRIBUTORS BE
-- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
-- * THE POSSIBILITY OF SUCH DAMAGE.
-- * 
-- */
--
--
--#ifndef _EFICONTEXT_H_
--#define _EFICONTEXT_H_
--
--
--//
--//  IA-64 processor exception types
--//
--#define    EXCPT_ALT_DTLB            4
--#define    EXCPT_DNESTED_TLB         5
--#define    EXCPT_BREAKPOINT         11
--#define    EXCPT_EXTERNAL_INTERRUPT	12
--#define    EXCPT_GEN_EXCEPT         24
--#define    EXCPT_NAT_CONSUMPTION    26
--#define    EXCPT_DEBUG_EXCEPT       29
--#define    EXCPT_UNALIGNED_ACCESS   30
--#define    EXCPT_FP_FAULT           32
--#define    EXCPT_FP_TRAP            33
--#define    EXCPT_TAKEN_BRANCH       35
--#define    EXCPT_SINGLE_STEP        36
--
--//
--//  IA-64 processor context definition - must be 512 byte aligned!!!
--//
--typedef
--struct {
--	UINT64 reserved;	// necessary to preserve alignment for the correct bits in UNAT and to insure F2 is 16 byte aligned...
--    
--    UINT64 r1;
--    UINT64 r2;
--    UINT64 r3;
--    UINT64 r4;
--    UINT64 r5;
--    UINT64 r6;
--    UINT64 r7;
--    UINT64 r8;
--    UINT64 r9;
--    UINT64 r10;
--    UINT64 r11;
--    UINT64 r12;
--    UINT64 r13;
--    UINT64 r14;
--    UINT64 r15;
--    UINT64 r16;
--    UINT64 r17;
--    UINT64 r18;
--    UINT64 r19;
--    UINT64 r20;
--    UINT64 r21;
--    UINT64 r22;
--    UINT64 r23;
--    UINT64 r24;
--    UINT64 r25;
--    UINT64 r26;
--    UINT64 r27;
--    UINT64 r28;
--    UINT64 r29;
--    UINT64 r30;
--    UINT64 r31;
--    
--    UINT64 f2[2];
--    UINT64 f3[2];
--    UINT64 f4[2];
--    UINT64 f5[2];
--    UINT64 f6[2];
--    UINT64 f7[2];
--    UINT64 f8[2];
--    UINT64 f9[2];
--    UINT64 f10[2];
--    UINT64 f11[2];
--    UINT64 f12[2];
--    UINT64 f13[2];
--    UINT64 f14[2];
--    UINT64 f15[2];
--    UINT64 f16[2];
--    UINT64 f17[2];
--    UINT64 f18[2];
--    UINT64 f19[2];
--    UINT64 f20[2];
--    UINT64 f21[2];
--    UINT64 f22[2];
--    UINT64 f23[2];
--    UINT64 f24[2];
--    UINT64 f25[2];
--    UINT64 f26[2];
--    UINT64 f27[2];
--    UINT64 f28[2];
--    UINT64 f29[2];
--    UINT64 f30[2];
--    UINT64 f31[2];
--    
--    UINT64 pr;
--    
--    UINT64 b0;
--    UINT64 b1;
--    UINT64 b2;
--    UINT64 b3;
--    UINT64 b4;
--    UINT64 b5;
--    UINT64 b6;
--    UINT64 b7;
--    
--    // application registers
--    UINT64 ar_rsc;
--    UINT64 ar_bsp;
--    UINT64 ar_bspstore;
--    UINT64 ar_rnat;
--
--    UINT64 ar_fcr;
--
--    UINT64 ar_eflag;
--    UINT64 ar_csd;
--    UINT64 ar_ssd;
--    UINT64 ar_cflg;
--    UINT64 ar_fsr;
--    UINT64 ar_fir;
--    UINT64 ar_fdr;
--
--    UINT64 ar_ccv;
--
--    UINT64 ar_unat;
--
--    UINT64 ar_fpsr;
--    
--    UINT64 ar_pfs;
--    UINT64 ar_lc;
--    UINT64 ar_ec;
--    
--    // control registers
--    UINT64 cr_dcr;
--    UINT64 cr_itm;
--    UINT64 cr_iva;
--    UINT64 cr_pta;
--    UINT64 cr_ipsr;
--    UINT64 cr_isr;
--    UINT64 cr_iip;
--    UINT64 cr_ifa;
--    UINT64 cr_itir;
--    UINT64 cr_iipa;
--    UINT64 cr_ifs;
--    UINT64 cr_iim;
--    UINT64 cr_iha;
--    
--    // debug registers
--    UINT64 dbr0;
--    UINT64 dbr1;
--    UINT64 dbr2;
--    UINT64 dbr3;
--    UINT64 dbr4;
--    UINT64 dbr5;
--    UINT64 dbr6;
--    UINT64 dbr7;
--    
--    UINT64 ibr0;
--    UINT64 ibr1;
--    UINT64 ibr2;
--    UINT64 ibr3;
--    UINT64 ibr4;
--    UINT64 ibr5;
--    UINT64 ibr6;
--    UINT64 ibr7;
--    
--    // virtual registers
--    UINT64 int_nat;	// nat bits for R1-R31
--    
--} SYSTEM_CONTEXT;
--
--#endif /* _EFI_CONTEXT_H_ */
+index 1a39a6db1e45c8bdf96348e5e2fa82567e61df89..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 5111
+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
+AYXATM
+
 diff --git a/inc/protocol/makefile.hdr b/inc/protocol/makefile.hdr
-index 118d6ba3a08..e66e67889c2 100644
---- a/inc/protocol/makefile.hdr
-+++ b/inc/protocol/makefile.hdr
-@@ -9,8 +9,7 @@
- INC_DEPS = $(INC_DEPS) \
-     $(SDK_INSTALL_DIR)\include\efi\protocol\efivar.h \
-     $(SDK_INSTALL_DIR)\include\efi\protocol\legacyboot.h \
--    $(SDK_INSTALL_DIR)\include\efi\protocol\vgaclass.h \
--    $(SDK_INSTALL_DIR)\include\efi\protocol\efidbg.h \
-+    $(SDK_INSTALL_DIR)\include\efi\protocol\vgaclass.h
- 
- 
- !IF "$(PROCESSOR)" == "Ia32"
-@@ -22,7 +21,6 @@ INC_DEPS = $(INC_DEPS) \
- 
- !IF "$(PROCESSOR)" == "Ia64"
- INC_DEPS = $(INC_DEPS) \
--    $(SDK_INSTALL_DIR)\include\efi\protocol\$(PROCESSOR)\eficontext.h \
- 
- 
- !ENDIF
+index 118d6ba3a08df254b3cf4eeecce923bdac063f3a..4ea405731ee6d60c7262a989a1a1a2b9e2362101 100644
+GIT binary patch
+delta 26
+fcmZo*{m;B1mvQn^#uh$aE?zE0S3eg|HxLT|YhDIa
+
+delta 68
+zcmey*+`zgamvQ2E9k$f8%#@_`$?1$;6Zh+At7rrS`8&G?2m1$U#sH;~^YcnlD@yb-
+S6k>R}Kv2=u&&AUX!~y_6_7uYa
+
+-- 
+2.24.1
+

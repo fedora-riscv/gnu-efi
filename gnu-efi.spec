@@ -2,7 +2,7 @@ Summary: Development Libraries and headers for EFI
 Name: gnu-efi
 Version: 3.0.9
 %global tarball_version 3.0.9
-Release: 2%{?dist}%{?buildid}
+Release: 3%{?dist}%{?buildid}
 Epoch: 1
 License: BSD 
 URL: ftp://ftp.hpl.hp.com/pub/linux-ia64
@@ -19,6 +19,7 @@ BuildRequires: /usr/include/gnu/stubs-32.h
 %endif
 Source0: http://superb-dca2.dl.sourceforge.net/project/gnu-efi/gnu-efi-%{tarball_version}.tar.bz2
 Source1: gnu-efi.patches
+Source2: gitattributes
 
 # dammit, rpmlint, shut up.
 %define lib %{nil}lib%{nil}
@@ -65,6 +66,7 @@ git init
 git config user.email "gnu-efi-owner@fedoraproject.org"
 git config user.name "Fedora Ninjas"
 git config sendemail.to "gnu-efi-owner@fedoraproject.org"
+cp %{SOURCE2} .gitattributes
 git add .
 git commit -a -q -m "%{version} baseline."
 git am %{patches} </dev/null
@@ -97,6 +99,22 @@ mv %{efi_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi
 	mv %{buildroot}/%{_prefix}/%{lib}/*.{lds,o} %{buildroot}/%{_prefix}/%{lib}/gnuefi/
 	mv %{efi_alt_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi_alt_arch}/
 %endif
+cd %{buildroot}/%{_libdir}/gnuefi/
+if [[ -f crt0-efi-x64.o ]] ; then
+	ln -s crt0-efi-x64.o crt0-efi-x86_64.o
+	ln -s elf_x64_efi.lds elf_x86_64_efi.lds
+fi
+if [[ -f crt0-efi-aa64.o ]] ; then
+	ln -s crt0-efi-aa64.o crt0-efi-aarch64.o
+	ln -s elf_aa64_efi.lds elf_aarch64_efi.lds
+fi
+cd %{buildroot}/%{_includedir}/efi
+if [[ -d aa64 ]] ; then
+	ln -s aa64 aarch64
+fi
+if [[ -d x64 ]] ; then
+	ln -s x64 x86_64
+fi
 
 %files
 %{_prefix}/%{lib}*/*
@@ -114,6 +132,10 @@ mv %{efi_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi
 %endif
 
 %changelog
+* Tue Jan 21 2020 Peter Jones <pjones@redhat.com> - 3.0.9-3
+- Create symlinks for the legacy include/link paths to fix rebuilds of
+  packages that use this.
+
 * Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1:3.0.9-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
