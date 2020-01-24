@@ -65,6 +65,14 @@ BuildArch: noarch
 This package contains development headers and libraries for developing
 applications that run under EFI (Extensible Firmware Interface).
 
+%package compat
+Summary: Development Libraries and headers for EFI
+Requires: gnu-efi-devel = %{epoch}:%{version}-%{release}
+
+%description compat
+This package provides compatibility for building software utilizing gnu-efi
+which expects the directory layout from older versions of Fedora.
+
 %package utils
 Summary: Utilities for EFI systems
 
@@ -103,12 +111,16 @@ make PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib INSTALLROOT=%{buildroot} install_co
 mkdir -p %{buildroot}/%{_libdir}/gnuefi/
 if [[ -d %{buildroot}/%{_prefix}/lib/gnuefi/x64 ]] ; then
   ln -s ../../lib/gnuefi/%{efi_arch} %{buildroot}/%{_libdir}/gnuefi/%{efi_arch}
+  ln -s %{efi_arch}/crt0.o %{buildroot}/%{_libdir}/gnuefi/crt0-efi-x64.o
+  ln -s %{efi_arch}/efi.lds %{buildroot}/%{_libdir}/gnuefi/elf_x64_efi.lds
   ln -s %{efi_arch}/crt0.o %{buildroot}/%{_libdir}/gnuefi/crt0-efi-x86_64.o
   ln -s %{efi_arch}/efi.lds %{buildroot}/%{_libdir}/gnuefi/elf_x86_64_efi.lds
   ln -s %{efi_arch}/libefi.a %{buildroot}/%{_libdir}/gnuefi/libefi.a
   ln -s %{efi_arch}/libgnuefi.a %{buildroot}/%{_libdir}/gnuefi/libgnuefi.a
 elif [[ -d %{buildroot}/%{_prefix}/lib/gnuefi/aa64 ]] ; then
   ln -s ../../lib/gnuefi/%{efi_arch} %{buildroot}/%{_libdir}/gnuefi/%{efi_arch}
+  ln -s %{efi_arch}/crt0.o %{buildroot}/%{_libdir}/gnuefi/crt0-efi-aa64.o
+  ln -s %{efi_arch}/efi.lds %{buildroot}/%{_libdir}/gnuefi/elf_aa64_efi.lds
   ln -s %{efi_arch}/crt0.o %{buildroot}/%{_libdir}/gnuefi/crt0-efi-aarch64.o
   ln -s %{efi_arch}/efi.lds %{buildroot}/%{_libdir}/gnuefi/elf_aarch64_efi.lds
   ln -s %{efi_arch}/libefi.a %{buildroot}/%{_libdir}/gnuefi/libefi.a
@@ -129,15 +141,24 @@ fi
   ln -s %{efi_alt_arch}/libgnuefi.a %{buildroot}/%{_prefix}/lib/gnuefi/libgnuefi.a
 %endif
 
+find %{buildroot}/%{_prefix}/ -type l | sed 's,%{buildroot}/\+,/,'
+find %{buildroot}/%{_prefix}/ -type l | sed 's,%{buildroot}/\+,/,' > compat.lst
+
 %files
-%{_prefix}/lib*/gnuefi
-%{_prefix}/lib*/*.{o,a,lds}
+%dir %{_prefix}/lib/gnuefi/
+%{_prefix}/lib/gnuefi/*/
+%exclude %{_prefix}/lib*/gnuefi/crt0-efi-*
+%exclude %{_prefix}/lib*/gnuefi/elf_*
 
 %files devel
 %doc README.*
 %{_mandir}/man3/*
 %{_includedir}/efi
 %{_includedir}/*.mk
+%exclude %{_includedir}/efi/x86_64
+%exclude %{_includedir}/efi/aarch64
+
+%files compat -f compat.lst
 
 %files utils
 %dir %attr(0700,root,root) %{efi_esp_dir}/%{efi_arch}/
