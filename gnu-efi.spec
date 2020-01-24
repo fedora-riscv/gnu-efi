@@ -60,6 +60,8 @@ Summary: Development Libraries and headers for EFI
 Obsoletes: gnu-efi < 1:3.0.2-1
 Requires: gnu-efi = %{epoch}:%{version}-%{release}
 BuildArch: noarch
+# temporarily, put this backwards
+Requires: gnu-efi-compat = %{epoch}:%{version}-%{release}
 
 %description devel
 This package contains development headers and libraries for developing
@@ -67,7 +69,8 @@ applications that run under EFI (Extensible Firmware Interface).
 
 %package compat
 Summary: Development Libraries and headers for EFI
-Requires: gnu-efi-devel = %{epoch}:%{version}-%{release}
+# temporarily, put this backwards
+# Requires: gnu-efi-devel = %%{epoch}:%%{version}-%%{release}
 
 %description compat
 This package provides compatibility for building software utilizing gnu-efi
