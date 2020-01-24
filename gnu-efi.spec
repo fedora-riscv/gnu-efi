@@ -2,7 +2,7 @@ Name: gnu-efi
 Epoch: 1
 Version: 3.0.11
 %global tarball_version 3.0.9
-Release: 1%{?dist}%{?buildid}
+Release: 2%{?dist}%{?buildid}
 Summary: Development Libraries and headers for EFI
 License: BSD 
 URL: https://sourceforge.net/projects/gnu-efi/
@@ -172,6 +172,10 @@ find %{buildroot}/%{_prefix}/ -type l | sed 's,%{buildroot}/\+,/,' > compat.lst
 %endif
 
 %changelog
+* Fri Jan 24 2020 Peter Jones <pjones@redhat.com> - 3.0.11-2
+- Make a compat subpackage to provide the old paths to our libraries, linker
+  script, and includes.
+
 * Wed Jan 22 2020 Peter Jones <pjones@redhat.com> - 3.0.11-1
 - Update to 3.0.11 (via patches generated from git)
 - Plus newer upstream fixes (also via patches generated from git)
