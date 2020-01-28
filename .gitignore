@@ -3,3 +3,4 @@ gnu-efi?3.0*.tar.*
 *.rpm
 gnu-efi-*/
 .build*.log
+results_gnu-efi/
