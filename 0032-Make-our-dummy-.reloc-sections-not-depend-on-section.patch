@@ -1,8 +1,7 @@
-From 6eb63b104e77f9244a31d183cbe34e929afe1975 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Mon, 30 Sep 2019 14:29:45 -0400
-Subject: [PATCH 32/45] Make our dummy .reloc sections not depend on section
- order.
+Subject: [PATCH] Make our dummy .reloc sections not depend on section order.
 
 Currently on x64 we manually build a dummy .reloc table entry by using a
 symbol in .text and subtracting its address from another symbol that's
@@ -78,6 +77,3 @@ index 3fe361b7ffd..5c86cde12e8 100644
 +	.long	10					// Block Size (2*4+2)
  	.word	(IMAGE_REL_ABSOLUTE<<12) +  0		// reloc for dummy
  
--- 
-2.24.1
-

@@ -1,7 +1,7 @@
-From 6335e5c697c57d8b5854b8202de3733bcb151ca6 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Fabrice Fontaine <fontaine.fabrice@gmail.com>
 Date: Fri, 18 Jan 2019 22:05:37 +0100
-Subject: [PATCH 04/45] efilink: fix build with gcc 4.8
+Subject: [PATCH] efilink: fix build with gcc 4.8
 
 intptr_t is undefined without an include on stdint.h
 
@@ -28,6 +28,3 @@ index cc5aa2dc57b..b69a6fd5cf5 100644
  /*++
  
  Copyright (c) 1998  Intel Corporation
--- 
-2.24.1
-

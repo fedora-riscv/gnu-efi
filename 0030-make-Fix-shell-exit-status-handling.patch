@@ -1,7 +1,7 @@
-From 3b79571d75d46b5c7101ee0ae508a4eac6378103 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Thu, 14 Nov 2019 09:54:39 -0500
-Subject: [PATCH 28/45] make: Fix shell exit status handling.
+Subject: [PATCH] make: Fix shell exit status handling.
 
 Right now whenever we have shell commands with loops, errors in the
 middle are accidentally ignored, and make continues to process commands.
@@ -36,7 +36,7 @@ index 84f07d33a48..a461a5c3483 100644
  		$(MAKE) -C $(OBJDIR)/$$d -f $(SRCDIR)/$$d/Makefile SRCDIR=$(SRCDIR)/$$d install; done
  
 diff --git a/lib/Makefile b/lib/Makefile
-index 1c2ff1db89a..4847f4d7a86 100644
+index e7eafc01f1e..6fd472ad1ac 100644
 --- a/lib/Makefile
 +++ b/lib/Makefile
 @@ -72,7 +72,7 @@ all: libsubdirs libefi.a
@@ -48,6 +48,3 @@ index 1c2ff1db89a..4847f4d7a86 100644
  
  libefi.a: $(OBJS)
  	$(AR) $(ARFLAGS) $@ $^
--- 
-2.24.1
-

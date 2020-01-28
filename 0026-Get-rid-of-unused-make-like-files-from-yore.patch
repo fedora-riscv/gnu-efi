@@ -1,7 +1,7 @@
-From 572be899ca9d1fb33fa72e496a3e0fb312dd263d Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Fri, 25 Oct 2019 15:37:17 -0400
-Subject: [PATCH 31/45] Get rid of unused make-like files from yore.
+Subject: [PATCH] Get rid of unused make-like files from yore.
 
 These files are all edk2-like makefile snippets, and we don't use any of
 them for anything.  They've also got DOS line endings and things like
@@ -72,7 +72,4 @@ HcmV?d00001
 literal 113
 zcmY%9<x&PCUasik{L-T2)Z$oPE(IV+P0K7xEYi#1<>JgqO;1d&Ov=wM0dvFB6P<Gs
 hi;F=Vkjl)wlAQd+6c86^N@k+55yB*}fSCzG004;AA3Fd5
-
--- 
-2.24.1
 

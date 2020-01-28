@@ -1,14 +1,14 @@
-From d34132e62f666904158c7ec2f1eef5a9d5281c36 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Nigel Croxon <ncroxon@redhat.com>
 Date: Wed, 9 Jan 2019 07:03:46 -0500
-Subject: [PATCH 03/45] * Fixed typeo lib/error.c EFI_WARN_UNKNOWN_GLYPH
- definition. On couple of locations in runtime string library (rtstr.c) there
- are calls to non-runtime variant of StrLen function. * Another issue is with
- formatting 1394 paths. The F1394_DEVICE_PATH::Guid is formatted as %g, but
- 1394 GUID is 8 byte integer, not EFI_GUID and therefore should be formatted
- as e.g. %016lx (as edk2 does). * Beyond what's mentioned above, changed the
- format of the harddrive path, so it's in line with edk2 format and spec (2.7
- errata A, chapter 10.6.1.6, table 102).
+Subject: [PATCH] * Fixed typeo lib/error.c EFI_WARN_UNKNOWN_GLYPH definition.
+ On couple of locations in runtime string library (rtstr.c) there are calls to
+ non-runtime variant of StrLen function. * Another issue is with formatting
+ 1394 paths. The F1394_DEVICE_PATH::Guid is formatted as %g, but 1394 GUID is
+ 8 byte integer, not EFI_GUID and therefore should be formatted as e.g. %016lx
+ (as edk2 does). * Beyond what's mentioned above, changed the format of the
+ harddrive path, so it's in line with edk2 format and spec (2.7 errata A,
+ chapter 10.6.1.6, table 102).
 
 Signed-off-by: Nigel Croxon <ncroxon@redhat.com>
 Signed-off-by: manison <manison@users.sf.net>
@@ -183,6 +183,3 @@ index 73965cae192..802e7f43309 100644
      return i;
  }
  
--- 
-2.24.1
-

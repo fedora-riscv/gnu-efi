@@ -1,8 +1,7 @@
-From dba7d5eeb75c3e8526eaf6b898e3ba808dde5ac4 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Tue, 14 Jan 2020 10:13:30 -0500
-Subject: [PATCH 43/45] lfbgrid: Make pointer size testing not arch name
- dependent.
+Subject: [PATCH] lfbgrid: Make pointer size testing not arch name dependent.
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
@@ -37,6 +36,3 @@ index ac50f4eafa9..e9fef957d94 100644
  		FrameBufferAddr = (UINT32)(UINT64)gop->Mode->FrameBufferBase;
  #else
  #error YOUR ARCH HERE
--- 
-2.24.1
-

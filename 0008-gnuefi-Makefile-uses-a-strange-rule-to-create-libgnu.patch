@@ -1,9 +1,9 @@
-From 230c36c6aa4fcb1db61ce177264e224c26314da1 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Nigel Croxon <ncroxon@redhat.com>
 Date: Tue, 2 Apr 2019 09:47:24 -0400
-Subject: [PATCH 08/45] gnuefi/Makefile uses a strange rule to create
- libgnuefi.a, which only works because of a "make" builtin rule. This breaks
- make -r, and it is an inefficient way to build, at least for multiple files.
+Subject: [PATCH] gnuefi/Makefile uses a strange rule to create libgnuefi.a,
+ which only works because of a "make" builtin rule. This breaks make -r, and
+ it is an inefficient way to build, at least for multiple files.
 
 I have made a git tree which includes a patch for this problem,
 and also forces -r by adding it to MAKEFLAGS:
@@ -31,6 +31,3 @@ index 2a61699ac25..10d4e7addd0 100644
  
  clean:
  	rm -f $(TARGETS) *~ *.o $(OBJS)
--- 
-2.24.1
-

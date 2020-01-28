@@ -1,7 +1,7 @@
-From 16d17b0d947b66ce76f79749123431b678f998df Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Fri, 25 Oct 2019 15:42:10 -0400
-Subject: [PATCH 37/45] Install all headers for all arches.
+Subject: [PATCH] Install all headers for all arches.
 
 This further enables cross-builds by installing all the arches headers.
 
@@ -40,6 +40,3 @@ index 445d340f0fa..e8123fd3115 100644
 +	@if [ ! -h $(DEST)/aarch64 ]; then $(SYMLINK) aa64/ $(DEST)/aarch64 ; fi
  
  include $(SRCDIR)/../Make.rules
--- 
-2.24.1
-

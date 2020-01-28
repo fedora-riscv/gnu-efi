@@ -1,7 +1,7 @@
-From 6318d6eddeb905a01e81add07d4ab6fc35268ac8 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Wed, 13 Nov 2019 15:24:27 -0500
-Subject: [PATCH 38/45] Rename our installed .o and linker scripts.
+Subject: [PATCH] Rename our installed .o and linker scripts.
 
 Since crt0 and our linker scripts are now in a subdirectory, there's no
 need to make them named differently in the installed machine.  This
@@ -61,6 +61,3 @@ index 7652669a7cc..86760f55578 100644
  endif
  
  include $(SRCDIR)/../Make.rules
--- 
-2.24.1
-

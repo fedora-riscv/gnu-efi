@@ -1,8 +1,7 @@
-From 643f7e5d01fb6a5633b24c811c098b38a1b60d89 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: sgerwk <sgerwk@aol.com>
 Date: Thu, 2 May 2019 12:57:16 +0200
-Subject: [PATCH 18/45] make parameter to compile apps + add example output
- directory
+Subject: [PATCH] make parameter to compile apps + add example output directory
 
 ---
  README.gnuefi | 4 ++--
@@ -25,6 +24,3 @@ index 512698c28b4..a65e5f9042a 100644
  
  
  ** Running
--- 
-2.24.1
-

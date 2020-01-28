@@ -1,7 +1,7 @@
-From 58c33b63da0e8def2fab43b79ae73403f5ccc23d Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Mon, 18 Nov 2019 13:06:23 -0500
-Subject: [PATCH 41/45] Implement Print(L"%p", ptr);
+Subject: [PATCH] Implement Print(L"%p", ptr);
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
@@ -33,6 +33,3 @@ index 0b823481347..8fdba6ee166 100644
              case 'r':
                  StatusToString (Item.Scratch, va_arg(ps->args, EFI_STATUS));
                  Item.Item.pw = Item.Scratch;
--- 
-2.24.1
-

@@ -21,14 +21,14 @@ Patch0020: 0020-Make-apps-link-against-the-local-gnuefi-and-crt-obje.patch
 Patch0021: 0021-Add-.travis.yml.patch
 Patch0022: 0022-Use-EFI-canonical-names-everywhere-the-compiler-does.patch
 Patch0023: 0023-Fix-a-minor-coverity-complaint-in-some-apps.patch
-Patch0024: 0024-Get-rid-of-some-unused-junk-that-has-the-BSD-4-claus.patch
-Patch0025: 0025-Make-ELF-constructors-and-destructors-work.patch
-Patch0026: 0026-Remove-the-accidental-lib-Makefile.orig.patch
-Patch0027: 0027-gitignore-add-our-build-directories.patch
-Patch0028: 0028-make-Fix-shell-exit-status-handling.patch
-Patch0029: 0029-make-Make-make-clean-use-and-rm-v-everywhere.patch
-Patch0030: 0030-Add-stuff-that-s-got-weird-characters-to-.gitattribu.patch
-Patch0031: 0031-Get-rid-of-unused-make-like-files-from-yore.patch
+Patch0024: 0024-Add-stuff-that-s-got-weird-characters-to-.gitattribu.patch
+Patch0025: 0025-Get-rid-of-some-unused-junk-that-has-the-BSD-4-claus.patch
+Patch0026: 0026-Get-rid-of-unused-make-like-files-from-yore.patch
+Patch0027: 0027-Make-ELF-constructors-and-destructors-work.patch
+Patch0028: 0028-Remove-the-accidental-lib-Makefile.orig.patch
+Patch0029: 0029-gitignore-add-our-build-directories.patch
+Patch0030: 0030-make-Fix-shell-exit-status-handling.patch
+Patch0031: 0031-make-Make-make-clean-use-and-rm-v-everywhere.patch
 Patch0032: 0032-Make-our-dummy-.reloc-sections-not-depend-on-section.patch
 Patch0033: 0033-Make-CHAR8-and-similar-be-defined-the-same-way-edk2-.patch
 Patch0034: 0034-Make-make-TOPDIR-actually-work-and-get-rid-of-unused.patch
@@ -43,3 +43,4 @@ Patch0042: 0042-Switch-to-fPIE.patch
 Patch0043: 0043-lfbgrid-Make-pointer-size-testing-not-arch-name-depe.patch
 Patch0044: 0044-Fix-the-arch-subdirs-in-.gitignore.patch
 Patch0045: 0045-Use-CFLAGS-with-gcc-print-libgcc-file-name-to-get-th.patch
+Patch0046: 0046-CFLAGS-add-Wno-pointer-sign.patch

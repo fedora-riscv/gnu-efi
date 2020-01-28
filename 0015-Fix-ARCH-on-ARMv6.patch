@@ -1,7 +1,7 @@
-From 44267b59d892041048c70e1f8fa17be0829d0978 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Ben Wolsieffer <benwolsieffer@gmail.com>
 Date: Tue, 5 Nov 2019 00:09:12 -0500
-Subject: [PATCH 15/45] Fix ARCH on ARMv6.
+Subject: [PATCH] Fix ARCH on ARMv6.
 
 Extends the armv7 ARCH sed expression to work correctly on armv6.
 
@@ -30,6 +30,3 @@ index ba743f17893..5695b2ac1ab 100755
  endif
  
  # FreeBSD (and possibly others) reports amd64 instead of x86_64
--- 
-2.24.1
-

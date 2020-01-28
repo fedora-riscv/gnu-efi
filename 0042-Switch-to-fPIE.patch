@@ -1,7 +1,7 @@
-From 55ea0b4b8ce651bf9d1048754e7a2981624509a2 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Tue, 19 Nov 2019 13:23:14 -0500
-Subject: [PATCH 42/45] Switch to -fPIE
+Subject: [PATCH] Switch to -fPIE
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
@@ -25,6 +25,3 @@ index 01269660ab8..15af35e6e26 100755
  endif
  
  IS_FREEBSD = $(findstring FreeBSD, $(OS))
--- 
-2.24.1
-

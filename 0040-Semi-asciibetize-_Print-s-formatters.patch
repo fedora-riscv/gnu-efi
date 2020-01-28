@@ -1,52 +1,58 @@
-From 212920a4c3dedc6fc119fb371be798dfc971a749 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Mon, 18 Nov 2019 13:05:15 -0500
-Subject: [PATCH 40/45] Semi-asciibetize _Print()'s formatters.
+Subject: [PATCH] Semi-asciibetize _Print()'s formatters.
 
 This is ascii order but with upper and lower case letters mixed, so
 things like 'X' and 'x' that use fallthrough still stay together.
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
- lib/print.c | 132 ++++++++++++++++++++++++++--------------------------
- 1 file changed, 65 insertions(+), 67 deletions(-)
+ lib/print.c | 148 ++++++++++++++++++++++++++++++------------------------------
+ 1 file changed, 73 insertions(+), 75 deletions(-)
 
 diff --git a/lib/print.c b/lib/print.c
 index 35e43c03db5..0b823481347 100644
 --- a/lib/print.c
 +++ b/lib/print.c
-@@ -1067,24 +1067,24 @@ Returns:
+@@ -1067,26 +1067,26 @@ Returns:
                  Item.Item.pw = Item.Scratch;
                  break;
  
 -            case '0':
 -                Item.Pad = '0';
-+            case ',':
-+                Item.Comma = TRUE;
+-                break;
+-
+-            case '-':
+-                Item.PadBefore = FALSE;
+-                break;
+-
+             case ',':
+                 Item.Comma = TRUE;
                  break;
  
-             case '-':
-                 Item.PadBefore = FALSE;
+-            case '.':
+-                Item.WidthParse = &Item.FieldWidth;
++            case '-':
++                Item.PadBefore = FALSE;
                  break;
  
--            case ',':
--                Item.Comma = TRUE;
-+            case '*':
-+                *Item.WidthParse = va_arg(ps->args, UINTN);
+             case '*':
+                 *Item.WidthParse = va_arg(ps->args, UINTN);
                  break;
  
-             case '.':
-                 Item.WidthParse = &Item.FieldWidth;
-                 break;
- 
--            case '*':
--                *Item.WidthParse = va_arg(ps->args, UINTN);
++            case '.':
++                Item.WidthParse = &Item.FieldWidth;
++                break;
++
 +            case '0':
 +                Item.Pad = '0';
-                 break;
- 
++                break;
++
              case '1':
-@@ -1112,52 +1112,23 @@ Returns:
+             case '2':
+             case '3':
+@@ -1112,62 +1112,12 @@ Returns:
                  }
                  break;
  
@@ -82,14 +88,7 @@ index 35e43c03db5..0b823481347 100644
 -
 -                break;
 -
-+            case 'D':
-+            {
-+                EFI_DEVICE_PATH *dp = va_arg(ps->args, EFI_DEVICE_PATH *);
-+                CHAR16 *dpstr = DevicePathToStr(dp);
-+                StrnCpy(Item.Scratch, dpstr, PRINT_ITEM_BUFFER_LEN);
-+                Item.Scratch[PRINT_ITEM_BUFFER_LEN-1] = L'\0';
-+                FreePool(dpstr);
- 
+-
 -            case 'g':
 -                GuidToString (Item.Scratch, va_arg(ps->args, EFI_GUID *));
 -                Item.Item.pw = Item.Scratch;
@@ -101,51 +100,61 @@ index 35e43c03db5..0b823481347 100644
 -                    Item.Comma,
 -                    Item.Long ? va_arg(ps->args, UINT64) : va_arg(ps->args, UINT32)
 -                    );
-                 Item.Item.pw = Item.Scratch;
+-                Item.Item.pw = Item.Scratch;
+-                break;
+-
+-            case 'd':
+-                ValueToString (
+-                    Item.Scratch,
+-                    Item.Comma,
+-                    Item.Long ? va_arg(ps->args, INT64) : va_arg(ps->args, INT32)
+-                    );
+-                Item.Item.pw = Item.Scratch;
+-                break;
+-
+             case 'D':
+             {
+                 EFI_DEVICE_PATH *dp = va_arg(ps->args, EFI_DEVICE_PATH *);
+@@ -1180,6 +1130,23 @@ Returns:
                  break;
-+            }
+             }
  
-             case 'd':
-                 ValueToString (
-@@ -1168,17 +1139,13 @@ Returns:
-                 Item.Item.pw = Item.Scratch;
-                 break;
- 
--            case 'D':
--            {
--                EFI_DEVICE_PATH *dp = va_arg(ps->args, EFI_DEVICE_PATH *);
--                CHAR16 *dpstr = DevicePathToStr(dp);
--                StrnCpy(Item.Scratch, dpstr, PRINT_ITEM_BUFFER_LEN);
--                Item.Scratch[PRINT_ITEM_BUFFER_LEN-1] = L'\0';
--                FreePool(dpstr);
++            case 'd':
++                ValueToString (
++                    Item.Scratch,
++                    Item.Comma,
++                    Item.Long ? va_arg(ps->args, INT64) : va_arg(ps->args, INT32)
++                    );
++                Item.Item.pw = Item.Scratch;
++                break;
++
 +            case 'E':
 +                Attr = ps->AttrError;
 +                break;
- 
--                Item.Item.pw = Item.Scratch;
++
 +            case 'e':
 +                PSETATTR(ps, ps->AttrError);
-                 break;
--            }
- 
++                break;
++
              case 'f':
                  FloatToString (
+                     Item.Scratch,
 @@ -1189,38 +1156,69 @@ Returns:
                  Item.Item.pw = Item.Scratch;
                  break;
  
 -            case 't':
 -                TimeToString (Item.Scratch, va_arg(ps->args, EFI_TIME *));
--                Item.Item.pw = Item.Scratch;
--                break;
--
--            case 'r':
--                StatusToString (Item.Scratch, va_arg(ps->args, EFI_STATUS));
 +            case 'g':
 +                GuidToString (Item.Scratch, va_arg(ps->args, EFI_GUID *));
                  Item.Item.pw = Item.Scratch;
                  break;
  
+-            case 'r':
+-                StatusToString (Item.Scratch, va_arg(ps->args, EFI_STATUS));
+-                Item.Item.pw = Item.Scratch;
+-                break;
+-
 -            case 'n':
 -                PSETATTR(ps, ps->AttrNorm);
 +            case 'H':
@@ -215,6 +224,3 @@ index 35e43c03db5..0b823481347 100644
                  break;
  
              default:
--- 
-2.24.1
-

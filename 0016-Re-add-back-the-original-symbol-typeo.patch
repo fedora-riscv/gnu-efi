@@ -1,7 +1,7 @@
-From 9b63de7db6850b2415bb46fa28e0d62fa2f2f50e Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Nigel Croxon <ncroxon@redhat.com>
 Date: Thu, 16 Jan 2020 14:35:56 -0500
-Subject: [PATCH 16/45] Re-add back the original symbol, typeo.
+Subject: [PATCH] Re-add back the original symbol, typeo.
 
 Fix breaking code by restoring original typeo in efierr.h
 EFI_WARN_UNKOWN_GLYPH definition.
@@ -25,6 +25,3 @@ index d351c1ca225..5a66e1a0676 100644
  #define EFI_WARN_UNKNOWN_GLYPH          EFIWARN(1)
  #define EFI_WARN_DELETE_FAILURE         EFIWARN(2)
  #define EFI_WARN_WRITE_FAILURE          EFIWARN(3)
--- 
-2.24.1
-

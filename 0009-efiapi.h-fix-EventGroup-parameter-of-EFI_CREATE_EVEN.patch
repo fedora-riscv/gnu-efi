@@ -1,8 +1,8 @@
-From 238358c6df96923c4510f5e2793a9976c3afdd44 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: leo <leo.sartre@geebol.fr>
 Date: Tue, 14 May 2019 07:44:28 +0200
-Subject: [PATCH 09/45] efiapi.h: fix EventGroup parameter of
- EFI_CREATE_EVENT_EX prototype
+Subject: [PATCH] efiapi.h: fix EventGroup parameter of EFI_CREATE_EVENT_EX
+ prototype
 
 From UEFI specifications, this parameter is a pointer, see
 https://uefi.org/sites/default/files/resources/UEFI_Spec_2_8_final.pdf
@@ -26,6 +26,3 @@ index e7d2abd79de..bdf5de26a3f 100644
      OUT EFI_EVENT               *Event
      );
  
--- 
-2.24.1
-

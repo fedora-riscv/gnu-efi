@@ -2,7 +2,7 @@ Name: gnu-efi
 Epoch: 1
 Version: 3.0.11
 %global tarball_version 3.0.9
-Release: 3%{?dist}%{?buildid}
+Release: 4%{?dist}%{?buildid}
 Summary: Development Libraries and headers for EFI
 License: BSD 
 URL: https://sourceforge.net/projects/gnu-efi/
@@ -16,7 +16,9 @@ BuildRequires: binutils
 BuildRequires: efi-srpm-macros >= 3-2
 BuildRequires: gcc
 BuildRequires: git-core
-BuildRequires: glibc-headers
+# We're explicitly *not* requiring glibc-headers, because it gets us
+# cross-arch dependency problems in "fedpkg mockbuild" from x86_64.
+# BuildRequires: glibc-headers
 %ifarch x86_64
 # So... in some build environments, glibc32 provides some headers.  In
 # others, glibc-devel.i686 does.  They have no non-file provides in common.
@@ -90,7 +92,7 @@ git config user.name "Fedora Ninjas"
 git config sendemail.to "gnu-efi-owner@fedoraproject.org"
 git add .
 git commit -a -q -m "%{version} baseline."
-git am --ignore-whitespace %{patches} </dev/null
+git am %{patches} </dev/null
 git config --unset user.email
 git config --unset user.name
 
@@ -120,6 +122,10 @@ if [[ -d %{buildroot}/%{_prefix}/lib/gnuefi/x64 ]] ; then
   ln -s %{efi_arch}/efi.lds %{buildroot}/%{_libdir}/gnuefi/elf_x86_64_efi.lds
   ln -s %{efi_arch}/libefi.a %{buildroot}/%{_libdir}/gnuefi/libefi.a
   ln -s %{efi_arch}/libgnuefi.a %{buildroot}/%{_libdir}/gnuefi/libgnuefi.a
+  # because we don't want /usr/lib64/gnuefi/crt0.o etc, we don't want to do
+  # this with 'make LIBDIR=%%{_libdir} install_compat ...'
+  ln -s gnuefi/%{efi_arch}/libefi.a %{buildroot}/%{_libdir}/libefi.a
+  ln -s gnuefi/%{efi_arch}/libgnuefi.a %{buildroot}/%{_libdir}/libgnuefi.a
 elif [[ -d %{buildroot}/%{_prefix}/lib/gnuefi/aa64 ]] ; then
   ln -s ../../lib/gnuefi/%{efi_arch} %{buildroot}/%{_libdir}/gnuefi/%{efi_arch}
   ln -s %{efi_arch}/crt0.o %{buildroot}/%{_libdir}/gnuefi/crt0-efi-aa64.o
@@ -144,7 +150,6 @@ fi
   ln -s %{efi_alt_arch}/libgnuefi.a %{buildroot}/%{_prefix}/lib/gnuefi/libgnuefi.a
 %endif
 
-find %{buildroot}/%{_prefix}/ -type l | sed 's,%{buildroot}/\+,/,'
 find %{buildroot}/%{_prefix}/ -type l | sed 's,%{buildroot}/\+,/,' > compat.lst
 
 %files
@@ -172,6 +177,9 @@ find %{buildroot}/%{_prefix}/ -type l | sed 's,%{buildroot}/\+,/,' > compat.lst
 %endif
 
 %changelog
+* Tue Jan 28 2020 Peter Jones <pjones@redhat.com> - 3.0.11-4
+- Fix a mistake building -compat
+
 * Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org>
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 

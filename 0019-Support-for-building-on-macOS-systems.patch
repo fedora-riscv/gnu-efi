@@ -1,7 +1,7 @@
-From ba53984ceeba5309c2769b0cfb34328fe10ee6ca Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Rick Mark <rickmark@outlook.com>
 Date: Fri, 27 Oct 2017 14:05:39 -0700
-Subject: [PATCH 19/45] Support for building on macOS systems
+Subject: [PATCH] Support for building on macOS systems
 
 ---
  Make.defaults       | 12 ++++++++++--
@@ -84,6 +84,3 @@ index e870aef703a..e3e51959719 100644
  longjmp:
  	movl	%esi, %eax
  	movq	0x00(%rdi), %rbx
--- 
-2.24.1
-

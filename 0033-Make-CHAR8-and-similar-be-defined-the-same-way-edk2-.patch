@@ -1,8 +1,7 @@
-From 75e454f76846808e6b81c39c273d85b70afb330b Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Tue, 27 Aug 2019 13:44:15 -0400
-Subject: [PATCH 33/45] Make CHAR8 and similar be defined the same way edk2
- does it.
+Subject: [PATCH] Make CHAR8 and similar be defined the same way edk2 does it.
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
@@ -128,7 +127,7 @@ diff --git a/inc/ia64/efibind.h b/inc/ia64/efibind.h
 index 3ace8d59190..ebe8cac3e94 100644
 --- a/inc/ia64/efibind.h
 +++ b/inc/ia64/efibind.h
-@@ -74,18 +74,25 @@ Revision History
+@@ -74,19 +74,26 @@ Revision History
  #ifndef __WCHAR_TYPE__
  # define __WCHAR_TYPE__	short
  #endif
@@ -150,12 +149,13 @@ index 3ace8d59190..ebe8cac3e94 100644
  typedef uint8_t    UINT8;
 +typedef char       CHAR8;
  typedef int8_t     INT8;
--typedef __WCHAR_TYPE__ WCHAR;
++
+ typedef __WCHAR_TYPE__ WCHAR;
  
-+typedef __WCHAR_TYPE__ WCHAR;
- 
+-
  #undef VOID
  #define VOID    void
+ 
 diff --git a/inc/mips64el/efibind.h b/inc/mips64el/efibind.h
 index 1f08cd346d0..e26c51904ee 100644
 --- a/inc/mips64el/efibind.h
@@ -202,6 +202,3 @@ index 2750ab9be7d..e7feed9dbe4 100644
  typedef __WCHAR_TYPE__ WCHAR;
  
  #undef VOID
--- 
-2.24.1
-

@@ -1,7 +1,7 @@
-From 456fb32b345ba87565bd3b99291c6009f499c22f Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Wed, 13 Nov 2019 15:24:41 -0500
-Subject: [PATCH 39/45] Supply makefile templates.
+Subject: [PATCH] Supply makefile templates.
 
 This supplies template makefiles for applications consuming gnu-efi to
 use as:
@@ -12,15 +12,15 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
  Make.defaults   |   6 +-
  inc/.gitignore  |   2 +
- inc/Makefile    |  25 ++++++-
- inc/aa64.mk     |  21 ++++++
- inc/arm.mk      |  21 ++++++
- inc/efi.mk.3.in | 171 ++++++++++++++++++++++++++++++++++++++++++++++++
- inc/efi.mk.in   | 126 +++++++++++++++++++++++++++++++++++
- inc/ia32.mk     |  30 +++++++++
- inc/ia64.mk     |  19 ++++++
- inc/mips64el.mk |  22 +++++++
- inc/x64.mk      |  31 +++++++++
+ inc/Makefile    |  25 ++++++++-
+ inc/aa64.mk     |  21 +++++++
+ inc/arm.mk      |  21 +++++++
+ inc/efi.mk.3.in | 171 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ inc/efi.mk.in   | 126 +++++++++++++++++++++++++++++++++++++++++
+ inc/ia32.mk     |  30 ++++++++++
+ inc/ia64.mk     |  19 +++++++
+ inc/mips64el.mk |  22 ++++++++
+ inc/x64.mk      |  31 ++++++++++
  11 files changed, 470 insertions(+), 4 deletions(-)
  create mode 100644 inc/.gitignore
  create mode 100644 inc/aa64.mk
@@ -612,6 +612,3 @@ index 00000000000..bc1093988b3
 +export EFI_ARCH_TIMESTAMP_LOCATION EFI_ARCH_3264
 +export EFI_ARCH_CLANG_BUGS EFI_ARCH_CAN_DISABLE_AVX
 +endif
--- 
-2.24.1
-

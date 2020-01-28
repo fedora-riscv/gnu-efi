@@ -1,8 +1,7 @@
-From 452e6edc834fcbc8eb033b85b48e27ff199058ec Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Tue, 1 May 2018 14:12:01 -0400
-Subject: [PATCH 22/45] Use EFI canonical names everywhere the compiler doesn't
- care.
+Subject: [PATCH] Use EFI canonical names everywhere the compiler doesn't care.
 
 Always use x64/X64 and aa64/AA64 unless the toolchain cares about
 "x86_64" or whatnot.
@@ -12,36 +11,36 @@ defined in the UEFI specs.
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
- Make.defaults                                 | 39 +++++++++++++------
- README.gnuefi                                 |  6 +--
- apps/Makefile                                 |  6 +--
- gnuefi/Makefile                               |  6 +--
- .../{crt0-efi-aarch64.S => crt0-efi-aa64.S}   |  2 +-
- gnuefi/{crt0-efi-x86_64.S => crt0-efi-x64.S}  |  2 +-
- .../{elf_aarch64_efi.lds => elf_aa64_efi.lds} |  0
- .../{elf_x86_64_efi.lds => elf_x64_efi.lds}   |  2 +-
- ...6_64_fbsd_efi.lds => elf_x64_fbsd_efi.lds} |  2 +-
- gnuefi/{reloc_aarch64.c => reloc_aa64.c}      |  2 +-
- gnuefi/{reloc_x86_64.c => reloc_x64.c}        |  2 +-
- inc/{aarch64 => aa64}/efibind.h               |  3 ++
- inc/{aarch64 => aa64}/efilibplat.h            |  0
- inc/{aarch64 => aa64}/efisetjmp_arch.h        |  6 +--
- inc/efiapi.h                                  |  5 ++-
- inc/efidebug.h                                |  2 +-
- inc/{x86_64 => x64}/efibind.h                 |  4 +-
- inc/{x86_64 => x64}/efilibplat.h              |  0
- inc/{x86_64 => x64}/efisetjmp_arch.h          |  6 +--
- inc/{x86_64 => x64}/pe.h                      |  0
- lib/Makefile                                  |  4 +-
- lib/{aarch64 => aa64}/efi_stub.S              |  0
- lib/{aarch64 => aa64}/initplat.c              |  0
- lib/{aarch64 => aa64}/math.c                  |  0
- lib/{aarch64 => aa64}/setjmp.S                |  0
- lib/{x86_64 => x64}/callwrap.c                |  0
- lib/{x86_64 => x64}/efi_stub.S                |  0
- lib/{x86_64 => x64}/initplat.c                |  0
- lib/{x86_64 => x64}/math.c                    |  0
- lib/{x86_64 => x64}/setjmp.S                  |  0
+ Make.defaults                                      | 39 +++++++++++++++-------
+ README.gnuefi                                      |  6 ++--
+ apps/Makefile                                      |  6 ++--
+ gnuefi/Makefile                                    |  6 ++--
+ gnuefi/{crt0-efi-aarch64.S => crt0-efi-aa64.S}     |  2 +-
+ gnuefi/{crt0-efi-x86_64.S => crt0-efi-x64.S}       |  2 +-
+ gnuefi/{elf_aarch64_efi.lds => elf_aa64_efi.lds}   |  0
+ gnuefi/{elf_x86_64_efi.lds => elf_x64_efi.lds}     |  2 +-
+ ...lf_x86_64_fbsd_efi.lds => elf_x64_fbsd_efi.lds} |  2 +-
+ gnuefi/{reloc_aarch64.c => reloc_aa64.c}           |  2 +-
+ gnuefi/{reloc_x86_64.c => reloc_x64.c}             |  2 +-
+ inc/{aarch64 => aa64}/efibind.h                    |  3 ++
+ inc/{aarch64 => aa64}/efilibplat.h                 |  0
+ inc/{aarch64 => aa64}/efisetjmp_arch.h             |  6 ++--
+ inc/efiapi.h                                       |  5 ++-
+ inc/efidebug.h                                     |  2 +-
+ inc/{x86_64 => x64}/efibind.h                      |  4 +--
+ inc/{x86_64 => x64}/efilibplat.h                   |  0
+ inc/{x86_64 => x64}/efisetjmp_arch.h               |  6 ++--
+ inc/{x86_64 => x64}/pe.h                           |  0
+ lib/Makefile                                       |  4 +--
+ lib/{aarch64 => aa64}/efi_stub.S                   |  0
+ lib/{aarch64 => aa64}/initplat.c                   |  0
+ lib/{aarch64 => aa64}/math.c                       |  0
+ lib/{aarch64 => aa64}/setjmp.S                     |  0
+ lib/{x86_64 => x64}/callwrap.c                     |  0
+ lib/{x86_64 => x64}/efi_stub.S                     |  0
+ lib/{x86_64 => x64}/initplat.c                     |  0
+ lib/{x86_64 => x64}/math.c                         |  0
+ lib/{x86_64 => x64}/setjmp.S                       |  0
  30 files changed, 60 insertions(+), 39 deletions(-)
  rename gnuefi/{crt0-efi-aarch64.S => crt0-efi-aa64.S} (98%)
  rename gnuefi/{crt0-efi-x86_64.S => crt0-efi-x64.S} (97%)
@@ -481,6 +480,3 @@ diff --git a/lib/x86_64/setjmp.S b/lib/x64/setjmp.S
 similarity index 100%
 rename from lib/x86_64/setjmp.S
 rename to lib/x64/setjmp.S
--- 
-2.24.1
-

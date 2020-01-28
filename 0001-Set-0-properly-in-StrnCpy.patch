@@ -1,7 +1,7 @@
-From 5bb5032fdacf183d53b1e0154d281a223d684eea Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Gary Lin <glin@suse.com>
 Date: Tue, 9 Oct 2018 18:35:21 +0800
-Subject: [PATCH 01/45] Set '\0' properly in StrnCpy()
+Subject: [PATCH] Set '\0' properly in StrnCpy()
 
 The arguments to SetMem() were wrong. Besides, SetMem() should start at
 "Dest + Size" since "Size" will be smaller than "Len" if they are not
@@ -26,6 +26,3 @@ index 129c9f21ad5..73965cae192 100644
      RtCopyMem(Dest, Src, Size * sizeof(CHAR16));
  }
  
--- 
-2.24.1
-

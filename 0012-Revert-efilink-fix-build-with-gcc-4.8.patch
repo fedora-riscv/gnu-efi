@@ -1,7 +1,7 @@
-From 8b2da2c2247af28bd681a9c8e3231559964c80a6 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Nigel Croxon <ncroxon@redhat.com>
 Date: Mon, 28 Oct 2019 07:45:38 -0400
-Subject: [PATCH 12/45] Revert "efilink: fix build with gcc 4.8"
+Subject: [PATCH] Revert "efilink: fix build with gcc 4.8"
 
 Breaks gcc builds with '-nostdinc' flag.
 
@@ -29,6 +29,3 @@ index b69a6fd5cf5..cc5aa2dc57b 100644
  /*++
  
  Copyright (c) 1998  Intel Corporation
--- 
-2.24.1
-

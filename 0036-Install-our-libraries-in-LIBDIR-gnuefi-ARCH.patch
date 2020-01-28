@@ -1,7 +1,7 @@
-From d81377adca4b2085ad3ab5714851899e4d4cd541 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Fri, 25 Oct 2019 15:41:16 -0400
-Subject: [PATCH 36/45] Install our libraries in $(LIBDIR)/gnuefi/$(ARCH)
+Subject: [PATCH] Install our libraries in $(LIBDIR)/gnuefi/$(ARCH)
 
 This makes it possible to install all the output on the same machine for
 cross-builds.  This also adds "install_compat", which uses the previous
@@ -110,10 +110,10 @@ index 13022fd6ae1..445d340f0fa 100644
 +
  include $(SRCDIR)/../Make.rules
 diff --git a/lib/Makefile b/lib/Makefile
-index 9a2b611cab7..0ec04b4e59d 100644
+index 6dca2cf1398..f0d7b9b08e6 100644
 --- a/lib/Makefile
 +++ b/lib/Makefile
-@@ -66,7 +66,7 @@ OBJS  = $(FILES:%=%.o)
+@@ -66,7 +66,7 @@ OBJS  = $(FILES:%=%.o) ctors.o
  
  SUBDIRS = $(ARCHES) runtime
  
@@ -132,6 +132,3 @@ index 9a2b611cab7..0ec04b4e59d 100644
  include $(SRCDIR)/../Make.rules
  
  .PHONY: libsubdirs
--- 
-2.24.1
-

@@ -1,8 +1,8 @@
-From 926725b8704472ee2565e6c3fbd1a2012732f9de Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Wed, 15 Jan 2020 13:10:11 -0500
-Subject: [PATCH 45/45] Use CFLAGS with "gcc -print-libgcc-file-name" to get
- the right one.
+Subject: [PATCH] Use CFLAGS with "gcc -print-libgcc-file-name" to get the
+ right one.
 
 This makes us use CFLAGS when trying to find libgcc, so we don't get the
 one with the wrong endian or float ABI.
@@ -35,6 +35,3 @@ index 15af35e6e26..de88bcd0231 100755
 +ifneq ($(ARCH),arm)
 +export LIBGCC=$(shell $(CC) $(CFLAGS) $(ARCH3264) -print-libgcc-file-name)
 +endif
--- 
-2.24.1
-

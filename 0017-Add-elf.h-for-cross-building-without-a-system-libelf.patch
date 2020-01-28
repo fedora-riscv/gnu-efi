@@ -1,11 +1,11 @@
-From 26dcc62ec7d67dc3dc18faedbd8cb99b28e4fc69 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Soop <sebastian_osorio@outlook.cl>
 Date: Thu, 17 Dec 2015 01:21:45 -0300
-Subject: [PATCH 17/45] Add elf.h for cross-building without a system libelf
+Subject: [PATCH] Add elf.h for cross-building without a system libelf
  installed.
 
 ---
- inc/elf.h | 4023 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ inc/elf.h | 4023 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  1 file changed, 4023 insertions(+)
  create mode 100644 inc/elf.h
 
@@ -4038,6 +4038,3 @@ index 00000000000..d39b8f8b440
 +#define R_NDS32_TLS_DESC	119
 +
 +#endif	/* elf.h */
--- 
-2.24.1
-

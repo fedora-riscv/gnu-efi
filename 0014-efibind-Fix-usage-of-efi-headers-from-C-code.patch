@@ -1,7 +1,7 @@
-From 6685cd000223f6b7d667e2854cd3d622d078d147 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Alexander von Gluck IV <kallisti5@unixzen.com>
 Date: Wed, 27 Nov 2019 17:03:42 -0600
-Subject: [PATCH 14/45] efibind: Fix usage of efi headers from C++ code
+Subject: [PATCH] efibind: Fix usage of efi headers from C++ code
 
 * __STDC_VERSION__ is undefined when headers are called from C++
   code resulting in not using stdint.h and efibind.h
@@ -106,6 +106,3 @@ index ae40595be0b..31e9e119d74 100644
      #include <stdint.h>
  #endif
  
--- 
-2.24.1
-

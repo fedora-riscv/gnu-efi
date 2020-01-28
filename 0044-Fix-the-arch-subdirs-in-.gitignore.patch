@@ -1,7 +1,7 @@
-From e483e9bd6e900c2e9a637165149f60b44bba109e Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Wed, 15 Jan 2020 13:07:49 -0500
-Subject: [PATCH 44/45] Fix the arch subdirs in .gitignore.
+Subject: [PATCH] Fix the arch subdirs in .gitignore.
 
 Currently they'll exclude e.g. inc/x64/ by accident; this makes it only
 apply to the top level.
@@ -37,6 +37,3 @@ index 014f7d02f46..3e96a65bb43 100644
 +/ia64/
 +/mips64el/
 +/x64/
--- 
-2.24.1
-

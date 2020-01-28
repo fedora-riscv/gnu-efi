@@ -1,7 +1,7 @@
-From 8858302ab24885e96e4094cbd604e8781a7a4bf3 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Soop <sebastian_osorio@outlook.cl>
 Date: Wed, 16 Dec 2015 22:33:33 -0300
-Subject: [PATCH 20/45] Make apps link against the local gnuefi and crt objects
+Subject: [PATCH] Make apps link against the local gnuefi and crt objects
 
 ---
  apps/Makefile | 4 ++--
@@ -28,6 +28,3 @@ index 4e1b69a38c8..310c6fdb5fc 100644
  
  LOADLIBES	+= -lefi -lgnuefi
  LOADLIBES	+= $(LIBGCC)
--- 
-2.24.1
-

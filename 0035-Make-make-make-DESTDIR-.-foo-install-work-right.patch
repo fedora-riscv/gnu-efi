@@ -1,7 +1,7 @@
-From 9e329624639e5c3a6d16c61dfaa0304806709fc4 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Fri, 25 Oct 2019 15:39:35 -0400
-Subject: [PATCH 35/45] Make: make "make DESTDIR=../foo install" work right.
+Subject: [PATCH] Make: make "make DESTDIR=../foo install" work right.
 
 This makes the normal DESTDIR= variable work on the command line, and
 makes relative paths always relative to the top-level directory.
@@ -36,6 +36,3 @@ index 696028dd6c2..157559d20ee 100755
  PREFIX       := /usr/local
  LIBDIR 	     := $(PREFIX)/lib
  INSTALL	     := install
--- 
-2.24.1
-
