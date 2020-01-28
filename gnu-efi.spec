@@ -2,7 +2,7 @@ Name: gnu-efi
 Epoch: 1
 Version: 3.0.11
 %global tarball_version 3.0.9
-Release: 2%{?dist}%{?buildid}
+Release: 3%{?dist}%{?buildid}
 Summary: Development Libraries and headers for EFI
 License: BSD 
 URL: https://sourceforge.net/projects/gnu-efi/
@@ -172,6 +172,9 @@ find %{buildroot}/%{_prefix}/ -type l | sed 's,%{buildroot}/\+,/,' > compat.lst
 %endif
 
 %changelog
+* Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org>
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
 * Fri Jan 24 2020 Peter Jones <pjones@redhat.com> - 3.0.11-2
 - Make a compat subpackage to provide the old paths to our libraries, linker
   script, and includes.
