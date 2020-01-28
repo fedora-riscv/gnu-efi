@@ -2,7 +2,7 @@ Name: gnu-efi
 Epoch: 1
 Version: 3.0.11
 %global tarball_version 3.0.9
-Release: 1%{?dist}%{?buildid}
+Release: 2%{?dist}%{?buildid}
 Summary: Development Libraries and headers for EFI
 License: BSD 
 URL: https://sourceforge.net/projects/gnu-efi/
@@ -122,6 +122,10 @@ if [[ -d %{buildroot}/%{_prefix}/lib/gnuefi/x64 ]] ; then
   ln -s %{efi_arch}/efi.lds %{buildroot}/%{_libdir}/gnuefi/elf_x86_64_efi.lds
   ln -s %{efi_arch}/libefi.a %{buildroot}/%{_libdir}/gnuefi/libefi.a
   ln -s %{efi_arch}/libgnuefi.a %{buildroot}/%{_libdir}/gnuefi/libgnuefi.a
+  # because we don't want /usr/lib64/gnuefi/crt0.o etc, we don't want to do
+  # this with 'make LIBDIR=%{_libdir} install_compat ...'
+  ln -s gnuefi/%{efi_arch}/libefi.a %{buildroot}/%{_libdir}/libefi.a
+  ln -s gnuefi/%{efi_arch}/libgnuefi.a %{buildroot}/%{_libdir}/libgnuefi.a
 elif [[ -d %{buildroot}/%{_prefix}/lib/gnuefi/aa64 ]] ; then
   ln -s ../../lib/gnuefi/%{efi_arch} %{buildroot}/%{_libdir}/gnuefi/%{efi_arch}
   ln -s %{efi_arch}/crt0.o %{buildroot}/%{_libdir}/gnuefi/crt0-efi-aa64.o
@@ -173,6 +177,9 @@ find %{buildroot}/%{_prefix}/ -type l | sed 's,%{buildroot}/\+,/,' > compat.lst
 %endif
 
 %changelog
+* Tue Jan 28 2020 Peter Jones <pjones@redhat.com> - 3.0.11-2
+- Fix a mistake building -compat
+
 * Tue Jan 28 2020 Peter Jones <pjones@redhat.com> - 3.0.11-1
 - Update to 3.0.11 (via patches generated from git)
 - Plus newer upstream fixes (also via patches generated from git)
