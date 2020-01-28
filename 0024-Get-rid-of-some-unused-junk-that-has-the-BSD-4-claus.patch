@@ -1,20 +1,36 @@
-From 23c68fc88f39c431b04c70013d2e1d6533401e81 Mon Sep 17 00:00:00 2001
+From 060258e1de84d1de3a5975bebe27575114220cdc Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Thu, 19 Jul 2018 13:12:44 -0400
-Subject: [PATCH 15/17] Get rid of some unused junk that has the BSD 4-clause
+Subject: [PATCH 24/46] Get rid of some unused junk that has the BSD 4-clause
  license.
 
 We don't need any of this, and its license is not GPL compatible.
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
+ inc/Makefile                   |   4 -
  inc/protocol/efidbg.h          | 210 ---------------------------------
  inc/protocol/ia64/eficontext.h | Bin 5111 -> 0 bytes
- inc/protocol/makefile.hdr      | Bin 640 -> 511 bytes
- 3 files changed, 210 deletions(-)
+ inc/protocol/makefile.hdr      | Bin 640 -> 0 bytes
+ 4 files changed, 214 deletions(-)
  delete mode 100644 inc/protocol/efidbg.h
  delete mode 100644 inc/protocol/ia64/eficontext.h
+ delete mode 100644 inc/protocol/makefile.hdr
 
+diff --git a/inc/Makefile b/inc/Makefile
+index 273d30307ae..dd36bb0103d 100644
+--- a/inc/Makefile
++++ b/inc/Makefile
+@@ -19,9 +19,5 @@ install:
+ 	$(INSTALL) -m 644 $(SRCDIR)/*.h $(INSTALLROOT)$(PREFIX)/include/efi
+ 	$(INSTALL) -m 644 $(SRCDIR)/protocol/*.h $(INSTALLROOT)$(PREFIX)/include/efi/protocol
+ 	$(INSTALL) -m 644 $(SRCDIR)/$(ARCH)/*.h $(INSTALLROOT)$(PREFIX)/include/efi/$(ARCH)
+-ifeq ($(ARCH),ia64)
+-	mkdir -p $(INSTALLROOT)$(PREFIX)/include/efi/protocol/ia64
+-	$(INSTALL) -m 644 $(SRCDIR)/protocol/ia64/*.h $(INSTALLROOT)$(PREFIX)/include/efi/protocol/ia64
+-endif
+ 
+ include $(SRCDIR)/../Make.rules
 diff --git a/inc/protocol/efidbg.h b/inc/protocol/efidbg.h
 deleted file mode 100644
 index 1f95a70bb42..00000000000
@@ -277,14 +293,19 @@ z^u<Rq-}vMYaXjY|JU{y{1y49oKJY=BUp-(dPN?{?AkXOXqkQ?;UBX)leZ>33-@2VK
 AYXATM
 
 diff --git a/inc/protocol/makefile.hdr b/inc/protocol/makefile.hdr
-index 118d6ba3a08df254b3cf4eeecce923bdac063f3a..4ea405731ee6d60c7262a989a1a1a2b9e2362101 100644
+deleted file mode 100644
+index 118d6ba3a08df254b3cf4eeecce923bdac063f3a..0000000000000000000000000000000000000000
 GIT binary patch
-delta 26
-fcmZo*{m;B1mvQn^#uh$aE?zE0S3eg|HxLT|YhDIa
+literal 0
+HcmV?d00001
 
-delta 68
-zcmey*+`zgamvQ2E9k$f8%#@_`$?1$;6Zh+At7rrS`8&G?2m1$U#sH;~^YcnlD@yb-
-S6k>R}Kv2=u&&AUX!~y_6_7uYa
+literal 640
+zcmb7>PiurQ5XJ9;-(l){&_fschtfTGDC(BbMHlrbNYtpIF_CDO_1iaTcS}n_FyxS7
+z=J)3DVj3IM*g)3N5!A)d<Eo>aKub80cp^14lo7avAciQ;APi8Z33Xn7M#@>w_xPP`
+z$(j6XH&XOUSam6HE?r*?v!rb|fm69~x7$4fAU+WWzL0}ZtEu2>)-+55MSc;4#}quU
+zoonGjZW`K#?WDn5fub~fIUI@rC2mf6#Xf41lZNJl6qBd~)5QtPZMT+Vq{Y=-3Nfu`
+zPYPvt9M_Y|ZC$qCoX+3|?ZL90V-oven#PH1f#-pR@WZ{el+YI&MgiLE*MiQ|<D$-*
+Sq<`Dgu~$NU?D-PkUqhea3AS$l
 
 -- 
 2.24.1

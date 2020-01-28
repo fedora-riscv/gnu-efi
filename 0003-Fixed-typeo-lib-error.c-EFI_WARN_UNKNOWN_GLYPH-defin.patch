@@ -1,7 +1,7 @@
-From e987c7e87a47ba94231ec37012aeef34327eea55 Mon Sep 17 00:00:00 2001
+From d34132e62f666904158c7ec2f1eef5a9d5281c36 Mon Sep 17 00:00:00 2001
 From: Nigel Croxon <ncroxon@redhat.com>
 Date: Wed, 9 Jan 2019 07:03:46 -0500
-Subject: [PATCH 03/17] * Fixed typeo lib/error.c EFI_WARN_UNKNOWN_GLYPH
+Subject: [PATCH 03/46] * Fixed typeo lib/error.c EFI_WARN_UNKNOWN_GLYPH
  definition. On couple of locations in runtime string library (rtstr.c) there
  are calls to non-runtime variant of StrLen function. * Another issue is with
  formatting 1394 paths. The F1394_DEVICE_PATH::Guid is formatted as %g, but

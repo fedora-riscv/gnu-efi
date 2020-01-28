@@ -1,7 +1,7 @@
-From e269fa5d2bcc3c8e7d64baa8b910ec55ac104f8f Mon Sep 17 00:00:00 2001
+From 5d0d538c2574dfe32e87e87ff977f2830ae2990c Mon Sep 17 00:00:00 2001
 From: Nigel Croxon <ncroxon@redhat.com>
 Date: Tue, 8 Jan 2019 11:19:25 -0500
-Subject: [PATCH 02/17] Fix typeo in efierr.h EFI_WARN_UNKNOWN_GLYPH
+Subject: [PATCH 02/46] Fix typeo in efierr.h EFI_WARN_UNKNOWN_GLYPH
  definition.
 
 Signed-off-by: Nigel Croxon <ncroxon@redhat.com>

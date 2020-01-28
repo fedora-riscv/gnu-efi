@@ -1,25 +1,25 @@
-From 844fe6ef242ac780a447091993b4b2e536b69f1e Mon Sep 17 00:00:00 2001
+From fc94c4f0e981432943b7c9c6a27db73991338146 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Tue, 27 Aug 2019 13:44:15 -0400
-Subject: [PATCH 16/17] Make CHAR8 and similar be defined the same way edk2
+Subject: [PATCH 33/46] Make CHAR8 and similar be defined the same way edk2
  does it.
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
  inc/aa64/efibind.h     |  7 +++++++
  inc/arm/efibind.h      |  7 +++++++
- inc/efidef.h           |  5 ++---
+ inc/efidef.h           |  7 +++----
  inc/ia32/efibind.h     |  7 +++++++
  inc/ia64/efibind.h     | 11 +++++++++--
- inc/mips64el/efibind.h |  6 ++++++
+ inc/mips64el/efibind.h |  7 +++++++
  inc/x64/efibind.h      |  4 ++++
- 7 files changed, 42 insertions(+), 5 deletions(-)
+ 7 files changed, 44 insertions(+), 6 deletions(-)
 
 diff --git a/inc/aa64/efibind.h b/inc/aa64/efibind.h
-index a58b0e1cbef..276e507c212 100644
+index c4eafa0d8a8..00c7cead486 100644
 --- a/inc/aa64/efibind.h
 +++ b/inc/aa64/efibind.h
-@@ -42,6 +42,9 @@ typedef int64_t             intptr_t;
+@@ -43,6 +43,9 @@ typedef int64_t             intptr_t;
  #ifndef __WCHAR_TYPE__
  # define __WCHAR_TYPE__ short
  #endif
@@ -29,7 +29,7 @@ index a58b0e1cbef..276e507c212 100644
  
  typedef uint64_t   UINT64;
  typedef int64_t    INT64;
-@@ -50,9 +53,13 @@ typedef uint32_t   UINT32;
+@@ -51,9 +54,13 @@ typedef uint32_t   UINT32;
  typedef int32_t    INT32;
  
  typedef uint16_t   UINT16;
@@ -44,7 +44,7 @@ index a58b0e1cbef..276e507c212 100644
  
  #undef VOID
 diff --git a/inc/arm/efibind.h b/inc/arm/efibind.h
-index 7a22b9c8458..ece0e805181 100644
+index 012d3d2f8c9..42de542257c 100644
 --- a/inc/arm/efibind.h
 +++ b/inc/arm/efibind.h
 @@ -49,6 +49,9 @@ typedef int32_t             intptr_t;
@@ -72,7 +72,7 @@ index 7a22b9c8458..ece0e805181 100644
  
  #undef VOID
 diff --git a/inc/efidef.h b/inc/efidef.h
-index 8b70051f43a..8158d3d0949 100644
+index 8b70051f43a..a552c7d91c3 100644
 --- a/inc/efidef.h
 +++ b/inc/efidef.h
 @@ -20,9 +20,8 @@ Revision History
@@ -87,8 +87,17 @@ index 8b70051f43a..8158d3d0949 100644
  #ifndef CONST
     #define CONST const
  #endif
+@@ -194,7 +193,7 @@ typedef struct {
+ // International Language
+ //
+ 
+-typedef UINT8   ISO_639_2;
++typedef CHAR8 ISO_639_2;
+ #define ISO_639_2_ENTRY_SIZE    3
+ 
+ //
 diff --git a/inc/ia32/efibind.h b/inc/ia32/efibind.h
-index dd0138573d9..fe6ee2278cf 100644
+index 27459e454d1..b0b0d76151f 100644
 --- a/inc/ia32/efibind.h
 +++ b/inc/ia32/efibind.h
 @@ -88,6 +88,9 @@ Revision History
@@ -116,7 +125,7 @@ index dd0138573d9..fe6ee2278cf 100644
  
  #undef VOID
 diff --git a/inc/ia64/efibind.h b/inc/ia64/efibind.h
-index b9b2e624657..367eae4c8fd 100644
+index 3ace8d59190..ebe8cac3e94 100644
 --- a/inc/ia64/efibind.h
 +++ b/inc/ia64/efibind.h
 @@ -74,18 +74,25 @@ Revision History
@@ -148,19 +157,20 @@ index b9b2e624657..367eae4c8fd 100644
  #undef VOID
  #define VOID    void
 diff --git a/inc/mips64el/efibind.h b/inc/mips64el/efibind.h
-index 32241e5ad46..ba7ed4067d1 100644
+index 1f08cd346d0..e26c51904ee 100644
 --- a/inc/mips64el/efibind.h
 +++ b/inc/mips64el/efibind.h
-@@ -43,6 +43,8 @@ typedef int64_t             intptr_t;
+@@ -43,6 +43,9 @@ typedef int64_t             intptr_t;
  #ifndef __WCHAR_TYPE__
  # define __WCHAR_TYPE__ short
  #endif
 +#ifndef __CHAR16_TYPE__
-+#define __CHAR16_TYPE__ unsigned short
++# define __CHAR16_TYPE__ unsigned short
++#endif
  
  typedef uint64_t   UINT64;
  typedef int64_t    INT64;
-@@ -51,9 +53,13 @@ typedef uint32_t   UINT32;
+@@ -51,9 +54,13 @@ typedef uint32_t   UINT32;
  typedef int32_t    INT32;
  
  typedef uint16_t   UINT16;
@@ -175,7 +185,7 @@ index 32241e5ad46..ba7ed4067d1 100644
  
  #undef VOID
 diff --git a/inc/x64/efibind.h b/inc/x64/efibind.h
-index 986a73b7775..5a62176fae4 100644
+index 2750ab9be7d..e7feed9dbe4 100644
 --- a/inc/x64/efibind.h
 +++ b/inc/x64/efibind.h
 @@ -107,9 +107,13 @@ typedef int64_t    INT64;

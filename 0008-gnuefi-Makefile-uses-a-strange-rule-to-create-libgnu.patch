@@ -1,7 +1,7 @@
-From 6c44a62e2c3e5e4d3021e1ae505a1f83e82251aa Mon Sep 17 00:00:00 2001
+From 230c36c6aa4fcb1db61ce177264e224c26314da1 Mon Sep 17 00:00:00 2001
 From: Nigel Croxon <ncroxon@redhat.com>
 Date: Tue, 2 Apr 2019 09:47:24 -0400
-Subject: [PATCH 08/17] gnuefi/Makefile uses a strange rule to create
+Subject: [PATCH 08/46] gnuefi/Makefile uses a strange rule to create
  libgnuefi.a, which only works because of a "make" builtin rule. This breaks
  make -r, and it is an inefficient way to build, at least for multiple files.
 

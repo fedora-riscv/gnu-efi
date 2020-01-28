@@ -1,7 +1,7 @@
-From e77ad5eb7808ff27138ff14ae9f9216aa21a9c6e Mon Sep 17 00:00:00 2001
+From 3219b3e5201a3dd207839c6cc234252b79be6caf Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Mon, 11 Jun 2018 13:41:05 -0400
-Subject: [PATCH 14/17] Fix a minor coverity complaint in some apps
+Subject: [PATCH 23/46] Fix a minor coverity complaint in some apps
 
 Coverity added a new kind of check, and it noticed some minor errors
 with some types in two of the apps here, both of the same form:

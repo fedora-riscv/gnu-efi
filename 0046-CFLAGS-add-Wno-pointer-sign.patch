@@ -1,7 +1,7 @@
-From f16acb1d5d4c3e60add75050e116495f67552321 Mon Sep 17 00:00:00 2001
+From ad2a5405b98fe0f7180f0dbd1c1ac5a2cbbf50d0 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Tue, 21 Jan 2020 15:05:19 -0500
-Subject: [PATCH 17/17] CFLAGS: add -Wno-pointer-sign
+Subject: [PATCH 46/46] CFLAGS: add -Wno-pointer-sign
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
@@ -9,10 +9,10 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/Make.defaults b/Make.defaults
-index 7a8a95c5704..90cc280ff3d 100755
+index de88bcd0231..cc8beec4600 100755
 --- a/Make.defaults
 +++ b/Make.defaults
-@@ -185,7 +185,7 @@ CFLAGS  += $(ARCH3264) -g -O2 -Wall -Wextra -Werror \
+@@ -203,7 +203,7 @@ CFLAGS  += $(ARCH3264) -g -O2 -Wall -Wextra -Werror \
             -fshort-wchar -fno-strict-aliasing \
             -ffreestanding -fno-stack-protector
  else

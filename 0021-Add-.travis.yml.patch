@@ -1,7 +1,7 @@
-From 8d2f2d781e98a4bc464dea7f2e9a4f85c31fbdd7 Mon Sep 17 00:00:00 2001
+From 87cbb23de321f4fbc3d795ed5e40bcbeb833deaf Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Wed, 11 Apr 2018 16:49:36 -0400
-Subject: [PATCH 11/17] Add .travis.yml
+Subject: [PATCH 21/46] Add .travis.yml
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
@@ -11,7 +11,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
 
 diff --git a/.travis.yml b/.travis.yml
 new file mode 100644
-index 00000000000..a2cad354b1a
+index 00000000000..eb9be1e46f2
 --- /dev/null
 +++ b/.travis.yml
 @@ -0,0 +1,17 @@
@@ -31,7 +31,7 @@ index 00000000000..a2cad354b1a
 +  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker pull vathpela/efi-ci-rawhide:v0 ; fi
 +
 +script:
-+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker run vathpela/efi-ci-rawhide:v0 /bin/sh -c "cd /root/ && ./build.sh --branch \"$TRAVIS_BRANCH\" --commit \"$TRAVIS_COMMIT\" --commit-range \"$TRAVIS_COMMIT_RANGE\" --event-type \"$TRAVIS_EVENT_TYPE\" --pull-request \"$TRAVIS_PULL_REQUEST\" --pr-branch \"$TRAVIS_PULL_REQUEST_BRANCH\" --pr-sha \"$TRAVIS_PULL_REQUEST_SHA\" --remote \"$TRAVIS_PULL_REQUEST_SLUG\" --repo \"$TRAVIS_REPO_SLUG\" --test-subject fwupdate" ; fi
++  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker run vathpela/efi-ci-rawhide:v0 /bin/sh -c "cd /root/ && ./build.sh --branch \"$TRAVIS_BRANCH\" --commit \"$TRAVIS_COMMIT\" --commit-range \"$TRAVIS_COMMIT_RANGE\" --event-type \"$TRAVIS_EVENT_TYPE\" --pull-request \"$TRAVIS_PULL_REQUEST\" --pr-branch \"$TRAVIS_PULL_REQUEST_BRANCH\" --pr-sha \"$TRAVIS_PULL_REQUEST_SHA\" --remote \"$TRAVIS_PULL_REQUEST_SLUG\" --repo \"$TRAVIS_REPO_SLUG\" --test-subject gnu-efi" ; fi
 -- 
 2.24.1
 

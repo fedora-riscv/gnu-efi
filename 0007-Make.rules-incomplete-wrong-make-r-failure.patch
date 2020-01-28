@@ -1,7 +1,7 @@
-From 87b1f9ceedb1cafb07aa9b8d68770b416dc3a437 Mon Sep 17 00:00:00 2001
+From de4e5e4e3b6faaf05b0b9a9a7ead882269078dc3 Mon Sep 17 00:00:00 2001
 From: Nigel Croxon <ncroxon@redhat.com>
 Date: Fri, 15 Mar 2019 09:48:10 -0400
-Subject: [PATCH 07/17] Make.rules incomplete/wrong; make -r failure
+Subject: [PATCH 07/46] Make.rules incomplete/wrong; make -r failure
 
 Make.rules is not complete; in particular it lacks a %.o: %.S rule.
 This happens to work due to the builtin make rule to that effect. but

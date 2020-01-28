@@ -1,7 +1,7 @@
-From 8a554446c931d600d69826af252123c44feb445b Mon Sep 17 00:00:00 2001
+From 486ba3c3bdd147b7d98159b9e650be60bce0f027 Mon Sep 17 00:00:00 2001
 From: leo <leo.sartre@geebol.fr>
 Date: Wed, 15 May 2019 05:32:21 +0200
-Subject: [PATCH 10/17] Do not include efisetjmp.h on efi.h
+Subject: [PATCH 10/46] Do not include efisetjmp.h on efi.h
 
 People than really want to use efisetjmp implementation can include
 the header on their own.

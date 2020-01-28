@@ -1,15 +1,14 @@
 Name: gnu-efi
 Epoch: 1
-Version: 3.0.9
+Version: 3.0.11
 %global tarball_version 3.0.9
-Release: 4%{?dist}%{?buildid}
+Release: 1%{?dist}%{?buildid}
 Summary: Development Libraries and headers for EFI
 License: BSD 
 URL: https://sourceforge.net/projects/gnu-efi/
 
 Source0: https://sourceforge.net/projects/gnu-efi/files/gnu-efi-%{tarball_version}.tar.bz2
 Source1: gnu-efi.patches
-Source2: gitattributes
 %include %{SOURCE1}
 
 ExclusiveArch: %{efi}
@@ -17,6 +16,9 @@ BuildRequires: binutils
 BuildRequires: efi-srpm-macros >= 3-2
 BuildRequires: gcc
 BuildRequires: git-core
+# We're explicitly *not* requiring glibc-headers, because it gets us
+# cross-arch dependency problems in "fedpkg mockbuild" from x86_64.
+# BuildRequires: glibc-headers
 %ifarch x86_64
 # So... in some build environments, glibc32 provides some headers.  In
 # others, glibc-devel.i686 does.  They have no non-file provides in common.
@@ -32,16 +34,24 @@ BuildRequires: /usr/include/gnu/stubs-32.h
 
 # brp-strip-static-archive will senselessly /add/ timestamps and uid/gid
 # data to our .a and make them not multilib clean if we don't have this.
-# Note that if we don't have the shell quotes there, -p becomes $2 on its
-# invocation, and so it completely ignores it.
 #
-# Also note that if we try to use -D as we should (so it doesn't add
-# uid/gid), strip(1) from binutils-2.25.1-22.base.el7.x86_64 throws a
-# syntax error.
+# We used to redefine strip, like so:
+# %% global __strip "%%{__strip} -p"
+# And had this note:
+#   Note that if we don't have the shell quotes there, -p becomes $2 on its
+#   invocation, and so it completely ignores it.
+#
+#   Also note that if we try to use -D as we should (so it doesn't add
+#   uid/gid), strip(1) from binutils-2.25.1-22.base.el7.x86_64 throws a
+#   syntax error.
+#
+# But someone helpfully re-wrote %%__brp_strip_static_archive and that
+# doesn't work any more.
 #
 # True story.
 #
-%global __strip "%{__strip} -p"
+%undefine __brp_strip_static_archive
+%global __brp_strip_static_archive find '%{buildroot}' -name '*.a' -print -exec %{__strip} -gDp {} \\;
 
 %description
 This package contains development headers and libraries for developing
@@ -50,11 +60,23 @@ applications that run under EFI (Extensible Firmware Interface).
 %package devel
 Summary: Development Libraries and headers for EFI
 Obsoletes: gnu-efi < 1:3.0.2-1
-Requires: gnu-efi
+Requires: gnu-efi = %{epoch}:%{version}-%{release}
+BuildArch: noarch
+# temporarily, put this backwards
+Requires: gnu-efi-compat = %{epoch}:%{version}-%{release}
 
 %description devel
 This package contains development headers and libraries for developing
 applications that run under EFI (Extensible Firmware Interface).
+
+%package compat
+Summary: Development Libraries and headers for EFI
+# temporarily, put this backwards
+# Requires: gnu-efi-devel = %%{epoch}:%%{version}-%%{release}
+
+%description compat
+This package provides compatibility for building software utilizing gnu-efi
+which expects the directory layout from older versions of Fedora.
 
 %package utils
 Summary: Utilities for EFI systems
@@ -68,7 +90,6 @@ git init
 git config user.email "gnu-efi-owner@fedoraproject.org"
 git config user.name "Fedora Ninjas"
 git config sendemail.to "gnu-efi-owner@fedoraproject.org"
-cp %{SOURCE2} .gitattributes
 git add .
 git commit -a -q -m "%{version} baseline."
 git am %{patches} </dev/null
@@ -77,51 +98,71 @@ git config --unset user.name
 
 %build
 # Package cannot build with %%{?_smp_mflags}.
-make
+make LIBDIR=%{_prefix}/lib
 make apps
 %if %{efi_has_alt_arch}
-  setarch linux32 -B make ARCH=%{efi_alt_arch} PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib}
-  setarch linux32 -B make ARCH=%{efi_alt_arch} PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib} apps
+  setarch linux32 -B make ARCH=%{efi_alt_arch} PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib
+  setarch linux32 -B make ARCH=%{efi_alt_arch} PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib apps
 %endif
 
 %install
-mkdir -p %{buildroot}/%{_libdir}/gnuefi
+make PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib INSTALLROOT=%{buildroot} install
+
 mkdir -p %{buildroot}/%{efi_esp_dir}/%{efi_arch}
-make PREFIX=%{_prefix} LIBDIR=%{_libdir} INSTALLROOT=%{buildroot} install
-mv %{buildroot}/%{_libdir}/*.lds %{buildroot}/%{_libdir}/*.o %{buildroot}/%{_libdir}/gnuefi
 mv %{efi_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi_arch}/
 
-%if %{efi_has_alt_arch}
-  mkdir -p %{buildroot}/%{_prefix}/%{lib}/gnuefi
-  mkdir -p %{buildroot}%{efi_esp_dir}/%{efi_alt_arch}
+# for compatibility with our older packages
+make PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib INSTALLROOT=%{buildroot} install_compat
+mkdir -p %{buildroot}/%{_libdir}/gnuefi/
+if [[ -d %{buildroot}/%{_prefix}/lib/gnuefi/x64 ]] ; then
+  ln -s ../../lib/gnuefi/%{efi_arch} %{buildroot}/%{_libdir}/gnuefi/%{efi_arch}
+  ln -s %{efi_arch}/crt0.o %{buildroot}/%{_libdir}/gnuefi/crt0-efi-x64.o
+  ln -s %{efi_arch}/efi.lds %{buildroot}/%{_libdir}/gnuefi/elf_x64_efi.lds
+  ln -s %{efi_arch}/crt0.o %{buildroot}/%{_libdir}/gnuefi/crt0-efi-x86_64.o
+  ln -s %{efi_arch}/efi.lds %{buildroot}/%{_libdir}/gnuefi/elf_x86_64_efi.lds
+  ln -s %{efi_arch}/libefi.a %{buildroot}/%{_libdir}/gnuefi/libefi.a
+  ln -s %{efi_arch}/libgnuefi.a %{buildroot}/%{_libdir}/gnuefi/libgnuefi.a
+elif [[ -d %{buildroot}/%{_prefix}/lib/gnuefi/aa64 ]] ; then
+  ln -s ../../lib/gnuefi/%{efi_arch} %{buildroot}/%{_libdir}/gnuefi/%{efi_arch}
+  ln -s %{efi_arch}/crt0.o %{buildroot}/%{_libdir}/gnuefi/crt0-efi-aa64.o
+  ln -s %{efi_arch}/efi.lds %{buildroot}/%{_libdir}/gnuefi/elf_aa64_efi.lds
+  ln -s %{efi_arch}/crt0.o %{buildroot}/%{_libdir}/gnuefi/crt0-efi-aarch64.o
+  ln -s %{efi_arch}/efi.lds %{buildroot}/%{_libdir}/gnuefi/elf_aarch64_efi.lds
+  ln -s %{efi_arch}/libefi.a %{buildroot}/%{_libdir}/gnuefi/libefi.a
+  ln -s %{efi_arch}/libgnuefi.a %{buildroot}/%{_libdir}/gnuefi/libgnuefi.a
+fi
 
-  setarch linux32 -B make PREFIX=%{_prefix} LIBDIR=%{_prefix}/%{lib} INSTALLROOT=%{buildroot} ARCH=%{efi_alt_arch} install
-  mv %{buildroot}/%{_prefix}/%{lib}/*.{lds,o} %{buildroot}/%{_prefix}/%{lib}/gnuefi/
+%if %{efi_has_alt_arch}
+  setarch linux32 -B make PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib INSTALLROOT=%{buildroot} ARCH=%{efi_alt_arch} install
+  mkdir -p %{buildroot}%{efi_esp_dir}/%{efi_alt_arch}
   mv %{efi_alt_arch}/apps/{route80h.efi,modelist.efi} %{buildroot}%{efi_esp_dir}/%{efi_alt_arch}/
+
+  # for compatibility with our older packages
+  setarch linux32 -B make PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib INSTALLROOT=%{buildroot} ARCH=%{efi_alt_arch} BFD_ARCH=%{efi_alt_arch} install_compat
+  mkdir -p %{buildroot}/%{_prefix}/lib/gnuefi/
+  ln -s %{efi_alt_arch}/crt0.o %{buildroot}/%{_prefix}/lib/gnuefi/crt0-efi-%{efi_alt_arch}.o
+  ln -s %{efi_alt_arch}/efi.lds %{buildroot}/%{_prefix}/lib/gnuefi/elf_%{efi_alt_arch}_efi.lds
+  ln -s %{efi_alt_arch}/libefi.a %{buildroot}/%{_prefix}/lib/gnuefi/libefi.a
+  ln -s %{efi_alt_arch}/libgnuefi.a %{buildroot}/%{_prefix}/lib/gnuefi/libgnuefi.a
 %endif
-cd %{buildroot}/%{_libdir}/gnuefi/
-if [[ -f crt0-efi-x64.o ]] ; then
-	ln -s crt0-efi-x64.o crt0-efi-x86_64.o
-	ln -s elf_x64_efi.lds elf_x86_64_efi.lds
-fi
-if [[ -f crt0-efi-aa64.o ]] ; then
-	ln -s crt0-efi-aa64.o crt0-efi-aarch64.o
-	ln -s elf_aa64_efi.lds elf_aarch64_efi.lds
-fi
-cd %{buildroot}/%{_includedir}/efi
-if [[ -d aa64 ]] ; then
-	ln -s aa64 aarch64
-fi
-if [[ -d x64 ]] ; then
-	ln -s x64 x86_64
-fi
+
+find %{buildroot}/%{_prefix}/ -type l | sed 's,%{buildroot}/\+,/,' > compat.lst
 
 %files
-%{_prefix}/%{lib}*/*
+%dir %{_prefix}/lib/gnuefi/
+%{_prefix}/lib/gnuefi/*/
+%exclude %{_prefix}/lib*/gnuefi/crt0-efi-*
+%exclude %{_prefix}/lib*/gnuefi/elf_*
 
 %files devel
 %doc README.*
+%{_mandir}/man3/*
 %{_includedir}/efi
+%{_includedir}/*.mk
+%exclude %{_includedir}/efi/x86_64
+%exclude %{_includedir}/efi/aarch64
+
+%files compat -f compat.lst
 
 %files utils
 %dir %attr(0700,root,root) %{efi_esp_dir}/%{efi_arch}/
@@ -132,6 +173,19 @@ fi
 %endif
 
 %changelog
+* Tue Jan 28 2020 Peter Jones <pjones@redhat.com> - 3.0.11-1
+- Update to 3.0.11 (via patches generated from git)
+- Plus newer upstream fixes (also via patches generated from git)
+- Fix shell exit failures in make
+- Fix .reloc section generation
+- Fix CHAR8 definition
+- Fix "make DESTDIR=..."
+- Change the installed .a/.o layout
+- Provide makefiles for consumers to use.
+- Make the -devel noarch since it's just headers.
+- Make a compat subpackage to provide the old paths to our libraries, linker
+  script, and includes.
+
 * Tue Jan 21 2020 Peter Jones <pjones@redhat.com> - 3.0.9-4
 - Fix some minor rpmlint complaints
 

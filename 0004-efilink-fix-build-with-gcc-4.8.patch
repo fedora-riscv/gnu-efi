@@ -1,7 +1,7 @@
-From ad676b14eb9af49f740b1659a38c844cb0104fc0 Mon Sep 17 00:00:00 2001
+From 6335e5c697c57d8b5854b8202de3733bcb151ca6 Mon Sep 17 00:00:00 2001
 From: Fabrice Fontaine <fontaine.fabrice@gmail.com>
 Date: Fri, 18 Jan 2019 22:05:37 +0100
-Subject: [PATCH 04/17] efilink: fix build with gcc 4.8
+Subject: [PATCH 04/46] efilink: fix build with gcc 4.8
 
 intptr_t is undefined without an include on stdint.h
 
