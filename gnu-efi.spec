@@ -26,6 +26,7 @@ BuildRequires: git-core
 #BuildRequires: glibc-devel(x86-32)
 BuildRequires: /usr/include/gnu/stubs-32.h
 %endif
+BuildRequires: make
 
 # dammit, rpmlint, shut up.
 %define lib %{nil}lib%{nil}
