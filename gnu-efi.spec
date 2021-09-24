@@ -2,7 +2,7 @@ Name: gnu-efi
 Epoch: 1
 Version: 3.0.11
 %global tarball_version 3.0.9
-Release: 7%{?dist}%{?buildid}
+Release: 7.1%{?dist}%{?buildid}
 Summary: Development Libraries and headers for EFI
 License: BSD 
 URL: https://sourceforge.net/projects/gnu-efi/
@@ -13,7 +13,7 @@ Source1: gnu-efi.patches
 
 ExclusiveArch: %{efi}
 BuildRequires: binutils
-BuildRequires: efi-srpm-macros >= 3-2
+BuildRequires: efi-srpm-macros >= 5-4
 BuildRequires: gcc
 BuildRequires: git-core
 # We're explicitly *not* requiring glibc-headers, because it gets us
@@ -178,6 +178,10 @@ find %{buildroot}/%{_prefix}/ -type l | sed 's,%{buildroot}/\+,/,' > compat.lst
 %endif
 
 %changelog
+* Fri Sep 24 2021 Robbie Harwood - 3.0.9-7.1
+- Rebuild to prove we can
+- Resolves: #1987506
+
 * Thu Jul 22 2021 Fedora Release Engineering <releng@fedoraproject.org>
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 
