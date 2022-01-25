@@ -1,8 +1,11 @@
+# No, please don't break the linker.  Thanks.
+%undefine _auto_set_build_flags
+
 Name: gnu-efi
 Epoch: 1
 Version: 3.0.11
 %global tarball_version 3.0.9
-Release: 8.1%{?dist}%{?buildid}
+Release: 9%{?dist}%{?buildid}
 Summary: Development Libraries and headers for EFI
 License: BSD 
 URL: https://sourceforge.net/projects/gnu-efi/
@@ -178,6 +181,10 @@ find %{buildroot}/%{_prefix}/ -type l | sed 's,%{buildroot}/\+,/,' > compat.lst
 %endif
 
 %changelog
+* Tue Jan 25 2022 Robbie Harwood <rharwood@redhat.com> - 3.0.11-9
+- Cope with Fedora insisting harder on default buildflags
+- Resolves: #2045450
+
 * Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org>
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
