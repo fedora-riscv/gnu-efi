@@ -1,0 +1,74 @@
+From 67dcf9b096c12a4801e9ef68c1107e0dcc311b27 Mon Sep 17 00:00:00 2001
+From: Peter Jones <pjones@redhat.com>
+Date: Tue, 21 Feb 2023 14:14:41 -0500
+Subject: [PATCH] ld: Don't warn about RWX segment maps
+
+Newer gnu ld complains about RWX segment maps, and since we build with
+"--fatal-warnings" we get the following:
+
+  ld -nostdlib --warn-common --no-undefined --fatal-warnings \
+     --build-id=sha1 -shared -Bsymbolic \
+     -L/builddir/build/BUILD/gnu-efi-3.0.9//apps/../aa64/lib \
+     -L/builddir/build/BUILD/gnu-efi-3.0.9//apps/../aa64/gnuefi \
+     /builddir/build/BUILD/gnu-efi-3.0.9//apps/../aa64/gnuefi/crt0-efi-aa64.o \
+     --defsym=EFI_SUBSYSTEM=0xa t.o -o t.so -lefi -lgnuefi \
+     /usr/lib/gcc/aarch64-redhat-linux/13/libgcc.a \
+     -T /builddir/build/BUILD/gnu-efi-3.0.9//apps/../gnuefi/elf_aa64_efi.lds
+  ld: warning: t.so has a LOAD segment with RWX permissions
+
+Since the final linked binary will be PE, rather than ELF, and won't
+even *have* segment maps, this should be safe to just disable.
+
+This patch adds "--no-warn-rwx-segments" to the ld command lines.
+
+Signed-off-by: Peter Jones <pjones@redhat.com>
+---
+ Make.defaults   | 2 +-
+ inc/efi.mk.3.in | 3 ++-
+ inc/efi.mk.in   | 3 ++-
+ 3 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/Make.defaults b/Make.defaults
+index cc8beec..0510ac1 100755
+--- a/Make.defaults
++++ b/Make.defaults
+@@ -218,7 +218,7 @@ endif
+ 
+ ASFLAGS += $(ARCH3264)
+ LDFLAGS	+= -nostdlib --warn-common --no-undefined --fatal-warnings \
+-	   --build-id=sha1
++	   --build-id=sha1 --no-warn-rwx-segments
+ 
+ ifneq ($(ARCH),arm)
+ export LIBGCC=$(shell $(CC) $(CFLAGS) $(ARCH3264) -print-libgcc-file-name)
+diff --git a/inc/efi.mk.3.in b/inc/efi.mk.3.in
+index c0bf3f1..f16b18a 100644
+--- a/inc/efi.mk.3.in
++++ b/inc/efi.mk.3.in
+@@ -83,7 +83,8 @@ Other command line to pass to \fBld\fR
+ before
+ object names. Defaults to
+ \fI-nostdlib --warn-common --no-undefined --fatal-warnings \
+---build-id=sha1 -shared -Bsymbolic -L@@PREFIX@@/lib/gnuefi/$(EFI_ARCH) \
++--build-id=sha1 -shared -Bsymbolic --no-warn-rwx-segments \
++ -L@@PREFIX@@/lib/gnuefi/$(EFI_ARCH) \
+ @@PREFIX@@/lib/gnuefi/$(EFI_ARCH)/crt0.o\fR
+ .TP
+ .B \fBEFI_CCLDFLAGS\fR
+diff --git a/inc/efi.mk.in b/inc/efi.mk.in
+index 3de783a..d5f8544 100644
+--- a/inc/efi.mk.in
++++ b/inc/efi.mk.in
+@@ -43,7 +43,8 @@ include efi/$(EFI_ARCH).mk
+ 
+ GNUEFI_LIB_PATHS := $(sort @@LIBEFIDIR@@ @@GNUEFIDIR@@)
+ GNUEFI_LDFLAGS := -nostdlib --warn-common --no-undefined --fatal-warnings \
+-		  --build-id=sha1 -shared -Bsymbolic --exclude-libs ALL \
++		  --build-id=sha1 -shared -Bsymbolic --no-warn-rwx-segments \
++		  --exclude-libs ALL \
+ 		  $(foreach x,$(GNUEFI_LIB_PATHS),-L$(x)) @@GNUEFIDIR@@/crt0.o
+ 
+ ifeq ($(origin EFI_CC_INCLUDES),undefined)
+-- 
+2.39.2
+
