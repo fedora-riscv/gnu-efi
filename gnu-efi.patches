@@ -46,3 +46,5 @@ Patch0045: 0045-Use-CFLAGS-with-gcc-print-libgcc-file-name-to-get-th.patch
 Patch0046: 0046-CFLAGS-add-Wno-pointer-sign.patch
 Patch0047: 0047-Add-gnu-stack-notes.patch
 Patch0048: 0048-ld-Don-t-warn-about-RWX-segment-maps.patch
+Patch0049: 0049-.efi.lds-Merge-all-rela-sections-into-one.patch
+Patch0050: 0050-.S-add-non-executable-GNU-stack-marking-on-ELF-linux.patch

@@ -1,0 +1,307 @@
+From 0397d81933291f7df2841dd0f35511456cce37c5 Mon Sep 17 00:00:00 2001
+From: Sergei Trofimovich <slyich@gmail.com>
+Date: Fri, 3 Mar 2023 09:23:02 +0000
+Subject: [PATCH 50/50] */*.S: add non-executable GNU stack marking on
+ ELF-linux
+
+binutils-2.39 enabed a few warning by default
+(https://sourceware.org/pipermail/binutils/2022-August/122246.html):
+
+> The ELF linker will now generate a warning message if the stack is made executable.
+
+Let's suppress the warnings in assembly files by adding non-executables
+stack markings. This fixes at least systemd build which uses '-Wl,--fatal-warnings':
+
+    https://github.com/systemd/systemd/issues/24226
+---
+ apps/trivial.S             | 2 +-
+ gnuefi/crt0-efi-aa64.S     | 2 +-
+ gnuefi/crt0-efi-arm.S      | 2 +-
+ gnuefi/crt0-efi-ia32.S     | 2 +-
+ gnuefi/crt0-efi-ia64.S     | 2 +-
+ gnuefi/crt0-efi-mips64el.S | 2 +-
+ gnuefi/crt0-efi-x64.S      | 2 +-
+ gnuefi/reloc_ia64.S        | 2 +-
+ lib/aa64/efi_stub.S        | 2 +-
+ lib/aa64/setjmp.S          | 2 +-
+ lib/arm/div.S              | 2 +-
+ lib/arm/efi_stub.S         | 2 +-
+ lib/arm/ldivmod.S          | 2 +-
+ lib/arm/llsl.S             | 2 +-
+ lib/arm/llsr.S             | 2 +-
+ lib/arm/mullu.S            | 2 +-
+ lib/arm/setjmp.S           | 2 +-
+ lib/arm/uldiv.S            | 2 +-
+ lib/ctors.S                | 2 +-
+ lib/ia32/efi_stub.S        | 2 +-
+ lib/ia32/setjmp.S          | 2 +-
+ lib/ia64/palproc.S         | 2 +-
+ lib/ia64/setjmp.S          | 2 +-
+ lib/mips64el/efi_stub.S    | 2 +-
+ lib/mips64el/setjmp.S      | 2 +-
+ lib/x64/efi_stub.S         | 2 +-
+ lib/x64/setjmp.S           | 2 +-
+ 27 files changed, 27 insertions(+), 27 deletions(-)
+
+diff --git a/apps/trivial.S b/apps/trivial.S
+index 59db434..cb114c7 100644
+--- a/apps/trivial.S
++++ b/apps/trivial.S
+@@ -41,4 +41,4 @@ _start:
+ hello:	.byte 'h',0,'e',0,'l',0,'l',0,'o',0,'\n',0,'\r',0,0,0
+ 
+ #endif
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/gnuefi/crt0-efi-aa64.S b/gnuefi/crt0-efi-aa64.S
+index 4070f86..ff91ed2 100644
+--- a/gnuefi/crt0-efi-aa64.S
++++ b/gnuefi/crt0-efi-aa64.S
+@@ -128,4 +128,4 @@ _start:
+ 
+ 0:	ldp		x29, x30, [sp], #32
+ 	ret
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/gnuefi/crt0-efi-arm.S b/gnuefi/crt0-efi-arm.S
+index bfe392c..d3c88e8 100644
+--- a/gnuefi/crt0-efi-arm.S
++++ b/gnuefi/crt0-efi-arm.S
+@@ -143,4 +143,4 @@ _start:
+ 
+ .L_DYNAMIC:
+ 	.word		_DYNAMIC - .
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/gnuefi/crt0-efi-ia32.S b/gnuefi/crt0-efi-ia32.S
+index 0c7b3cc..22f2e72 100644
+--- a/gnuefi/crt0-efi-ia32.S
++++ b/gnuefi/crt0-efi-ia32.S
+@@ -75,4 +75,4 @@ _start:
+ 	.long	.dummy1-.dummy0				// Page RVA
+ 	.long	10					// Block Size (2*4+2)
+ 	.word	(IMAGE_REL_ABSOLUTE<<12) +  0		// reloc for dummy
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/gnuefi/crt0-efi-ia64.S b/gnuefi/crt0-efi-ia64.S
+index 9f1e406..b802907 100644
+--- a/gnuefi/crt0-efi-ia64.S
++++ b/gnuefi/crt0-efi-ia64.S
+@@ -85,4 +85,4 @@ _start_plabel:
+ 	data4	12					// Block Size (2*4+2*2)
+ 	data2	(IMAGE_REL_BASED_DIR64<<12) +  0	// reloc for plabel's entry point
+ 	data2	(IMAGE_REL_BASED_DIR64<<12) +  8	// reloc for plabel's global pointer
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/gnuefi/crt0-efi-mips64el.S b/gnuefi/crt0-efi-mips64el.S
+index b92d3c2..09990de 100644
+--- a/gnuefi/crt0-efi-mips64el.S
++++ b/gnuefi/crt0-efi-mips64el.S
+@@ -186,4 +186,4 @@ _pc:
+ 	.end		_start
+ 
+ 	.set		pop
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/gnuefi/crt0-efi-x64.S b/gnuefi/crt0-efi-x64.S
+index b553fc2..7dd3984 100644
+--- a/gnuefi/crt0-efi-x64.S
++++ b/gnuefi/crt0-efi-x64.S
+@@ -74,4 +74,4 @@ _start:
+ 	.long	10					// Block Size (2*4+2)
+ 	.word	(IMAGE_REL_ABSOLUTE<<12) +  0		// reloc for dummy
+ 
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/gnuefi/reloc_ia64.S b/gnuefi/reloc_ia64.S
+index 6e55a15..c3e0a36 100644
+--- a/gnuefi/reloc_ia64.S
++++ b/gnuefi/reloc_ia64.S
+@@ -225,4 +225,4 @@ apply_FPTR64:
+ fptr_mem_base:
+ 	.space  MAX_FUNCTION_DESCRIPTORS*16
+ fptr_mem_limit:
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/lib/aa64/efi_stub.S b/lib/aa64/efi_stub.S
+index fa951c9..2a63d2b 100644
+--- a/lib/aa64/efi_stub.S
++++ b/lib/aa64/efi_stub.S
+@@ -1,2 +1,2 @@
+ /* This stub is a stub to make the build happy */
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/lib/aa64/setjmp.S b/lib/aa64/setjmp.S
+index ce18bd8..d41fae2 100644
+--- a/lib/aa64/setjmp.S
++++ b/lib/aa64/setjmp.S
+@@ -58,4 +58,4 @@ longjmp:
+ 	mov	w0, #1
+ 	csel	w0, w1, w0, ne
+ 	br	x30
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/lib/arm/div.S b/lib/arm/div.S
+index 86e8069..7b1b234 100644
+--- a/lib/arm/div.S
++++ b/lib/arm/div.S
+@@ -153,4 +153,4 @@ label1:
+   @ What to do about division by zero?  For now, just return.
+ ASM_PFX(__aeabi_idiv0):
+   bx      r14
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/lib/arm/efi_stub.S b/lib/arm/efi_stub.S
+index fa951c9..2a63d2b 100644
+--- a/lib/arm/efi_stub.S
++++ b/lib/arm/efi_stub.S
+@@ -1,2 +1,2 @@
+ /* This stub is a stub to make the build happy */
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/lib/arm/ldivmod.S b/lib/arm/ldivmod.S
+index 33afa60..328a84d 100644
+--- a/lib/arm/ldivmod.S
++++ b/lib/arm/ldivmod.S
+@@ -59,4 +59,4 @@ L_Exit:
+ 
+ 
+ 
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/lib/arm/llsl.S b/lib/arm/llsl.S
+index c556cd1..3a1eda1 100644
+--- a/lib/arm/llsl.S
++++ b/lib/arm/llsl.S
+@@ -39,4 +39,4 @@ ASM_PFX(__aeabi_llsl):
+     lsl      r1,r0,r3
+     mov      r0,#0
+     bx       lr
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/lib/arm/llsr.S b/lib/arm/llsr.S
+index 096b728..7457699 100644
+--- a/lib/arm/llsr.S
++++ b/lib/arm/llsr.S
+@@ -39,4 +39,4 @@ ASM_PFX(__aeabi_llsr):
+     lsr      r0,r1,r3
+     mov      r1,#0
+     bx       lr
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/lib/arm/mullu.S b/lib/arm/mullu.S
+index de71551..c568830 100644
+--- a/lib/arm/mullu.S
++++ b/lib/arm/mullu.S
+@@ -31,4 +31,4 @@ ASM_PFX(__aeabi_lmul):
+   mla     r1, r2, r1, ip
+   mla     r1, r3, lr, r1
+   ldmia   sp!, {pc}
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/lib/arm/setjmp.S b/lib/arm/setjmp.S
+index 851d1d5..aace938 100644
+--- a/lib/arm/setjmp.S
++++ b/lib/arm/setjmp.S
+@@ -23,4 +23,4 @@ setjmp:
+ 	.type	longjmp, %function
+ longjmp:
+ 	ldmia	r0, {r3-r12,r14}
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/lib/arm/uldiv.S b/lib/arm/uldiv.S
+index bd2de59..cd90bbb 100644
+--- a/lib/arm/uldiv.S
++++ b/lib/arm/uldiv.S
+@@ -265,4 +265,4 @@ ASM_PFX(__aeabi_ldiv0):
+   bx      r14
+ 
+ 
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/lib/ctors.S b/lib/ctors.S
+index ff9d2d3..1a4215c 100644
+--- a/lib/ctors.S
++++ b/lib/ctors.S
+@@ -41,4 +41,4 @@ _fini_array:
+ _fini_array_end:
+ 	.long 0
+ 
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/lib/ia32/efi_stub.S b/lib/ia32/efi_stub.S
+index fa951c9..2a63d2b 100644
+--- a/lib/ia32/efi_stub.S
++++ b/lib/ia32/efi_stub.S
+@@ -1,2 +1,2 @@
+ /* This stub is a stub to make the build happy */
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/lib/ia32/setjmp.S b/lib/ia32/setjmp.S
+index 68a00a8..3728b0a 100644
+--- a/lib/ia32/setjmp.S
++++ b/lib/ia32/setjmp.S
+@@ -43,4 +43,4 @@ longjmp:
+ 	movl	(%edx), %ebx
+ 	movl	4(%edx), %esi
+ 	movl	8(%edx), %edi
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/lib/ia64/palproc.S b/lib/ia64/palproc.S
+index 8ee6f9c..aae8388 100644
+--- a/lib/ia64/palproc.S
++++ b/lib/ia64/palproc.S
+@@ -159,4 +159,4 @@ StackedComeBackFromPALCall:
+ 
+ PROCEDURE_EXIT(MakeStackedPALCall)
+ 
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/lib/ia64/setjmp.S b/lib/ia64/setjmp.S
+index ba0fbd6..8876d02 100644
+--- a/lib/ia64/setjmp.S
++++ b/lib/ia64/setjmp.S
+@@ -197,4 +197,4 @@ _skip_flushrs:
+ 	invala
+ 	mov		ar.rsc = r16
+ 	br.ret.sptk	b0
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/lib/mips64el/efi_stub.S b/lib/mips64el/efi_stub.S
+index fa951c9..2a63d2b 100644
+--- a/lib/mips64el/efi_stub.S
++++ b/lib/mips64el/efi_stub.S
+@@ -1,2 +1,2 @@
+ /* This stub is a stub to make the build happy */
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/lib/mips64el/setjmp.S b/lib/mips64el/setjmp.S
+index a620a6e..b35c48c 100644
+--- a/lib/mips64el/setjmp.S
++++ b/lib/mips64el/setjmp.S
+@@ -90,4 +90,4 @@ longjmp:
+ 	li	$v0, 1
+ 	movn	$v0, $a1, $a1
+ 	jr	$ra
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/lib/x64/efi_stub.S b/lib/x64/efi_stub.S
+index 16542e2..9ff525d 100644
+--- a/lib/x64/efi_stub.S
++++ b/lib/x64/efi_stub.S
+@@ -187,4 +187,4 @@ ENTRY(efi_call10)
+ 	ret
+ 
+ #endif
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits
+diff --git a/lib/x64/setjmp.S b/lib/x64/setjmp.S
+index 56653d7..903f4c0 100644
+--- a/lib/x64/setjmp.S
++++ b/lib/x64/setjmp.S
+@@ -46,4 +46,4 @@ longjmp:
+ 	cmp	%rax,%rdx
+ 	cmove	%rcx,%rax
+ 	jmp	*0x38(%rdi)
+-	.section .note.GNU-stack,"a"
++	.section .note.GNU-stack,"",%progbits

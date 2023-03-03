@@ -1,0 +1,142 @@
+From 89129e3180a3362a7b10898dd2f264aec126d3c7 Mon Sep 17 00:00:00 2001
+From: Callum Farmer <gmbr3@opensuse.org>
+Date: Fri, 3 Mar 2023 09:15:13 +0000
+Subject: [PATCH 49/50] *.efi.lds: Merge all rela sections into one
+
+Objcopy sometimes generates .rela.plt and .rela.data
+sections for which their names are longer than the 8
+characters limit of PE32
+
+Signed-off-by: Callum Farmer <gmbr3@opensuse.org>
+---
+ gnuefi/elf_aa64_efi.lds     | 12 ++++++++----
+ gnuefi/elf_arm_efi.lds      | 12 ++++++++----
+ gnuefi/elf_ia32_efi.lds     |  6 ++++--
+ gnuefi/elf_ia64_efi.lds     |  5 +++--
+ gnuefi/elf_mips64el_efi.lds | 12 ++++++++----
+ gnuefi/elf_x64_efi.lds      |  2 ++
+ 6 files changed, 33 insertions(+), 16 deletions(-)
+
+diff --git a/gnuefi/elf_aa64_efi.lds b/gnuefi/elf_aa64_efi.lds
+index 161f5fc..c287955 100644
+--- a/gnuefi/elf_aa64_efi.lds
++++ b/gnuefi/elf_aa64_efi.lds
+@@ -60,10 +60,14 @@ SECTIONS
+    _bss_end = .;
+   }
+ 
+-  .rela.dyn : { *(.rela.dyn) }
+-  .rela.plt : { *(.rela.plt) }
+-  .rela.got : { *(.rela.got) }
+-  .rela.data : { *(.rela.data) *(.rela.data*) }
++  .rela :
++  {
++    *(.rela.text*)
++    *(.rela.data*)
++    *(.rela.got)
++    *(.rela.plt)
++    *(.rela.stab)
++  }
+   . = ALIGN(512);
+   _edata = .;
+   _data_size = . - _data;
+diff --git a/gnuefi/elf_arm_efi.lds b/gnuefi/elf_arm_efi.lds
+index f93f39b..fa08674 100644
+--- a/gnuefi/elf_arm_efi.lds
++++ b/gnuefi/elf_arm_efi.lds
+@@ -60,10 +60,14 @@ SECTIONS
+    _bss_end = .;
+   }
+ 
+-  .rel.dyn : { *(.rel.dyn) }
+-  .rel.plt : { *(.rel.plt) }
+-  .rel.got : { *(.rel.got) }
+-  .rel.data : { *(.rel.data) *(.rel.data*) }
++  .rel :
++  {
++    *(.rel.text*)
++    *(.rel.data*)
++    *(.rel.got)
++    *(.rel.plt)
++    *(.rel.stab)
++  }
+   _edata = .;
+   _data_size = . - _etext;
+ 
+diff --git a/gnuefi/elf_ia32_efi.lds b/gnuefi/elf_ia32_efi.lds
+index 4b7e3f1..16d7a4f 100644
+--- a/gnuefi/elf_ia32_efi.lds
++++ b/gnuefi/elf_ia32_efi.lds
+@@ -76,9 +76,11 @@ SECTIONS
+   . = ALIGN(4096);
+   .rel :
+   {
+-    *(.rel.data)
+-    *(.rel.data.*)
++    *(.rel.text*)
++    *(.rel.sdata*)
++    *(.rel.data*)
+     *(.rel.got)
++    *(.rel.plt)
+     *(.rel.stab)
+     *(.data.rel.ro.local)
+     *(.data.rel.local)
+diff --git a/gnuefi/elf_ia64_efi.lds b/gnuefi/elf_ia64_efi.lds
+index 2cda0dd..a367dbe 100644
+--- a/gnuefi/elf_ia64_efi.lds
++++ b/gnuefi/elf_ia64_efi.lds
+@@ -73,10 +73,11 @@ SECTIONS
+   . = ALIGN(4096);
+   .rela :
+   {
+-    *(.rela.text)
++    *(.rela.text*)
++    *(.rela.sdata*)
+     *(.rela.data*)
+-    *(.rela.sdata)
+     *(.rela.got)
++    *(.rela.plt)
+     *(.rela.gnu.linkonce.d*)
+     *(.rela.stab)
+     *(.rela.ctors)
+diff --git a/gnuefi/elf_mips64el_efi.lds b/gnuefi/elf_mips64el_efi.lds
+index 0e68084..ceb04e4 100644
+--- a/gnuefi/elf_mips64el_efi.lds
++++ b/gnuefi/elf_mips64el_efi.lds
+@@ -60,10 +60,14 @@ SECTIONS
+    _bss_end = .;
+   }
+ 
+-  .rel.dyn : { *(.rel.dyn) }
+-  .rel.plt : { *(.rel.plt) }
+-  .rel.got : { *(.rel.got) }
+-  .rel.data : { *(.rel.data) *(.rel.data*) }
++  .rel :
++  {
++    *(.rel.text*)
++    *(.rel.data*)
++    *(.rel.got)
++    *(.rel.plt)
++    *(.rel.stab)
++  }
+   _edata = .;
+   _data_size = . - _etext;
+ 
+diff --git a/gnuefi/elf_x64_efi.lds b/gnuefi/elf_x64_efi.lds
+index cb2e3dc..663eab4 100644
+--- a/gnuefi/elf_x64_efi.lds
++++ b/gnuefi/elf_x64_efi.lds
+@@ -79,8 +79,10 @@ SECTIONS
+   . = ALIGN(4096);
+   .rela :
+   {
++    *(.rela.text*)
+     *(.rela.data*)
+     *(.rela.got)
++    *(.rela.plt)
+     *(.rela.stab)
+   }
+   . = ALIGN(4096);
+-- 
+2.39.2
+
