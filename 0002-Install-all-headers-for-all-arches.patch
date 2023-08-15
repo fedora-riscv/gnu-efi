@@ -1,0 +1,44 @@
+From 57e8e8b37e15edea3ae44437d4379f78b205253e Mon Sep 17 00:00:00 2001
+From: Peter Jones <pjones@redhat.com>
+Date: Fri, 25 Oct 2019 15:42:10 -0400
+Subject: [PATCH 2/4] Install all headers for all arches.
+
+This further enables cross-builds by installing all the arches headers.
+
+Signed-off-by: Peter Jones <pjones@redhat.com>
+---
+ inc/Makefile | 17 ++++++-----------
+ 1 file changed, 6 insertions(+), 11 deletions(-)
+
+diff --git a/inc/Makefile b/inc/Makefile
+index e52d8f1..9eeae63 100644
+--- a/inc/Makefile
++++ b/inc/Makefile
+@@ -13,18 +13,13 @@ all:
+ clean:
+ 
+ install:
+-	mkdir -p $(INSTALLROOT)$(INCLUDEDIR)/efi
+-	mkdir -p $(INSTALLROOT)$(INCLUDEDIR)/efi/protocol
+-	mkdir -p $(INSTALLROOT)$(INCLUDEDIR)/efi/$(ARCH)
+-	$(INSTALL) -m 644 $(SRCDIR)/*.h $(INSTALLROOT)$(INCLUDEDIR)/efi
+-	$(INSTALL) -m 644 $(SRCDIR)/protocol/*.h $(INSTALLROOT)$(INCLUDEDIR)/efi/protocol
+-	$(INSTALL) -m 644 $(SRCDIR)/$(ARCH)/*.h $(INSTALLROOT)$(INCLUDEDIR)/efi/$(ARCH)
+-ifeq ($(ARCH),ia64)
+-	mkdir -p $(INSTALLROOT)$(INCLUDEDIR)/efi/protocol/ia64
+-	$(INSTALL) -m 644 $(SRCDIR)/protocol/ia64/*.h $(INSTALLROOT)$(INCLUDEDIR)/efi/protocol/ia64
+-endif
++	@$(foreach d,$(INCLUDEDIRS), \
++		$(INSTALL) -v -m 755 -d $(subst $(SOURCE),$(DEST),$(d)); \
++		$(INSTALL) -v -m 644 -t $(subst $(SOURCE),$(DEST),$(d)) $(wildcard $(d)/*.h); \
++	)
+ 
+ install_compat: install
+-	@if [ ! -h $(DEST)/$(BFD_ARCH) ]; then $(SYMLINK) $(ARCH) $(INSTALLROOT)$(PREFIX)/include/efi/$(BFD_ARCH) ; fi
++	@if [ ! -h $(DEST)/x86_64 ]; then $(SYMLINK) x64/ $(DEST)/x86_64 ; fi
++	@if [ ! -h $(DEST)/aarch64 ]; then $(SYMLINK) aa64/ $(DEST)/aarch64 ; fi
+ 
+ include $(SRCDIR)/../Make.rules
+-- 
+2.41.0
+

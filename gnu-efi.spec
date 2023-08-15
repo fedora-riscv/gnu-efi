@@ -3,9 +3,9 @@
 
 Name: gnu-efi
 Epoch: 1
-Version: 3.0.11
-%global tarball_version 3.0.9
-Release: 12%{?dist}%{?buildid}
+Version: 3.0.17
+%global tarball_version 3.0.17
+Release: 1%{?dist}.rv64%{?buildid}
 Summary: Development Libraries and headers for EFI
 License: BSD 
 URL: https://sourceforge.net/projects/gnu-efi/
@@ -14,7 +14,7 @@ Source0: https://sourceforge.net/projects/gnu-efi/files/gnu-efi-%{tarball_versio
 Source1: gnu-efi.patches
 %include %{SOURCE1}
 
-ExclusiveArch: %{efi}
+ExclusiveArch: %{efi} riscv64
 BuildRequires: binutils
 BuildRequires: efi-srpm-macros >= 5-4
 BuildRequires: gcc
@@ -105,12 +105,23 @@ git config --unset user.name
 # Package cannot build with %%{?_smp_mflags}.
 make LIBDIR=%{_prefix}/lib
 make apps
+%ifarch riscv64
+make -C lib
+make -C gnuefi
+make -C inc
+make -C apps
+%endif
 %if %{efi_has_alt_arch}
   setarch linux32 -B make ARCH=%{efi_alt_arch} PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib
   setarch linux32 -B make ARCH=%{efi_alt_arch} PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib apps
 %endif
 
 %install
+%ifarch riscv64
+echo "Amankwah path: $PWD , efi_arch: %{efi_arch}"
+cp -vf apps/{route80h.efi,modelist.efi} %{efi_arch}/apps
+%endif
+
 make PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib INSTALLROOT=%{buildroot} install
 
 mkdir -p %{buildroot}/%{efi_esp_dir}/%{efi_arch}
@@ -139,6 +150,14 @@ elif [[ -d %{buildroot}/%{_prefix}/lib/gnuefi/aa64 ]] ; then
   ln -s %{efi_arch}/efi.lds %{buildroot}/%{_libdir}/gnuefi/elf_aarch64_efi.lds
   ln -s %{efi_arch}/libefi.a %{buildroot}/%{_libdir}/gnuefi/libefi.a
   ln -s %{efi_arch}/libgnuefi.a %{buildroot}/%{_libdir}/gnuefi/libgnuefi.a
+elif [[ -d %{buildroot}/%{_prefix}/lib/gnuefi/riscv64 ]] ; then
+  ln -s ../../lib/gnuefi/%{efi_arch} %{buildroot}/%{_libdir}/gnuefi/%{efi_arch}
+  ln -s %{efi_arch}/crt0.o %{buildroot}/%{_libdir}/gnuefi/crt0-efi-rv64.o
+  ln -s %{efi_arch}/efi.lds %{buildroot}/%{_libdir}/gnuefi/elf_rv64.lds
+  ln -s %{efi_arch}/crt0.o %{buildroot}/%{_libdir}/gnuefi/crt0-efi-riscv64.o
+  ln -s %{efi_arch}/efi.lds %{buildroot}/%{_libdir}/gnuefi/elf_riscv64.lds
+  ln -s %{efi_arch}/libefi.a %{buildroot}/%{_libdir}/gnuefi/libefi.a
+  ln -s %{efi_arch}/libgnuefi.a %{buildroot}/%{_libdir}/gnuefi/libgnuefi.a
 fi
 
 %if %{efi_has_alt_arch}
@@ -165,11 +184,14 @@ find %{buildroot}/%{_prefix}/ -type l | sed 's,%{buildroot}/\+,/,' > compat.lst
 
 %files devel
 %doc README.*
-%{_mandir}/man3/*
 %{_includedir}/efi
+#ifnarch riscv64
+%{_mandir}/man3/*
 %{_includedir}/*.mk
+#endif
 %exclude %{_includedir}/efi/x86_64
 %exclude %{_includedir}/efi/aarch64
+%exclude %{_includedir}/efi/riscv64
 
 %files compat -f compat.lst
 
